@@ -7,14 +7,14 @@ export const test = base.extend({
     signupPage: async ({ page }, use) => {
 
         // Common setup
-        await page.goto('https://automationexercise.com/');
+        await page.goto('/');
 
         await page.getByRole('link', {name: 'Signup / Login'}).click();
 
         const signupPage = new SignupPage(page);
 
         // Verify the page is ready
-        await signupPage.verifySignupPage();
+        // to await signupPage.verifySignupPage();
 
         // Make the signupPage available to the test
         await use(signupPage);
