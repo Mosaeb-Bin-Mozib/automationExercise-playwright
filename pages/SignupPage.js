@@ -6,7 +6,7 @@ export class SignupPage {
         this.page = page;
         this.signupLoginLink = page.getByRole('link', {name: 'Signup / Login'});
 
-        this.nameField = page.getByPlaceholder('Name');
+        this.nameField = page.locator("//input[@placeholder='Name']");
 
         this.emailField = page.locator('input[data-qa="signup-email"]');
 
@@ -15,6 +15,8 @@ export class SignupPage {
         this.signupHeading = page.getByRole('heading', {name: 'New User Signup!'});
 
         this.accountInformationHeading = page.getByRole('heading', {name: 'Enter Account Information'});
+        //Register error message
+        this.errorMessages = page.locator("//p[normalize-space()='Email Address already exist!']")
     }
 
     async enterName(name) {
@@ -28,6 +30,18 @@ export class SignupPage {
     async clickSignup() {
         await this.signupButton.click();
     }
+    async getNameValidationMessage() {
+        return await this.nameField.evaluate(
+            element => element.validationMessage
+        );
+    }
+
+    // async getEmailValidationMessage() {
+    //     // return await this.emailField.evaluate(
+    //     //     element => element.validationMessage
+    //     // );
+    //     await expect(this.emailField).toHaveJSProperty('validity.valueMissing', true);
+    // }
 
     async verifySignupPage() {
         await expect(this.signupHeading).toBeVisible();
@@ -44,7 +58,7 @@ export class SignupPage {
 
     async open() {
 
-        await this.page.goto('https://automationexercise.com/');
+        await this.page.goto('/');
     }
     async navigateToSignup() {
 

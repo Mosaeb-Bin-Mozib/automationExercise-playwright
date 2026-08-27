@@ -147,12 +147,37 @@ export class AccountInformationPage {
     // AE-007
     // ==========================================
 
-    async selectMrTitle() {
-        await this.titleMr.check();
+    async selectGender(gender) {
+        await this.titleMr(gender).check();
     }
 
     async enterPassword(password) {
         await this.passwordField.fill(password);
+    }
+
+    async enterFirstName(firstName) {
+        await this.firstNameField.fill(firstName);
+    }
+
+    async enterLastName(lastName) {
+        await this.lastNameField.fill(lastName);
+    }
+    async enterCompanyName(companyName) {
+        await this.companyField.fill(companyName);
+    }
+    async addressOne(addressOne) {
+        await this.addressField.fill(addressOne);
+    }
+    async addressTwo(addressTwo) {
+        await this.addressField.fill(addressTwo);
+    }
+
+    async State(state) {
+        await this.addressField.fill(state);
+    }
+
+    async City(city) {
+        await this.addressField.fill(city);
     }
 
     async verifyName(name) {

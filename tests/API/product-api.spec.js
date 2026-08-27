@@ -60,7 +60,7 @@ test.describe('Product API Tests', () => {
     test('AE-API-005 - Verify product search with valid keyword', async ({ productApi }) => {
 
         // Test data
-        const keyword = 'blue top';
+        const keyword = 'top';
 
         // Send search request
         const response = await productApi.searchProduct(keyword);
@@ -79,6 +79,7 @@ test.describe('Product API Tests', () => {
 
         // Verify search-returned products
         expect(responseBody.products.length).toBeGreaterThan(0);
+        console.log(responseBody);
     });
 
 

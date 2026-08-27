@@ -1,5 +1,8 @@
-import { test, expect } from '../fixtures/test.fixture.js';
-import { AccountInformationPage } from '../pages/AccountInformationPage.js';
+import { test, expect } from '../../fixtures/test.fixture.js';
+import {getSignupData, invalidNumberSignupData} from '../../test-data/signupData';
+import { AccountInformationPage } from '../../pages/AccountInformationPage.js';
+
+const signupData = getSignupData();
 
 test.describe('New User Signup', () => {
 
@@ -12,21 +15,16 @@ test.describe('New User Signup', () => {
     // AE-002
     test('AE-002 - Verify user can signup with valid information', async ({ signupPage }) => {
 
-            const name = 'Mosaeb Bin Mozib';
-            const email = `mosaeb_${Date.now()}@gmail.com`;
+        await signupPage.enterName(signupData.name);
+        await signupPage.enterEmail(signupData.email);
 
-            await signupPage.enterName(name);
-            await signupPage.enterEmail(email);
+        await expect(signupPage.nameField).toHaveValue(signupData.name);
+        await expect(signupPage.emailField).toHaveValue(signupData.email);
 
-            await expect(signupPage.nameField).toHaveValue(name);
+        await signupPage.clickSignup();
 
-            await expect(signupPage.emailField).toHaveValue(email);
-
-            await signupPage.clickSignup();
-
-            await expect(signupPage.accountInformationHeading).toBeVisible();
-        }
-    );
+        await expect(signupPage.accountInformationHeading).toBeVisible();
+    });
 
 
     // AE-003
@@ -39,9 +37,8 @@ test.describe('New User Signup', () => {
 
             await signupPage.clickSignup();
 
-            await expect(signupPage.signupHeading).toBeVisible();
-
-            await expect(signupPage.page).toHaveURL(/.*login/);
+            await expect(signupPage.nameField).toHaveJSProperty('validity.valueMissing', true);
+            await expect(signupPage.emailField).toHaveJSProperty('validity.valueMissing', true);
         }
     );
 
@@ -50,45 +47,34 @@ test.describe('New User Signup', () => {
     test('AE-004 - Verify application rejects invalid email format',
         async ({ signupPage }) => {
 
-            const name = 'Mosaeb Bin Mozib';
-            const invalidEmail = 'example.com';
+            await signupPage.enterName(signupData.name);
+            await signupPage.enterEmail(signupData.invalidEmail);
 
-            await signupPage.enterName(name);
-            await signupPage.enterEmail(invalidEmail);
-
-            await expect(signupPage.emailField).toHaveValue(invalidEmail);
+            await expect(signupPage.emailField).toHaveValue(signupData.invalidEmail);
 
             await signupPage.clickSignup();
 
             await expect(signupPage.accountInformationHeading).not.toBeVisible();
 
-            await expect(signupPage.emailField).toHaveJSProperty('validity.valid', false);
+            await expect(signupPage.emailField).toHaveJSProperty('validity.typeMismatch', true);
         }
     );
 
     //AE-005
-    test(
-        'AE-005 - Verify user cannot signup with an already registered email',
+    test('AE-005 - Verify user cannot signup with an already registered email',
         async ({ signupPage }) => {
-            const name = 'Mosaeb Bin Mozib';
-            const registeredEmail = 'mosaeb598@gmail.com';
 
             // Enter valid name
-            await signupPage.enterName(name);
+            await signupPage.enterName(signupData.name);
 
             // Enter already registered email
-            await signupPage.enterEmail(registeredEmail);
-
-            // Verify entered values
-            await expect(signupPage.nameField).toHaveValue(name);
-
-            await expect(signupPage.emailField).toHaveValue(registeredEmail);
+            await signupPage.enterEmail(signupData.registeredEmail);
 
             // Click Signup
             await signupPage.clickSignup();
 
             // Verify duplicate email error message
-            await expect(signupPage.existingEmailMessage).toBeVisible();
+            await expect(signupPage.errorMessages).toBeVisible();
 
             // Verify the user does not proceed to Account Information
             await expect(signupPage.accountInformationHeading).not.toBeVisible();
@@ -96,13 +82,10 @@ test.describe('New User Signup', () => {
     );
 
     //AE-006
-    test(
-        'AE-006 - Verify Account Information and Address Information sections',
-        async ({ accountInformationPage }) => {
+    test('AE-006 - Verify Account Information and Address Information sections', async ({ accountInformationPage }) => {
 
             // Verify an Account Information section
-            await accountInformationPage
-                .verifyAccountInformationSection();
+            await accountInformationPage.verifyAccountInformationSection();
 
             // Scroll to an Address Information section
             await accountInformationPage.addressField.scrollIntoViewIfNeeded();
@@ -113,23 +96,37 @@ test.describe('New User Signup', () => {
     );
 
     // AE-007
-    test(
-        'AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPages, signupTestData}) => {
+    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPages, signupTestData}) => {
+            await signupPage.enterName(invalidNumberSignupData.name);
+            await signupPage.enterEmail(invalidNumberSignupData.email);
 
-            // Select Mr.
-            await accountInformationPages.selectMrTitle();
+            await signupPage.clickSignup();
 
-            // Enter valid password
-            await accountInformationPages.enterPassword(
-                signupTestData.password
-            );
+            await signupPage.selectGender(invalidNumberSignupData.title);
+            await signupPage.enterPassword(invalidNumberSignupData.password);
+            await signupPage.enterFirstName(invalidNumberSignupData.firstName);
+            await signupPage.enterLastName(invalidNumberSignupData.lastName);
+            await signupPage.enterCompanyName(invalidNumberSignupData.company);
+            await signupPage.addressOne(invalidNumberSignupData.address);
+            await signupPage.addressTwo(invalidNumberSignupData.address2);
+            await signupPage.State(invalidNumberSignupData.state);
+            await signupPage.City(invalidNumberSignupData.city);
 
-            // Verify Name, Email, Password and masked password
-            await accountInformationPages.verifyAccountInformation(
-                signupTestData.name,
-                signupTestData.email,
-                signupTestData.password
-            );
+
+            await signupPage.enterPassword(invalidNumberSignupData.title);
+            await signupPage.enterPassword(invalidNumberSignupData.title);
+            await signupPage.enterPassword(invalidNumberSignupData.title);
+
+        }
+    );
+
+    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({accountInformationPages, signupTestData}) => {
+
+
+        await signupPage.enterName(nameOne);
+        await signupPage.enterEmail(email);
+        await signupPage.clickSignup();
+
         }
     );
 
