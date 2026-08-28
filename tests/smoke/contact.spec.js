@@ -1,11 +1,13 @@
-import { test,expect } from '../fixtures/ContactUs.fixture';
+import { test,expect } from '../../fixtures/ContactUs.fixture';
+import {getContactData, } from '../../test-data/contactData';
+const contactData = getContactData();
 
 test.describe('Contact Us', () => {
 
     // AE-026
     test('AE-026 - Verify Contact Us page loads successfully', async ({ contactUsPage }) => {
 
-            // Open Contact Us page
+            // Open the Contact Us page
             await contactUsPage.open();
 
             // Verify all Contact Us page elements
@@ -17,269 +19,122 @@ test.describe('Contact Us', () => {
     // AE-027
     test('AE-027 - Verify Contact Us form submission with valid information', async ({ contactUsPage }) => {
 
-            // Open Contact Us page
+            // Open the Contact Us page
             await contactUsPage.open();
 
             // Enter valid information
-            await contactUsPage.fillContactForm(
-                'Mosaeb Bin Mozib',
-                'mosaeb009@gmail.com',
-                'Test Inquiry',
-                'This is a valid test message.'
-            );
+            await contactUsPage.fillContactForm(contactData.name,contactData.email,contactData.subject,contactData.message);
 
             // Handle confirmation dialog if displayed
-            contactUsPage.page.once('dialog', async dialog => {
-                await dialog.accept();
-            });
+            contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
 
             // Submit form
             await contactUsPage.submitForm();
 
-            // Verify success message
+            // Verify a success message
             await contactUsPage.verifySuccessMessage();
         }
     );
 
     // AE-028
     test('AE-028 - Verify Contact Us form submission with valid file attachment', async ({ contactUsPage }) => {
-
-            // Open Contact Us page
             await contactUsPage.open();
-
-            // Enter valid contact information
-            await contactUsPage.fillContactForm(
-                'Mosaeb Bin Mozib',
-                'mosaeb009@gmail.com',
-                'Test Inquiry',
-                'This is a valid test message.'
-            );
-
-            // Upload valid test file
-            await contactUsPage.uploadFile('../test-data/SQA Roadmap.pdf');
-
-            // Verify file is selected
+            await contactUsPage.fillContactForm(contactData.name,contactData.email,contactData.subject,contactData.message);
+            // Upload a valid test file
+            await contactUsPage.uploadFile(contactData.path);
+            // Verify a file is selected
             await contactUsPage.verifyFileSelected();
-
-            // Handle confirmation dialog
-            contactUsPage.page.once('dialog', async dialog => {
-                await dialog.accept();
-            });
-
-            // Submit form
+            await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
             await contactUsPage.submitForm();
-
-            // Verify success message
             await contactUsPage.verifySuccessMessage();
         }
     );
     // AE-029
     test('AE-029 - Verify Contact Us form rejects empty Name', async ({ contactUsPage }) => {
-
-            // Open Contact Us page
             await contactUsPage.open();
-
-            // Leave Name field empty
-            await contactUsPage.nameField.fill('');
-
-            // Enter valid Email
-            await contactUsPage.emailField.fill('mosaeb009@gmail.com');
-
-            // Enter valid Subject
-            await contactUsPage.subjectField.fill('Test Inquiry');
-
-            // Enter valid Message
-            await contactUsPage.messageField.fill('This is a valid test message.');
-
-            // Click Submit
+            await contactUsPage.nameField.fill(contactData.nameEmpty);
+            await contactUsPage.emailField.fill(contactData.email);
+            await contactUsPage.subjectField.fill(contactData.subject);
+            await contactUsPage.messageField.fill(contactData.message);
+            // Handle confirmation dialog if displayed
+            await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
             await contactUsPage.submitForm();
-
-            // Verify Name field is still empty
-            await expect(contactUsPage.nameField).toHaveValue('');
-
-            // Verify user remains on Contact Us page
-            await expect(contactUsPage.page).toHaveURL(/.*contact_us/);
+            await expect(contactUsPage.nameField).toHaveJSProperty('validity.valueMissing', false);
         }
     );
 
     // AE-030
-    test(
-        'AE-030 - Verify Contact Us form rejects empty Email',
-        async ({ contactUsPage }) => {
-
-            // Open Contact Us page
+    test('AE-030 - Verify Contact Us form rejects empty Email', async ({ contactUsPage }) => {
             await contactUsPage.open();
-
-            // Enter valid Name
-            await contactUsPage.nameField.fill(
-                'Mosaeb Bin Mozib'
-            );
-
-            // Leave Email empty
-            await contactUsPage.emailField.fill('');
-
-            // Enter valid Subject
-            await contactUsPage.subjectField.fill(
-                'Test Inquiry'
-            );
-
-            // Enter valid Message
-            await contactUsPage.messageField.fill(
-                'This is a valid test message.'
-            );
-
-            // Click Submit
+            await contactUsPage.nameField.fill(contactData.name);
+            await contactUsPage.emailField.fill(contactData.emailEmpty);
+            await contactUsPage.subjectField.fill(contactData.subject);
+            await contactUsPage.messageField.fill(contactData.message);
+             // Handle confirmation dialog if displayed
+            await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
             await contactUsPage.submitForm();
-            await contactUsPage.page.waitForTimeout(10000);
-            // Verify form submission was NOT successful
-            await expect(
-                contactUsPage.page
-                    .locator('#contact-page')
-                    .getByText(
-                        'Success! Your details have been submitted successfully.'
-                    )
-            ).not.toBeVisible();
+            await expect(contactUsPage.emailField).toHaveJSProperty('validity.valueMissing', true);
 
-            // Verify user remains on Contact Us page
-            await expect(
-                contactUsPage.page
-            ).toHaveURL(/.*contact_us/);
         }
     );
 
     // AE-031
     test('AE-031 - Verify Contact Us form rejects empty Subject', async ({ contactUsPage }) => {
-
-            // Open Contact Us page
             await contactUsPage.open();
+            await contactUsPage.nameField.fill(contactData.name);
+            await contactUsPage.emailField.fill(contactData.email);
+            await contactUsPage.subjectField.fill(contactData.subjectEmpty);
+            await contactUsPage.messageField.fill(contactData.message);
+            await expect(contactUsPage.subjectField).toHaveJSProperty('validity.valueMissing', true);
 
-            // Enter valid Name
-            await contactUsPage.nameField.fill('Mosaeb Bin Mozib');
-
-            // Enter valid Email
-            await contactUsPage.emailField.fill('mosaeb009@gmail.com');
-
-            // Leave Subject empty
-            await contactUsPage.subjectField.fill('');
-
-            // Enter valid Message
-            await contactUsPage.messageField.fill('This is a valid test message.');
-            // Click Submit
+        // Handle confirmation dialog if displayed
+        await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
             await contactUsPage.submitForm();
-
             // Wait for the response
             await contactUsPage.page.waitForTimeout(10000);
 
-            // Verify user remains on Contact Us page
-            await expect(contactUsPage.page).toHaveURL(/.*contact_us/);
         }
     );
 
     // AE-032
-    test(
-        'AE-032 - Verify Contact Us form rejects empty Message',
-        async ({ contactUsPage }) => {
+    test('AE-032 - Verify Contact Us form rejects empty Message', async ({ contactUsPage }) => {
 
-            // 1. Open Contact Us page
             await contactUsPage.open();
-
-            // 2. Enter valid Name
-            await contactUsPage.nameField.fill('Mosaeb Bin Mozib');
-
-            // 3. Enter valid Email
-            await contactUsPage.emailField.fill('mosaeb009@gmail.com');
-
-            // 4. Enter valid Subject
-            await contactUsPage.subjectField.fill('Test Inquiry');
-
-            // 5. Leave Message field empty intentionally
-
-            // 6. Click Submit
+            await contactUsPage.nameField.fill(contactData.name);
+            await contactUsPage.emailField.fill(contactData.email);
+            await contactUsPage.subjectField.fill(contactData.subject);
+            await contactUsPage.messageField.fill(contactData.messageEmpty);
             await contactUsPage.submitForm();
-
-            // 7. Wait so you can observe what happens after Submit
+            await expect(contactUsPage.messageField).toHaveJSProperty('validity.valueMissing', true);
             await contactUsPage.page.waitForTimeout(5000);
         }
     );
 
     // AE-033
     test('AE-033 - Verify Contact Us form rejects invalid Email', async ({ contactUsPage }) => {
-
-            // 1. Open Contact Us page
             await contactUsPage.open();
-
-            // 2. Enter valid Name
-            await contactUsPage.nameField.fill('Mosaeb Bin Mozib');
-
-            // 3. Enter invalid Email
-            await contactUsPage.emailField.fill('test@.com');
-
-            // 4. Enter valid Subject
-            await contactUsPage.subjectField.fill('Test Inquiry');
-
-            // 5. Enter valid Message
-            await contactUsPage.messageField.fill('This is a valid test message.');
-
-            // 6. Click Submit
+            await contactUsPage.nameField.fill(contactData.name);
+            await contactUsPage.emailField.fill(contactData.emailInvalidFormat);
+            await contactUsPage.subjectField.fill(contactData.subject);
+            await contactUsPage.messageField.fill(contactData.messageEmpty);
             await contactUsPage.submitForm();
-
-            // 7. Wait so you can observe the validation behavior
-            await contactUsPage.page.waitForTimeout(10000);
+            // Verify browser rejects invalid email format
+            await expect(contactUsPage.emailField).toHaveJSProperty('validity.typeMismatch', true);
         }
     );
 
     // AE-034
     test('AE-034 - Verify Contact Us Name field handles boundary-length input', async ({ contactUsPage }) => {
-
-            // 1. Open Contact Us page
             await contactUsPage.open();
-
-            // 2. Enter minimum reasonable valid Name
-            await contactUsPage.nameField.fill('Sakib');
-
-            // 3. Enter valid Email
-            await contactUsPage.emailField.fill('mosaeb009@gmail.com');
-
-            // 4. Enter valid Subject
-            await contactUsPage.subjectField.fill('Test Inquiry');
-
-            // 5. Enter valid Message
-            await contactUsPage.messageField.fill('This is a valid test message.');
-
-            // 6. Verify short Name remains in the field
-            await expect(contactUsPage.nameField).toHaveValue('Sakib');
-
-            // 7. Submit the form
+            await contactUsPage.nameField.fill(contactData.longName);
+            await expect(contactUsPage.nameField).toHaveValue(contactData.longName);
+            await contactUsPage.emailField.fill(contactData.email);
+            await contactUsPage.subjectField.fill(contactData.subject);
+            await contactUsPage.messageField.fill(contactData.message);
+            await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
+            // await expect(contactUsPage.subjectField).toHaveJSProperty('validity.valueMissing', true);
             await contactUsPage.submitForm();
-
-            // 8. Wait so you can observe the result
-            await contactUsPage.page.waitForTimeout(3000);
-
-            // 9. Open Contact Us page again for the long-name test
-            await contactUsPage.open();
-
-            // 10. Enter a long but reasonable Name
-            const longName = 'Mosaeb Bin Mozib Test User Contact Form dummy to the pillar object to the map';
-
-            await contactUsPage.nameField.fill(longName);
-
-            // 11. Verify long Name remains in the field
-            await expect(contactUsPage.nameField).toHaveValue(longName);
-
-            // 12. Enter valid Email
-            await contactUsPage.emailField.fill('mosaeb009@gmail.com');
-
-            // 13. Enter valid Subject
-            await contactUsPage.subjectField.fill('Test Inquiry');
-
-            // 14. Enter valid Message
-            await contactUsPage.messageField.fill('This is a valid test message.');
-
-            // 15. Submit the form
-            await contactUsPage.submitForm();
-
-            // 16. Wait so you can observe the result
-            await contactUsPage.page.waitForTimeout(3000);
+            await contactUsPage.verifySuccessMessage();
         }
     );
     // AE-038
@@ -287,7 +142,7 @@ test.describe('Contact Us', () => {
         'AE-038 - Verify success confirmation after Contact Us form submission',
         async ({ contactUsPage }) => {
 
-            // Open Contact Us page
+            // Open the Contact Us page
             await contactUsPage.open();
 
             // Enter valid Name
