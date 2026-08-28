@@ -96,32 +96,59 @@ test.describe('New User Signup', () => {
     );
 
     // AE-007
-    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPages, signupTestData}) => {
-            await signupPage.enterName(invalidNumberSignupData.name);
-            await signupPage.enterEmail(invalidNumberSignupData.email);
+    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPage, signupTestData
+    }) => {
 
-            await signupPage.clickSignup();
+        await accountInformationPage.selectGender(signupTestData.title);
 
-            await signupPage.selectGender(invalidNumberSignupData.title);
-            await signupPage.enterPassword(invalidNumberSignupData.password);
-            await signupPage.enterFirstName(invalidNumberSignupData.firstName);
-            await signupPage.enterLastName(invalidNumberSignupData.lastName);
-            await signupPage.enterCompanyName(invalidNumberSignupData.company);
-            await signupPage.addressOne(invalidNumberSignupData.address);
-            await signupPage.addressTwo(invalidNumberSignupData.address2);
-            await signupPage.State(invalidNumberSignupData.state);
-            await signupPage.City(invalidNumberSignupData.city);
+        await accountInformationPage.enterPassword(signupTestData.password);
 
+        await accountInformationPage.selectDateOfBirth(
+            signupTestData.dateOfBirth
+        );
 
-            await signupPage.enterPassword(invalidNumberSignupData.title);
-            await signupPage.enterPassword(invalidNumberSignupData.title);
-            await signupPage.enterPassword(invalidNumberSignupData.title);
+        await accountInformationPage.enterFirstName(
+            signupTestData.firstName
+        );
 
-        }
-    );
+        await accountInformationPage.enterLastName(
+            signupTestData.lastName
+        );
+
+        await accountInformationPage.enterCompanyName(
+            signupTestData.company
+        );
+
+        await accountInformationPage.addressOne(
+            signupTestData.address
+        );
+
+        await accountInformationPage.addressTwo(
+            signupTestData.address2
+        );
+
+        await accountInformationPage.selectCountry(
+            signupTestData.country
+        );
+
+        await accountInformationPage.State(
+            signupTestData.state
+        );
+
+        await accountInformationPage.City(
+            signupTestData.city
+        );
+
+        await accountInformationPage.zipCode(
+            signupTestData.zip
+        );
+
+        await accountInformationPage.mobileNumber(
+            signupTestData.phone
+        );
+    });
 
     test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({accountInformationPages, signupTestData}) => {
-
 
         await signupPage.enterName(nameOne);
         await signupPage.enterEmail(email);

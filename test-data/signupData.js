@@ -2,16 +2,18 @@ export function getSignupData() {
     return {
         name: 'Mosaeb Bin Mozib',
         email: `mosaeb_${Date.now()}@gmail.com`,
-        invalidEmail:'example.com',
-        registeredEmail:'mosaeb598@gmail.com',
+        invalidEmail: 'example.com',
+        registeredEmail: 'mosaeb598@gmail.com',
 
-        title: 'Mr',
+        title: 'Mr.',   // ✅ Add dot
         password: 'Test@12345',
+
         dateOfBirth: {
             day: '15',
             month: 'May',
             year: '1998'
         },
+
         newsletter: true,
         specialOffers: true,
 
@@ -23,7 +25,10 @@ export function getSignupData() {
         city: 'Test City',
         state: 'Test State',
         zip: '1219',
-        country: 'Test Country',
+
+        // ⚠️ AutomationExercise does NOT have "Test Country"
+        country: 'Canada',
+
         phone: '01302692330',
     };
 }

@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import {getSignupData} from "../test-data/signupData";
 
 export class AccountInformationPage {
 
@@ -14,6 +15,7 @@ export class AccountInformationPage {
         );
 
         // Title
+
         this.titleMr = page.locator('#id_gender1');
         this.titleMrs = page.locator('#id_gender2');
 
@@ -148,7 +150,11 @@ export class AccountInformationPage {
     // ==========================================
 
     async selectGender(gender) {
-        await this.titleMr(gender).check();
+        if (gender === 'Mr.') {
+            await this.titleMr.check();
+        } else{
+            await this.titleMrs.check();
+        }
     }
 
     async enterPassword(password) {
@@ -178,6 +184,28 @@ export class AccountInformationPage {
 
     async City(city) {
         await this.addressField.fill(city);
+    }
+
+    async zipCode(zipCode) {
+        await this.zipcodeField.fill(zipCode);
+    }
+    async mobileNumber(mobileNumber) {
+        await this.mobileNumberField.fill(mobileNumber);
+    }
+
+    // async selectDateOfBirth(dateOfBirth) {
+    //     await this.dayDropdown.selectOption(getSignupData.day);
+    //     await this.monthDropdown.selectOption(getSignupData.month);
+    //     await this.yearDropdown.selectOption(getSignupData.year);
+    // }
+
+    async selectDateOfBirth(dateOfBirth) {
+        await this.dayDropdown.selectOption(getSignupData.dateOfBirth.day);
+        await this.monthDropdown.selectOption({ label: getSignupData.dateOfBirth.month });
+        await this.yearDropdown.selectOption(getSignupData.dateOfBirth.year);
+    }
+    async selectCountry(country) {
+        await this.countryDropdown.selectOption(country);
     }
 
     async verifyName(name) {

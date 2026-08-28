@@ -7,7 +7,7 @@ export class LoginPage {
         this.page = page;
 
         // Login section
-        this.loginHeading = page.getByRole('heading', {name: 'Login to your account'});
+        this.loginHeading = page.locator("//h2[normalize-space()='Login to your account']")
 
         this.emailField = page.locator('input[data-qa="login-email"]');
 
@@ -17,7 +17,7 @@ export class LoginPage {
 
 
         // New User Signup section
-        this.signupHeading = page.getByRole('heading', {name: 'New User Signup!'});
+        // this.loginHeading = page.locator("//h2[normalize-space()='Login to your account']")
 
         this.loggedInAs = page.locator('li:has-text("Logged in as")');
 
@@ -35,20 +35,9 @@ export class LoginPage {
     // ==========================================
 
     async open() {
-
-        await this.page.goto('https://automationexercise.com/login');
+        await this.page.goto('/');
+        await this.page.goto('/login');
     }
-
-
-    // ==========================================
-    // WAIT FOR LOGIN PAGE
-    // ==========================================
-
-    async waitForPageLoad() {
-
-        await this.loginHeading.waitFor({state: 'visible', timeout: 1000});
-    }
-
 
     // ==========================================
     // VERIFY LOGIN PAGE
@@ -74,7 +63,7 @@ export class LoginPage {
         await expect(this.loginButton).toBeEnabled();
 
 
-        await expect(this.signupHeading).toBeVisible();
+        await expect(this.loginHeading).toBeVisible();
 
     }
 
