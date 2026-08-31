@@ -4,10 +4,6 @@ export class ContactUsPage {
 
     constructor(page) {
         this.page = page;
-
-        // Page URL
-        this.url = 'https://automationexercise.com/contact_us';
-
         // Contact Us heading
         this.contactUsHeading = page.getByRole('heading', {name: 'Contact Us'});
 
@@ -33,18 +29,19 @@ export class ContactUsPage {
         this.submitButton = page.getByRole('button', {name: 'Submit'});
     }
 
-    // Open Contact Us page
+    // Open the Contact Us page
     async open() {
-        await this.page.goto(this.url);
+        await this.page.goto('/');
+        await this.page.goto("/contact_us");
     }
 
     // Verify Contact Us page is displayed
     async verifyPageDisplayed() {
 
         // Verify URL
-        await expect(this.page).toHaveURL(/.*contact_us/);
+        await expect(this.page).toHaveURL("/contact_us");
 
-        // Verify Contact Us heading
+        // Verify the Contact Us heading
         await expect(this.contactUsHeading).toBeVisible();
 
         // Verify Get In Touch
@@ -56,7 +53,7 @@ export class ContactUsPage {
         // Verify Email field
         await expect(this.emailField).toBeVisible();
 
-        // Verify Subject field
+        // Verify the Subject field
         await expect(this.subjectField).toBeVisible();
 
         // Verify Message field
@@ -69,20 +66,20 @@ export class ContactUsPage {
         await expect(this.submitButton).toBeVisible();
     }
 
-    // Fill contact form
+    // Fill a contact form
     async fillContactForm(name, email, subject, message) {
         await this.nameField.fill(name);
         await this.emailField.fill(email);
         await this.subjectField.fill(subject);
         await this.messageField.fill(message);
     }
+
     // AE-028 - Upload file
     async uploadFile(filePath) {
         await this.fileUpload.setInputFiles(filePath);
     }
 
-    // AE-028 - Verify selected file
-    // AE-028 - Verify file is selected
+    // AE-028 - Verify a file is selected
     async verifyFileSelected() {
         await expect.poll(async () => {
                 return await this.fileUpload.evaluate(
@@ -97,7 +94,7 @@ export class ContactUsPage {
         await this.submitButton.click();
     }
 
-    //Verify success message
+    //Verify a success message
     async verifySuccessMessage() {
         await expect(this.page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.')).toBeVisible();
     }

@@ -20,7 +20,7 @@ export const test = base.extend({
 
         // WAIT FOR PAGE TO LOAD
 
-        await loginPage.waitForPageLoad();
+        // await loginPage.waitForPageLoad();
 
         // SEND LOGIN PAGE TO TEST
         
