@@ -9,8 +9,10 @@ export function getContactData() {
         emailEmpty: '',
         emailInvalidFormat: 'testExample.com',
         subject: 'Test Inquiry',
+        subscription: 'Subscription',
         subjectEmpty: '',
         message: 'This is a valid test message.',
+        success: 'Success! Your details have been submitted successfully.',
         messageEmpty: '',
         path: path.resolve('test-data', 'SQA Roadmap.pdf'),
     };
