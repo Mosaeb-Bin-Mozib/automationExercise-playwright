@@ -9,7 +9,6 @@ test.describe('Cart Page', () => {
     // ==========================================
 
     test('AE-088 - Verify Cart page loads successfully when cart is empty', async ({ cartPage }) => {
-
             await cartPage.verifyEmptyCartPage();
 
         }

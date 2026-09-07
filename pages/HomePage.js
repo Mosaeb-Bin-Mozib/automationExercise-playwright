@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { test } from '../fixtures/utility.fixture';
 
 export class HomePage {
     constructor(page) {
@@ -259,7 +260,7 @@ export class HomePage {
 
     // Open Home page
     async open() {
-        await this.page.goto('https://automationexercise.com/', {
+        await this.page.goto('/', {
             waitUntil: 'domcontentloaded',
             timeout: 60000
         });
@@ -272,7 +273,7 @@ export class HomePage {
 
     // Verify Home page URL
     async verifyHomePageURL() {
-        await expect(this.page).toHaveURL('https://automationexercise.com/');
+        await expect(this.page).toHaveURL('/');
     }
 
     // Verify Home page heading
@@ -309,7 +310,7 @@ export class HomePage {
         // Verify categories
         await expect(this.categories).toBeVisible();
 
-        // Verify products section
+        // Verify a products section
         await expect(this.products).toBeVisible();
 
         // Verify footer
@@ -318,7 +319,7 @@ export class HomePage {
 
     // AE-046 - Verify Signup / Login page
     async verifySignupLoginPage() {
-        await expect(this.page).toHaveURL(/.*\/login/);
+        await expect(this.page).toHaveURL("/login");
         await expect(
             this.page.getByText('Login to your account').first()
         ).toBeVisible();
@@ -326,7 +327,7 @@ export class HomePage {
 
     // AE-046 - Verify Products page
     async verifyProductsPage() {
-        await expect(this.page).toHaveURL(/.*\/products/);
+        await expect(this.page).toHaveURL("/products");
         await expect(
             this.page.getByText('All Products').first()
         ).toBeVisible();
@@ -334,59 +335,17 @@ export class HomePage {
 
     // AE-046 - Verify Cart page
     async verifyCartPage() {
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
+        await expect(this.page).toHaveURL("/view_cart");
     }
 
     // AE-046 - Verify Contact Us page
     async verifyContactUsPage() {
-        await expect(this.page).toHaveURL(/.*\/contact_us/);
+        await expect(this.page).toHaveURL("/contact_us");
         await expect(
             this.page.getByText('Get In Touch').first()
         ).toBeVisible();
     }
 
-    // AE-046 - Verify Test Cases page
-    async verifyTestCasesPage() {
-        await expect(this.page).toHaveURL(/.*\/test_cases/);
-    }
-
-    // AE-046 - Verify API Testing page
-    async verifyApiTestingPage() {
-        await expect(this.page).toHaveURL(/.*\/api_list/);
-    }
-
-    // AE-046 - Verify Signup / Login page
-    async verifySignupLoginPage() {
-        await expect(this.page).toHaveURL(/.*\/login/);
-        await expect(this.loginHeading).toBeVisible();
-    }
-
-    // AE-046 - Verify Products page
-    async verifyProductsPage() {
-        await expect(this.page).toHaveURL(/.*\/products/);
-        await expect(this.productsHeading).toBeVisible();
-    }
-
-    // AE-046 - Verify Cart page
-    async verifyCartPage() {
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
-    }
-
-    // AE-046 - Verify Contact Us page
-    async verifyContactUsPage() {
-        await expect(this.page).toHaveURL(/.*\/contact_us/);
-        await expect(this.contactUsHeading).toBeVisible();
-    }
-
-    // AE-046 - Verify Test Cases page
-    async verifyTestCasesPage() {
-        await expect(this.page).toHaveURL(/.*\/test_cases/);
-    }
-
-    // AE-046 - Verify API Testing page
-    async verifyApiTestingPage() {
-        await expect(this.page).toHaveURL(/.*\/api_list/);
-    }
 
     // AE-048 - Verify all product categories and subcategories
     async verifyProductCategories() {
@@ -458,9 +417,7 @@ export class HomePage {
     async verifyBrandProductListing() {
 
         // Verify brand product page URL
-        await expect(this.page).toHaveURL(
-            /.*\/brand_products\/.*/
-        );
+        await expect(this.page).toHaveURL(/.*\/brand_products\/.*/);
 
         // Verify product listing is displayed
         await expect(
@@ -506,7 +463,7 @@ export class HomePage {
         await this.page.waitForLoadState('domcontentloaded');
 
         // Verify product detail URL
-        await expect(this.page).toHaveURL(/.*\/product_details\/.*/);
+        await expect(this.page).toHaveURL("/product_details/1");
 
         // Verify product name
         await expect(this.productDetails.name).toHaveText('Blue Top');
@@ -545,7 +502,7 @@ export class HomePage {
         await this.page.waitForLoadState('domcontentloaded');
 
         // Verify Cart page
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
+        await expect(this.page).toHaveURL("/view_cart");
 
         // Verify Blue Top is in Cart
         await expect(this.cart.cartBlueTop).toBeVisible();
@@ -555,7 +512,7 @@ export class HomePage {
     async verifyCartProductInformation() {
 
         // Verify Cart page
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
+        await expect(this.page).toHaveURL("/view_cart");
 
         // Verify product name
         await expect(this.cart.productName).toHaveText('Blue Top');
@@ -573,7 +530,7 @@ export class HomePage {
     // AE-055 - Verify Continue Shopping behavior
     async verifyContinueShopping() {
 
-        // Verify Blue Top is displayed on Home page
+        // Verify Blue Top is displayed on the Home page
         await expect(this.productDetails.blueTop).toBeVisible();
 
         // Add Blue Top to Cart
@@ -601,7 +558,7 @@ export class HomePage {
         await this.page.waitForLoadState('domcontentloaded');
 
         // Verify Cart page
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
+        await expect(this.page).toHaveURL("/view_cart");
 
         // Verify previously added Blue Top remains in Cart
         await expect(this.cart.cartBlueTop).toBeVisible();
@@ -614,9 +571,6 @@ export class HomePage {
         await this.page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-
-        // Wait for footer content to render
-        await this.page.waitForTimeout(1000);
 
         // Verify a Subscription section
         await expect(this.footerSections.subscription).toBeVisible();
@@ -650,7 +604,7 @@ export class HomePage {
         await this.cart.viewCart.click();
 
         // Verify Cart page
-        await expect(this.page).toHaveURL(/.*\/view_cart/);
+        await expect(this.page).toHaveURL("/view_cart");
 
         // Verify Blue Top is in Cart
         await expect(this.cart.blueTopCartRow).toBeVisible();
@@ -673,11 +627,11 @@ export class HomePage {
 
     }
 
-    // AE-064 - Verify critical Home → Product → Cart journey
+    // AE-064 - Verify a critical Home → Product → Cart journey
     async verifyCriticalShoppingJourney() {
 
         // Verify Home page is loaded
-        await expect(this.page).toHaveURL(/.*\//);
+        await expect(this.page).toHaveURL("/");
 
         // Verify Featured Items
         await expect(this.featuredItems.section).toBeVisible();
@@ -687,8 +641,8 @@ export class HomePage {
             "//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]//a[contains(@href,'/product_details/')]"
         ).first().click();
 
-        // Verify Product Details page
-        await expect(this.page).toHaveURL(/.*\/product_details\/1/);
+        // Verify the Product Details page
+        await expect(this.page).toHaveURL("/product_details/1");
 
         // Verify product name
         await expect(this.page.locator(
@@ -714,7 +668,7 @@ export class HomePage {
 
         // Verify Cart page
         await expect(this.page
-        ).toHaveURL(/.*\/view_cart/);
+        ).toHaveURL("/view_cart");
 
         // Verify Blue Top is in Cart
         const blueTopCartRow = this.page.locator(
@@ -734,59 +688,12 @@ export class HomePage {
         ).toHaveText('1');
 
         // Return to Home
-        await this.page.locator(
-            "//a[normalize-space()='Home']"
-        ).first().click();
+        await this.page.locator("//a[normalize-space()='Home']").first().click();
 
         // Verify Home page
-        await expect(this.page).toHaveURL(/.*\/$/);
+        await expect(this.page).toHaveURL("/");
 
         // Verify Home page remains usable
         await expect(this.homeHeading).toBeVisible();
     }
-
-    // AE-057 - Verify user can scroll to the bottom of the Home page
-    // async verifyScrollToBottom() {
-    //
-    //     // Verify page starts at the top
-    //     await this.page.evaluate(() => {window.scrollTo(0, 0);});
-    //
-    //     // Verify scroll position is at the top
-    //     await expect.poll(async () => {
-    //             return await this.page.evaluate(() => window.scrollY);
-    //         }
-    //     ).toBe(0);
-    //
-    //     // Scroll to the bottom of the page
-    //     await this.page.evaluate(() => {
-    //         window.scrollTo(0, document.body.scrollHeight);
-    //     });
-    //
-    //     // Wait for scrolling/rendering
-    //     await this.page.waitForTimeout(1000);
-    //
-    //     // Verify Recommended Items
-    //     await expect(
-    //         this.footerSections.recommendedItems
-    //     ).toBeVisible();
-    //
-    //     // Verify Subscription
-    //     await expect(
-    //         this.footerSections.subscription
-    //     ).toBeVisible();
-    //
-    //     // Verify Footer
-    //     await expect(
-    //         this.footerSections.footer
-    //     ).toBeVisible();
-    //
-    //     // Verify the page has actually reached the bottom
-    //     await expect.poll(
-    //         async () => {
-    //             return await this.page.evaluate(() => {
-    //                 return window.innerHeight + window.scrollY >= document.body.scrollHeight - 5;
-    //             });
-    //         }
-    //     ).toBe(true);
-    // }
 }
