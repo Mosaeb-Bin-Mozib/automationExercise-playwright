@@ -1,5 +1,4 @@
 import {test as base, expect} from '@playwright/test';
-
 import { LoginPage } from '../pages/LoginPage.js';
 import { SignupPage } from '../pages/SignupPage.js';
 import { AccountInformationPage } from '../pages/AccountInformationPage.js';

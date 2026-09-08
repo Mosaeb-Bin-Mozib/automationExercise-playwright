@@ -26,8 +26,7 @@ test.describe('Payment Page', () => {
     // AE-113
     test('AE-113 - Verify payment cannot be confirmed when required payment fields are empty', async ({ paymentPage }) => {
 
-            await paymentPage
-                .verifyEmptyPaymentFieldsCannotBeSubmitted();
+            await paymentPage.verifyEmptyPaymentFieldsCannotBeSubmitted();
 
         }
     );
