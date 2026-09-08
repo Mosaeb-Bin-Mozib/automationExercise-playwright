@@ -25,6 +25,7 @@ export class PaymentPage extends BasePage {
             viewCart: page.locator("//u[normalize-space()='View Cart']"),
 
             continueShopping: page.locator("//button[normalize-space()='Continue Shopping']"),
+            paymentSuccessMessage: page.locator("(//p[normalize-space()='Congratulations! Your order has been confirmed!'])[1]"),
         };
 
         // Cart
@@ -186,7 +187,6 @@ export class PaymentPage extends BasePage {
 
     // AE-112 - Verify valid payment information can be entered
     async verifyValidPaymentInformation() {
-
         //Reach Payment page
         await this.verifyPaymentPageLoad();
         await this.cardName.fill(cartData.cardHolderName);
@@ -200,6 +200,8 @@ export class PaymentPage extends BasePage {
         await expect(this.cvc).toHaveValue(cartData.cardCvcNumber);
         await expect(this.expiryMonth).toHaveValue(cartData.cardExpiryMonth);
         await expect(this.expiryYear).toHaveValue(cartData.cardExpiryYear);
+        await this.paymentButton.click();
+        await expect(this.cartConfirmation.paymentSuccessMessage).toBeVisible();
     }
 
     // AE-113 - Verify payment cannot be confirmed when required fields are empty
@@ -247,39 +249,17 @@ export class PaymentPage extends BasePage {
         //Verify order is NOT successfully confirmed
         await expect(this.page).toHaveURL('/payment');
     }
-
-
     // AE-115 - Verify payment behavior with invalid CVC
     async verifyInvalidCvcCannotBeConfirmed() {
-
-        // 1. Reach Payment page
-        await this.verifyPaymentPageLoadsSuccessfully();
-
-        // 2. Enter valid Name on Card
-        await this.cardName.fill('QA Tester');
-
-        // 3. Enter approved test card value
-        await this.cardNumber.fill('4111111111111111');
-
-        // 4. Enter invalid CVC
-        await this.cvc.fill('1');
-
-        // 5. Enter a valid expiration month
-        await this.expiryMonth.fill('12');
-
-        // 6. Enter a valid expiration year
-        await this.expiryYear.fill('2030');
-
-        // 7. Click Pay and Confirm Order
+        await this.verifyPaymentPageLoad();
+        await this.cardName.fill(cartData.cardHolderName);
+        await this.cardNumber.fill(cartData.cardHolderNumber);
+        await this.cvc.fill(cartData.InvalidCardCvcNumber);
+        await this.expiryMonth.fill(cartData.cardExpiryMonth);
+        await this.expiryYear.fill(cartData.cardExpiryYear);
         await this.paymentButton.click();
-
-        await this.page.waitForTimeout(7000);
-        // 8. Verify order is not successfully confirmed
         await expect(this.page).toHaveURL('/payment');
-
-        console.log('AE-115 - Invalid CVC cannot be confirmed: PASS');
     }
-
     // AE-116 - Verify successful payment and order confirmation
     async verifySuccessfulPaymentAndOrderConfirmation() {
         await this.verifyPaymentPageLoad();
