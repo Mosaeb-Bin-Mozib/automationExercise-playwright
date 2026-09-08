@@ -1,15 +1,11 @@
 import { test } from '../../fixtures/Cart.fixture';
+import {} from '../../fixtures/login.fixture';
 
 
 test.describe('Cart Page', () => {
-
-
-    // ==========================================
     // AE-088
-    // ==========================================
 
     test('AE-088 - Verify Cart page loads successfully when cart is empty', async ({ cartPage }) => {
-
             await cartPage.verifyEmptyCartPage();
 
         }
