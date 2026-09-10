@@ -18,7 +18,6 @@ export const test = base.extend({
         await apiContext.dispose();
     },
 
-    // Create a Product API object
     productApi: async ({ apiContext }, use) => {
 
         const productApi = new ProductApi(apiContext);

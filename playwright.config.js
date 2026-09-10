@@ -2,15 +2,12 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
-
-// console.log('BASE_URL =', process..env.BASE_URL);
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 // import dotenv from 'dotenv';
 // import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '..env') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -31,7 +28,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     // Read BASE_URL from.env
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.BASE_URL ?? 'https://automationexercise.com/',
     screenshot: 'only-on-failure',
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',

@@ -24,6 +24,8 @@
 +  baseURL: process.env.BASE_URL ?? 'https://automationexercise.com',
  },
 ```
+- **Status:** Solved
+
 
 #### [MEDIUM] The "all major navigation links" smoke test no longer covers two advertised destinations
 
@@ -32,7 +34,8 @@
 - **File:** `tests/smoke/home.spec.js:69`
 - **Issue:** The changed test stops after validating Signup/Login, Products, Cart, and Contact Us. The diff removes its Test Cases and API Testing click-and-URL assertions, while retaining the description "Verify all major navigation links from Home page."
 - **Impact:** Regressions in either removed navigation path can merge without smoke-suite detection, and the test name now overstates its coverage.
-- **Recommendation:** Restore independent assertions for Test Cases and API Testing, or rename the test to enumerate the four links it now covers.
+- **Recommendation:** Restore independent assertions for Test Cases and API Testing, or rename the test to list the four links it now covers.
+- **Status:** No solved because Rumman Vai said don't test these two pages: /test_cases and /api_list
 
 #### [MEDIUM] Page object contains assertions and end-to-end test behavior
 
@@ -51,6 +54,7 @@
 - **Issue:** The newly added fixture is plain JavaScript. The supplied coding standard mandates TypeScript, `strict: true`, and explicit utility return types.
 - **Impact:** The fixture cannot receive static checking for its custom fixture contract or route callback usage, and the changed code diverges from the stated project standard.
 - **Recommendation:** Convert the fixture to `fixtures/utility.fixture.ts`, define its extended fixture type, and enable TypeScript strict mode in the project configuration.
+- **Status:** Solved
 
 #### [LOW] Page object imports an unused test fixture
 
@@ -60,6 +64,7 @@
 - **Issue:** `test` is imported from `utility.fixture.js` but is never referenced by `HomePage`.
 - **Impact:** This violates the supplied unused-import rule and will fail once unused-import linting is enforced; it also makes the page object appear coupled to a fixture it does not use.
 - **Recommendation:** Remove the import. Fixtures should own fixture registration; page objects should depend only on the Playwright types/APIs they use.
+- **Status:** Solved (The existing framework is fully JavaScript-based, with no TypeScript configuration or requirement.)
 
 #### [LOW] Remove commented-out code rather than retaining inactive alternatives
 
@@ -69,6 +74,7 @@
 - **Issue:** These locations preserve inactive executable statements, including a debug `console.log`, duplicate configuration imports, disabled assertions, unused credentials, and a disabled test. Source control already preserves prior implementations.
 - **Impact:** Dead alternatives make it unclear which behavior is intended, hide missing coverage (notably the disabled assertions/tests), and increase maintenance noise during debugging and review.
 - **Recommendation:** Delete obsolete commented-out code. For a still-required assertion or scenario, restore it as active, maintained code with a clear test name; otherwise rely on Git history for recovery.
+- **Status:** Solved
 
 #### [LOW] Remove narration that merely repeats the immediately following code
 
@@ -78,6 +84,7 @@
 - **Issue:** These comments restate an obvious operation or identifier (for example, “Send GET request” directly above `getAllBrands()` and “Open Home page” directly above `open()`). The same numbered, step-by-step narration is repeated throughout specs and page objects.
 - **Impact:** The repeated prose makes tests substantially longer without adding behavioral context, so meaningful comments and the executable test flow are harder to scan.
 - **Recommendation:** Remove comments that can be inferred from the method call, locator, or assertion. Retain only comments that explain a non-obvious decision, external-system constraint, workaround, or business rule—for example, the country limitation in `test-data/signupData.js:29` and the ad-blocking purpose in `fixtures/utility.fixture.js:7`.
+- **Status:** Solved
 
 #### [MEDIUM] Remove direct full-response console dumps from API tests
 
@@ -87,6 +94,7 @@
 - **Issue:** Both tests unconditionally write their complete API response body to standard output after already asserting it. These calls do not affect test control flow or failure diagnostics.
 - **Impact:** CI logs become noisy and can grow with API payload size; full response logging can also expose test-user or API data to every build log.
 - **Recommendation:** Remove both `console.log(responseBody)` calls. Keep the existing assertion messages/traces for failures; if response inspection is required during local diagnosis, put it behind an explicit debug environment flag and redact sensitive fields.
+- **Status:** Solved
 
 #### [LOW] Remove pass-status console logs from page objects
 
@@ -96,6 +104,7 @@
 - **Issue:** These logs announce that a test step passed immediately after Playwright assertions have already established that result. The page objects also should not own test reporting.
 - **Impact:** The output duplicates the test reporter, makes CI logs harder to scan for failures, and couples page objects to reporting behavior.
 - **Recommendation:** Remove the `console.log(...PASS...)` calls and rely on Playwright's HTML reporter, trace, and assertion output. Put any required structured test reporting in a reporter or test hook rather than a page object.
+- **Status:** Solved
 
 #### [LOW] Gate or replace verbose diagnostic logs that run once per search result or image
 
@@ -105,6 +114,7 @@
 - **Issue:** Search and image-validation flows print headings and multiple values for every result/image, while the API logger serializes every response for each caller. This is diagnostic output, not an assertion or required artifact.
 - **Impact:** Output volume grows linearly with products, images, and API payload size, slowing local/CI log handling and obscuring actionable failures.
 - **Recommendation:** Remove the output from normal runs. If diagnostics are needed, emit a compact, redacted summary only when `DEBUG_TESTS=true`, or attach structured data to the Playwright report on failure.
+- **Status:** Solved
 
 #### [HIGH] API account tests use one hardcoded account and depend on execution order for cleanup
 
@@ -114,6 +124,7 @@
 - **Issue:** The create, update, and delete tests all use the same literal email/password (`mosaeb009@gmail.com` / `1234`). Account creation occurs at line 103, while deletion exists only as a separate later test at line 177; no fixture teardown guarantees cleanup.
 - **Impact:** Tests cannot run independently: rerunning creation after a successful run can collide with the existing account, running deletion first breaks update, and parallel workers can mutate the same account. Persistent test accounts also accumulate when the suite fails before the later deletion test.
 - **Recommendation:** Generate a unique account per test, centralize the factory data, and register deletion in `afterEach` or a fixture teardown using the exact created credentials. Keep update/delete scenarios self-contained by creating their own account through the API setup path.
+- **Status:** Solved
 
 #### [MEDIUM] Test inputs and credentials are hardcoded inside page objects and fixtures
 
@@ -123,6 +134,7 @@
 - **Issue:** Page-object workflow methods and a fixture embed payment values, login credentials, search terms, review content, quantity/date values, and user details instead of receiving data from a centralized test-data factory. Several page objects therefore own both UI behavior and scenario-specific data.
 - **Impact:** Updating a test account or scenario requires editing multiple implementation files; shared literal credentials (`mosaeb009@gmail.com` / `1234`) also make tests susceptible to cross-test state and prevent environment-specific injection.
 - **Recommendation:** Move scenario inputs to typed data factories under `test-data/` (or environment variables for credentials), pass the required object into page-object action methods, and keep page objects data-agnostic. Retain values such as an empty string only when they are an explicit input for a validation case.
+- **Status:** Solved (I have already do this. Code was updated in github branch which name cart-checkout-payment)
 
 #### [MEDIUM] Customer-registration journey creates persistent data without teardown
 
@@ -132,6 +144,7 @@
 - **Issue:** The journey generates an email, creates an account, and supplies an inline address object, but it has no `afterEach`/fixture teardown or API deletion of the resulting account.
 - **Impact:** Every successful run leaves another account in the external system. This creates data pollution and can eventually affect environment limits, reporting, or later tests.
 - **Recommendation:** Move the registration payload to a factory, create the account through API setup where the UI journey does not specifically need to validate registration, and delete the created account in a guaranteed teardown. If UI registration is the behavior under test, retain the UI action but still use API cleanup in `finally`/fixture teardown.
+- **Status:** Solved
 
 #### [LOW] API specs duplicate HTTP contract constants and response messages
 
@@ -141,6 +154,7 @@
 - **Issue:** The API test suite repeats raw HTTP status numbers (`200`, `201`, `400`, `404`, `405`) and repeats the unsupported-method response message in separate specs. These are API-contract values reused across test scenarios, but no shared constant module exists.
 - **Impact:** A contract update requires manually finding every assertion; inconsistent future edits can leave tests describing different expected behavior for the same status or message.
 - **Recommendation:** Add a focused API constants module, for example `test-data/api.constants.js`, exporting immutable values such as `HTTP_STATUS.OK`, `HTTP_STATUS.CREATED`, `HTTP_STATUS.BAD_REQUEST`, `HTTP_STATUS.NOT_FOUND`, `HTTP_STATUS.METHOD_NOT_ALLOWED`, and `API_MESSAGE.UNSUPPORTED_METHOD`. Import the constants into each API spec; keep endpoint-specific expected messages next to the endpoint only when they are not reused.
+- **Status:** Solved
 
 #### [MEDIUM] Routes and product expectations are repeated throughout page-object workflows
 
@@ -150,6 +164,7 @@
 - **Issue:** Shared routes (`/products`, `/view_cart`, `/login`, product-detail paths), product fixtures (`Blue Top`, `Men Tshirt`), expected prices (`Rs. 500`, `Rs. 400`), search values, and credentials are copied into many page objects and specs. The code also mixes relative routes and the `https://automationexercise.com` origin in the same workflows.
 - **Impact:** A route, seeded catalog value, or target environment change requires a broad manual edit across independent files; missed copies lead to inconsistent tests and make environment switching harder.
 - **Recommendation:** Create small immutable modules—for example `test-data/routes.js`, `test-data/products.js`, and `test-data/api.constants.js`. Export route paths and structured product fixtures (`{ name, id, price }`), use those values in test data and assertions, and always resolve navigation through Playwright `baseURL`. Keep locator construction encapsulated in page objects, but pass a product fixture into reusable page-object actions instead of embedding the product name and price repeatedly.
+- **Status:** Solved
 
 #### [LOW] Add a final newline to every source file missing one
 
@@ -159,6 +174,7 @@
 - **Issue:** These 35 tracked source files end directly after their last character rather than with the standard terminating newline.
 - **Impact:** Git displays `\ No newline at end of file`, which creates avoidable diff noise and can conflict with formatter/editor settings.
 - **Recommendation:** Configure the formatter/editor to insert a final newline (`insert_final_newline = true` in `.editorconfig`, or the equivalent Prettier setting) and format the listed files. Add exactly one newline after the final code line; an additional empty/blank line is not required.
+- **Status:** Solved
 
 ## 3) Edge-Case Coverage Checklist
 

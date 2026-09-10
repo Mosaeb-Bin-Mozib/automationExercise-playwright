@@ -1,154 +1,84 @@
 import { expect } from '@playwright/test';
 import {getSignupData} from "../test-data/signupData";
+import {} from "../test-data/routes";
 
 export class AccountInformationPage {
 
     constructor(page) {
         this.page = page;
-
-        // ==============================
-        // ACCOUNT INFORMATION
-        // ==============================
-
         this.accountInformationHeading = page.getByText(
             'ENTER ACCOUNT INFORMATION'
         );
-
-        // Title
-
         this.titleMr = page.locator('#id_gender1');
         this.titleMrs = page.locator('#id_gender2');
-
-        // Name & Email
         this.nameField = page.locator('#name');
         this.emailField = page.locator('#email');
-
-        // Password
         this.passwordField = page.locator('#password');
-
-        // Date of Birth
         this.dayDropdown = page.locator('#days');
         this.monthDropdown = page.locator('#months');
         this.yearDropdown = page.locator('#years');
-
-        // Checkboxes
         this.newsletterCheckbox = page.locator('#newsletter');
         this.specialOffersCheckbox = page.locator('#optin');
-
-        // ==============================
-        // ADDRESS INFORMATION
-        // ==============================
-
         this.addressInformationHeading = page.getByText(
             'ADDRESS INFORMATION'
         );
-
         this.firstNameField = page.locator('#first_name');
         this.lastNameField = page.locator('#last_name');
         this.companyField = page.locator('#company');
-
         this.addressField = page.locator('#address1');
         this.address2Field = page.locator('#address2');
-
         this.countryDropdown = page.locator('#country');
-
         this.stateField = page.locator('#state');
         this.cityField = page.locator('#city');
         this.zipcodeField = page.locator('#zipcode');
         this.mobileNumberField = page.locator('#mobile_number');
-
-        // ==========================================
-        // ADDRESS INFORMATION
-        // ==========================================
-
         this.addressInformationHeading = page.getByText('ADDRESS INFORMATION');
-
         this.firstNameField = page.locator('#first_name');
-
         this.lastNameField = page.locator('#last_name');
-
         this.companyField = page.locator('#company');
-
         this.addressField = page.locator('#address1');
-
         this.address2Field = page.locator('#address2');
-
         this.countryDropdown = page.locator('#country');
-
         this.stateField = page.locator('#state');
-
         this.cityField = page.locator('#city');
-
         this.zipcodeField = page.locator('#zipcode');
-
         this.mobileNumberField = page.locator('#mobile_number');
-
-        // Create Account
         this.createAccountButton = page.getByRole('button', {
             name: 'Create Account'
         });
 
     }
-
-    // ==========================================
-    // AE-006
-    // ==========================================
-
-    async verifyAccountInformationSection() {
+   async verifyAccountInformationSection() {
 
         await expect(this.accountInformationHeading).toBeVisible();
-
-        // Title
         await expect(this.titleMr).toBeVisible();
         await expect(this.titleMrs).toBeVisible();
-
-        // Name
         await expect(this.nameField).toBeVisible();
-
-        // Email
         await expect(this.emailField).toBeVisible();
-
-        // Password
         await expect(this.passwordField).toBeVisible();
-
-        // Date of Birth
         await expect(this.dayDropdown).toBeVisible();
         await expect(this.monthDropdown).toBeVisible();
         await expect(this.yearDropdown).toBeVisible();
-
-        // Newsletter
         await expect(this.newsletterCheckbox).toBeVisible();
-
-        // Special Offers
         await expect(this.specialOffersCheckbox).toBeVisible();
     }
 
     async verifyAddressInformationSection() {
 
         await expect(this.addressInformationHeading).toBeVisible();
-
         await expect(this.firstNameField).toBeVisible();
         await expect(this.lastNameField).toBeVisible();
         await expect(this.companyField).toBeVisible();
-
         await expect(this.addressField).toBeVisible();
         await expect(this.address2Field).toBeVisible();
-
         await expect(this.countryDropdown).toBeVisible();
-
         await expect(this.stateField).toBeVisible();
         await expect(this.cityField).toBeVisible();
         await expect(this.zipcodeField).toBeVisible();
         await expect(this.mobileNumberField).toBeVisible();
-
         await expect(this.createAccountButton).toBeVisible();
         await expect(this.createAccountButton).toBeEnabled();
     }
-
-    // ==========================================
-    // AE-007
-    // ==========================================
-
     async selectGender(gender) {
         if (gender === 'Mr.') {
             await this.titleMr.check();
@@ -156,15 +86,12 @@ export class AccountInformationPage {
             await this.titleMrs.check();
         }
     }
-
     async enterPassword(password) {
         await this.passwordField.fill(password);
     }
-
     async enterFirstName(firstName) {
         await this.firstNameField.fill(firstName);
     }
-
     async enterLastName(lastName) {
         await this.lastNameField.fill(lastName);
     }
@@ -192,12 +119,6 @@ export class AccountInformationPage {
     async mobileNumber(mobileNumber) {
         await this.mobileNumberField.fill(mobileNumber);
     }
-
-    // async selectDateOfBirth(dateOfBirth) {
-    //     await this.dayDropdown.selectOption(getSignupData.day);
-    //     await this.monthDropdown.selectOption(getSignupData.month);
-    //     await this.yearDropdown.selectOption(getSignupData.year);
-    // }
 
     async selectDateOfBirth(dateOfBirth) {
         await this.dayDropdown.selectOption(getSignupData.dateOfBirth.day);
@@ -236,12 +157,6 @@ export class AccountInformationPage {
 
         await expect(this.titleMr).toBeChecked();
     }
-
-    // ==========================================
-    // AE-008
-    // VERIFY ADDRESS INFORMATION
-    // ==========================================
-
     async verifyAddressInformation(addressData) {
 
         await expect(this.firstNameField).toHaveValue(addressData.firstName);
@@ -260,11 +175,6 @@ export class AccountInformationPage {
 
         await expect(this.mobileNumberField).toHaveValue(addressData.mobile);
     }
-
-    // ==========================================
-// E2E-001 - FILL ACCOUNT INFORMATION
-// ==========================================
-
     async fillAccountInformation(password) {
 
         await this.titleMr.check();
@@ -277,11 +187,6 @@ export class AccountInformationPage {
 
         await this.yearDropdown.selectOption('1995');
     }
-
-
-// ==========================================
-// E2E-001 - FILL ADDRESS INFORMATION
-// ==========================================
 
     async fillAddressInformation(addressData) {
 
@@ -305,32 +210,14 @@ export class AccountInformationPage {
 
         await this.mobileNumberField.fill(addressData.mobile);
     }
-
-
-// ==========================================
-// E2E-001 - CREATE ACCOUNT
-// ==========================================
-
     async clickCreateAccount() {
 
         await this.createAccountButton.click();
     }
-
-
-// ==========================================
-// E2E-001 - ACCOUNT CREATED
-// ==========================================
-
     async verifyAccountCreated() {
 
         await expect(this.page.getByText('Account Created!')).toBeVisible();
     }
-
-
-// ==========================================
-// E2E-001 - CONTINUE
-// ==========================================
-
     async clickContinue() {
 
         await this.page.getByRole('link', {name: 'Continue'}).click();

@@ -1,29 +1,24 @@
 import { expect } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
+import {ROUTES} from "../test-data/routes";
+
 
 export class ProductsPage {
 
     constructor(page) {
         this.page = page;
-
-        // AE-065 - Products page
         this.allProductsHeading = page.locator(
             "//h2[normalize-space()='All Products']"
         );
-
         this.productsList = page.locator(
             "//div[contains(@class,'features_items')]"
         );
-
-        // AE-066 / AE-067 / AE-069 - Products
         this.products = {
 
             cards: page.locator(
                 "//div[contains(@class,'product-image-wrapper')]"
             ),
-
-            // Blue Top
             blueTop: page.locator(
                 "//p[normalize-space()='Blue Top']"
             ).first(),
@@ -48,7 +43,6 @@ export class ProductsPage {
                 "//div[.//p[normalize-space()='Blue Top']]//a[contains(@href,'product_details')]"
             ).first(),
 
-            // AE-069 - Men Tshirt
             menTshirt: page.locator(
                 "//p[normalize-space()='Men Tshirt']"
             ).first(),
@@ -58,7 +52,6 @@ export class ProductsPage {
             ).first(),
         };
 
-        // AE-068 / AE-069 - Add to Cart confirmation
         this.cartConfirmation = {
 
             modal: page.locator(
@@ -78,7 +71,6 @@ export class ProductsPage {
             ),
         };
 
-        // AE-071 - Product Search
         this.productSearch = {
             searchInput: page.locator(
                 "//input[@id='search_product']"
@@ -91,12 +83,10 @@ export class ProductsPage {
             searchedProductCards: page.locator("//div[contains(@class,'product-image-wrapper')]"),
         };
 
-        // AE-076 - Product Images
         this.productImages = page.locator(
             "//div[contains(@class,'product-image-wrapper')]//img"
         );
 
-        // AE-078 - Product Details Page
         this.productDetails = {
 
             information: page.locator(
@@ -129,22 +119,15 @@ export class ProductsPage {
 
         };
 
-        // AE-080 - Product Details Image
         this.productDetailsImage = page.locator(
             "//div[contains(@class,'product-details')]//img"
         ).first();
-
-        // AE-081 - Product Quantity
         this.productQuantity = page.locator(
             "//input[@id='quantity']"
         );
-
-        // AE-082 - Product Details Add to Cart
         this.productDetailsAddToCart = page.locator(
             "//button[normalize-space()='Add to cart']"
         );
-
-        // AE-084 - Product Review
         this.productReview = {
             name: page.locator("//input[@id='name']"),
 
@@ -159,32 +142,25 @@ export class ProductsPage {
     }
 
 
-    // AE-065 - Open Products page
     async open() {
         await this.page.goto(
-            'https://automationexercise.com/products',
+            ROUTES.PRODUCTS,
             {
                 waitUntil: 'domcontentloaded',
                 timeout: 60000
             }
         );
     }
-
-
-    // AE-065 - Wait for Products page
     async waitForPageLoad() {
         await expect(
             this.allProductsHeading
         ).toBeVisible();
     }
-
-
-    // AE-065 - Verify Products page
     async verifyProductsPage() {
 
         await expect(
             this.page
-        ).toHaveURL(/.*\/products/);
+        ).toHaveURL(ROUTES.PRODUCTS);
 
         await expect(
             this.allProductsHeading
@@ -194,9 +170,6 @@ export class ProductsPage {
             this.productsList
         ).toBeVisible();
     }
-
-
-    // AE-066 - Verify product card information
     async verifyProductCardInformation() {
 
         await expect(
@@ -227,9 +200,6 @@ export class ProductsPage {
             this.products.blueTopViewProduct
         ).toBeVisible();
     }
-
-
-    // AE-067 - Verify all available products
     async verifyAllProductsDisplayed() {
 
         await expect(
@@ -268,13 +238,7 @@ export class ProductsPage {
             ).toBeVisible();
         }
 
-        console.log(
-            `Total products displayed: ${productCount}`
-        );
     }
-
-
-    // AE-068 - Verify Add to Cart functionality
     async verifyAddToCart() {
 
         await expect(
@@ -298,69 +262,34 @@ export class ProductsPage {
         await expect(
             this.cartConfirmation.continueShopping
         ).toBeVisible();
-
-        // Wait so you can see the confirmation
-        await this.page.waitForTimeout(5000);
     }
-
-
-    // AE-069 - Verify adding multiple different products to Cart
     async verifyMultipleProductsInCart() {
-
-        // =====================================
-        // Step 1 - Clear existing Cart
-        // =====================================
-
         await this.page.goto(
-            'https://automationexercise.com/view_cart',
+            ROUTES.CART,
             {
                 waitUntil: 'domcontentloaded',
                 timeout: 60000
             }
         );
 
-        // Find all Remove buttons
         const removeButtons = this.page.locator(
             "//a[contains(@class,'cart_quantity_delete')]"
         );
-
-        // Count existing Cart products
         let removeCount = await removeButtons.count();
-
-        // Remove products one by one
         while (removeCount > 0) {
-
             await removeButtons.first().click();
-
-            // Wait for removed item
             await this.page.waitForTimeout(300);
-
             removeCount = await removeButtons.count();
         }
-
-
-        // =====================================
-        // Step 2 - Go to Products
-        // =====================================
-
         await this.page.goto(
-            'https://automationexercise.com/products',
+            ROUTES.PRODUCTS,
             {
                 waitUntil: 'domcontentloaded',
                 timeout: 60000
             }
         );
-
         await this.waitForPageLoad();
-
-
-        // =====================================
-        // Step 3 - Add Blue Top
-        // =====================================
-
         await this.products.blueTopAddToCart.click();
-
-        // Verify confirmation
         await expect(
             this.cartConfirmation.modal
         ).toBeVisible();
@@ -368,47 +297,21 @@ export class ProductsPage {
         await expect(
             this.cartConfirmation.addedMessage
         ).toBeVisible();
-
-        // Continue Shopping
         await this.cartConfirmation.continueShopping.click();
-
-        // Verify modal closed
         await expect(
             this.cartConfirmation.modal
         ).toBeHidden();
-
-
-        // =====================================
-        // Step 4 - Add Men Tshirt
-        // =====================================
-
         await this.products.menTshirtAddToCart.click();
-
-        // Verify confirmation
         await expect(
             this.cartConfirmation.modal
         ).toBeVisible();
-
         await expect(
             this.cartConfirmation.addedMessage
         ).toBeVisible();
-
-        // Click View Cart
         await this.cartConfirmation.viewCart.click();
-
-
-        // =====================================
-        // Step 5 - Verify Cart page
-        // =====================================
-
         await expect(
             this.page
-        ).toHaveURL(/.*\/view_cart/);
-
-
-        // =====================================
-        // Step 6 - Verify Blue Top
-        // =====================================
+        ).toHaveURL(ROUTES.CART);
 
         const blueTopCartRow = this.page.locator(
             "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]"
@@ -418,31 +321,23 @@ export class ProductsPage {
             blueTopCartRow
         ).toBeVisible();
 
-        // Blue Top price
         await expect(
             blueTopCartRow.locator(
                 "td.cart_price p"
             )
         ).toHaveText('Rs. 500');
 
-        // Blue Top quantity
         await expect(
             blueTopCartRow.locator(
                 "td.cart_quantity button"
             )
         ).toHaveText('2');
 
-        // Blue Top total
         await expect(
             blueTopCartRow.locator(
                 "td.cart_total p"
             )
         ).toHaveText('Rs. 1000');
-
-
-        // =====================================
-        // Step 7 - Verify Men Tshirt
-        // =====================================
 
         const menTshirtCartRow = this.page.locator(
             "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]"
@@ -452,37 +347,28 @@ export class ProductsPage {
             menTshirtCartRow
         ).toBeVisible();
 
-        // Men Tshirt price
         await expect(
             menTshirtCartRow.locator(
                 "td.cart_price p"
             )
         ).toHaveText('Rs. 400');
 
-        // Men Tshirt quantity
         await expect(
             menTshirtCartRow.locator(
                 "td.cart_quantity button"
             )
         ).toHaveText('1');
 
-        // Men Tshirt total
         await expect(
             menTshirtCartRow.locator(
                 "td.cart_total p"
             )
         ).toHaveText('Rs. 400');
 
-
-        // =====================================
-        // Step 8 - Verify overall Cart total
-        // =====================================
-
         const cartTotal = this.page.locator(
             "//p[contains(@class,'cart_total_price')]"
         );
 
-        // There are two product totals, so verify individually
         await expect(
             blueTopCartRow.locator(
                 "td.cart_total p"
@@ -494,108 +380,46 @@ export class ProductsPage {
                 "td.cart_total p"
             )
         ).toHaveText('Rs. 400');
-
-
-        // Wait so you can see the Cart
-        await this.page.waitForTimeout(5000);
     }
 
     // AE-071 - Verify product search with a valid keyword
     async verifyValidProductSearch() {
-
-        // Verify search input
         await expect(this.productSearch.searchInput).toBeVisible();
-
-        // Enter a valid search keyword
         await this.productSearch.searchInput.fill("Blue Top");
-
-        // Click Search
         await this.productSearch.searchButton.click();
-
-        // Verify the Searched Products heading
         await expect(this.productSearch.searchedProductsHeading).toBeVisible();
-
-        // Verify searched products are displayed
         const productCount = await this.productSearch.searchedProductCards.count();
-
         expect(productCount).toBeGreaterThan(0);
-
-        console.log(`Total search results: ${productCount}`);
-
-        // Verify every returned product card is displayed
         for (let i = 0; i < productCount; i++) {
 
             const productCard = this.productSearch.searchedProductCards.nth(i);
-
             await productCard.scrollIntoViewIfNeeded();
-
             await expect(productCard).toBeVisible();
-
-            // Verify the product name exists
             const productName =
                 await productCard
                     .locator("p")
                     .first()
                     .innerText();
-
-            console.log(`Search result ${i + 1}: ${productName}`);
-
-            // Product name should not be empty
             expect(productName.trim()).not.toBe('');
         }
     }
 
-    // AE-072 - Verify search with a non-existing product keyword
     async verifyInvalidProductSearch() {
-
-        // Verify search input
         await expect(this.productSearch.searchInput).toBeVisible();
-
-        // Enter a non-existing product keyword
         await this.productSearch.searchInput.fill("abc123");
-
-        // Click Search
         await this.productSearch.searchButton.click();
-
-        // Verify the Searched Products heading
         await expect(this.productSearch.searchedProductsHeading).toBeVisible();
-
-        // Count returned product cards
         const productCount = await this.productSearch.searchedProductCards.count();
-
-        console.log(`Search results for invalid keyword: ${productCount}`);
-
-        // No product should be returned
         expect(productCount).toBe(0);
     }
-
-    // AE-073 - Verify search field handling for empty input
     async verifyEmptyProductSearch() {
-
-        // Verify Search Product input is visible
         await expect(this.productSearch.searchInput).toBeVisible();
-
-        // Make sure the search field is empty
         await this.productSearch.searchInput.fill('');
-
-        // Verify the field is empty
         await expect(this.productSearch.searchInput).toHaveValue('');
-
-        // Submit an empty search
         await this.productSearch.searchButton.click();
-
-        // Verify application handles empty search
-        await expect(this.page).toHaveURL(/.*\/products/);
-
-        // Verify Products page is still available
+        await expect(this.page).toHaveURL(ROUTES.PRODUCTS);
         await expect(this.productSearch.searchedProductsHeading).not.toBeVisible();
-
-        console.log(
-            'Empty product search was handled without an application error.'
-        );
     }
-
-    // AE-074 - Verify search using different letter cases
     async verifyCaseInsensitiveProductSearch() {
 
         const searchKeywords = [
@@ -605,318 +429,102 @@ export class ProductsPage {
         ];
 
         for (const keyword of searchKeywords) {
-
-            console.log("\n====================================");
-            console.log(`Searching with keyword: ${keyword}`);
-            console.log("====================================");
-
-            // Clear search field
             await this.productSearch.searchInput.fill("");
-
-            // Enter search keyword
             await this.productSearch.searchInput.fill(keyword);
-
-            // Click Search
             await this.productSearch.searchButton.click();
-
-            // Verify Searched Products heading
-            await expect(
-                this.productSearch.searchedProductsHeading
-            ).toBeVisible();
-
-            // Get search result product cards
-            const productCount =
-                await this.productSearch.searchedProductCards.count();
-
-            console.log(
-                `Total results for "${keyword}": ${productCount}`
-            );
-
-            // At least one product should be displayed
+            await expect(this.productSearch.searchedProductsHeading).toBeVisible();
+            const productCount = await this.productSearch.searchedProductCards.count();
             expect(productCount).toBeGreaterThan(0);
-
-            // Loop through every search result
             for (let i = 0; i < productCount; i++) {
-
-                const productCard =
-                    this.productSearch.searchedProductCards.nth(i);
-
-                // Scroll product into view
+                const productCard = this.productSearch.searchedProductCards.nth(i);
                 await productCard.scrollIntoViewIfNeeded();
-
-                // Verify product card
-                await expect(
-                    productCard
-                ).toBeVisible();
-
-                // ==========================================
-                // Product Name
-                // ==========================================
-
-                const productName =
-                    await productCard
+                await expect(productCard).toBeVisible();
+                const productName = await productCard
                         .locator("xpath=.//p")
                         .first()
                         .innerText();
 
-                // ==========================================
-                // Product Price
-                // ==========================================
-
-                const productPrice =
-                    await productCard
+                const productPrice = await productCard
                         .locator(
                             "xpath=.//h2[contains(normalize-space(), 'Rs.')]"
                         )
                         .first()
                         .innerText();
+                expect(productName.trim()).not.toBe("");
+                expect(productPrice.trim()).not.toBe("");
 
-                console.log(`\nProduct ${i + 1}`);
-                console.log(`Name: ${productName.trim()}`);
-                console.log(`Price: ${productPrice.trim()}`);
-
-                // Verify product name
-                expect(
-                    productName.trim()
-                ).not.toBe("");
-
-                // Verify product price
-                expect(
-                    productPrice.trim()
-                ).not.toBe("");
-
-                // ==========================================
-                // View Product
-                // ==========================================
-
-                const viewProduct =
-                    productCard.locator(
+                const viewProduct = productCard.locator(
                         "xpath=.//a[contains(normalize-space(), 'View Product')]"
                     ).first();
 
-                await expect(
-                    viewProduct
-                ).toBeVisible();
-
-                // Click View Product
+                await expect(viewProduct).toBeVisible();
                 await viewProduct.click();
-
-                // ==========================================
-                // Verify Product Details Page
-                // ==========================================
-
-                await expect(
-                    this.page
-                ).toHaveURL(/.*\/product_details\/\d+/);
-
-                // ==========================================
-                // Product Detail Locators
-                // ==========================================
-
-                const detailName =
-                    this.page.locator(
+                await expect(this.page).toHaveURL(/.*\/product_details\/\d+/);
+                const detailName = this.page.locator(
                         "//div[contains(@class,'product-information')]//h2"
                     );
 
-                const detailCategory =
-                    this.page.locator(
+                const detailCategory = this.page.locator(
                         "//div[contains(@class,'product-information')]//p[contains(.,'Category:')]"
                     );
 
-                const detailPrice =
-                    this.page.locator(
+                const detailPrice = this.page.locator(
                         "//div[contains(@class,'product-information')]//span/span"
                     );
 
-                const detailAvailability =
-                    this.page.locator(
+                const detailAvailability = this.page.locator(
                         "//div[contains(@class,'product-information')]//p[contains(.,'Availability:')]"
                     );
 
-                const detailCondition =
-                    this.page.locator(
+                const detailCondition = this.page.locator(
                         "//div[contains(@class,'product-information')]//p[contains(.,'Condition:')]"
                     );
 
-                const detailBrand =
-                    this.page.locator(
+                const detailBrand = this.page.locator(
                         "//div[contains(@class,'product-information')]//p[contains(.,'Brand:')]"
                     );
+                await expect(detailName).toBeVisible();
+                await expect(detailCategory).toBeVisible();
+                await expect(detailPrice).toBeVisible();
+                await expect(detailAvailability).toBeVisible();
+                await expect(detailCondition).toBeVisible();
+                await expect(detailBrand).toBeVisible();
 
-                // ==========================================
-                // Verify Product Details
-                // ==========================================
-
-                await expect(
-                    detailName
-                ).toBeVisible();
-
-                await expect(
-                    detailCategory
-                ).toBeVisible();
-
-                await expect(
-                    detailPrice
-                ).toBeVisible();
-
-                await expect(
-                    detailAvailability
-                ).toBeVisible();
-
-                await expect(
-                    detailCondition
-                ).toBeVisible();
-
-                await expect(
-                    detailBrand
-                ).toBeVisible();
-
-                // ==========================================
-                // Get Product Details
-                // ==========================================
-
-                const productDetailName =
-                    (await detailName.innerText()).trim();
-
-                const productCategory =
-                    (await detailCategory.innerText()).trim();
-
-                const productDetailPrice =
-                    (await detailPrice.innerText()).trim();
-
-                const productAvailability =
-                    (await detailAvailability.innerText()).trim();
-
-                const productCondition =
-                    (await detailCondition.innerText()).trim();
-
-                const productBrand =
-                    (await detailBrand.innerText()).trim();
-
-                // ==========================================
-                // Print Complete Product Information
-                // ==========================================
-
-                console.log(
-                    `Product Name: ${productDetailName}`
-                );
-
-                console.log(
-                    `Category: ${productCategory}`
-                );
-
-                console.log(
-                    `Price: ${productDetailPrice}`
-                );
-
-                console.log(
-                    `Availability: ${productAvailability}`
-                );
-
-                console.log(
-                    `Condition: ${productCondition}`
-                );
-
-                console.log(
-                    `Brand: ${productBrand}`
-                );
-
-                // ==========================================
-                // Validate Product Details
-                // ==========================================
-
-                expect(
-                    productDetailName
-                ).not.toBe("");
-
-                expect(
-                    productCategory
-                ).not.toBe("");
-
-                expect(
-                    productDetailPrice
-                ).not.toBe("");
-
-                expect(
-                    productAvailability
-                ).not.toBe("");
-
-                expect(
-                    productCondition
-                ).not.toBe("");
-
-                expect(
-                    productBrand
-                ).not.toBe("");
-
-                // ==========================================
-                // Return to Search Results
-                // ==========================================
-
+                const productDetailName = (await detailName.innerText()).trim();
+                const productCategory = (await detailCategory.innerText()).trim();
+                const productDetailPrice = (await detailPrice.innerText()).trim();
+                const productAvailability = (await detailAvailability.innerText()).trim();
+                const productCondition = (await detailCondition.innerText()).trim();
+                const productBrand = (await detailBrand.innerText()).trim();
+                expect(productDetailName).not.toBe("");
+                expect(productCategory).not.toBe("");
+                expect(productDetailPrice).not.toBe("");
+                expect(productAvailability).not.toBe("");
+                expect(productCondition).not.toBe("");
+                expect(productBrand).not.toBe("");
                 await this.page.goBack();
-
-                // Wait for search results again
-                await expect(
-                    this.productSearch.searchedProductsHeading
-                ).toBeVisible();
+                await expect(this.productSearch.searchedProductsHeading).toBeVisible();
             }
         }
     }
-
-    // AE-076 - Verify product images are displayed correctly
     async verifyProductImages() {
 
-        // Get all product images
         const imageCount = await this.productImages.count();
-
-        console.log("\n========================================");
-        console.log("AE-076 - Product Image Validation");
-        console.log("========================================");
-        console.log(`Total product images: ${imageCount}`);
-        console.log("");
-
-        // Verify product images exist
         expect(imageCount).toBeGreaterThan(0);
-
-        // Check every image
         for (let i = 0; i < imageCount; i++) {
 
             const image = this.productImages.nth(i);
-
-            // Scroll image into view
             await image.scrollIntoViewIfNeeded();
-
-            // Wait for image to become visible
             await expect(image).toBeVisible();
-
-            // Get image source
-            const imageSource =
-                await image.getAttribute("src");
-
-            // Get image alt text
-            const imageAlt =
-                await image.getAttribute("alt");
-
-            // Check image loading status
-            const imageStatus =
-                await image.evaluate((img) => ({
+            const imageSource = await image.getAttribute("src");
+            const imageAlt = await image.getAttribute("alt");
+            const imageStatus = await image.evaluate((img) => ({
                     complete: img.complete,
                     naturalWidth: img.naturalWidth,
                     naturalHeight: img.naturalHeight
                 }));
-
-            console.log(`Product Image ${i + 1}`);
-            console.log(`  Alt Text     : ${imageAlt}`);
-            console.log(`  Source       : ${imageSource}`);
-            console.log(`  Complete     : ${imageStatus.complete}`);
-            console.log(`  Natural Width: ${imageStatus.naturalWidth}`);
-            console.log(`  Natural Height: ${imageStatus.naturalHeight}`);
-
-            // Verify src exists
             expect(imageSource).not.toBeNull();
             expect(imageSource).not.toBe("");
-
-            // Verify image has loaded
             expect(
                 imageStatus.complete,
                 `Image ${i + 1} did not complete loading. Source: ${imageSource}`
@@ -927,611 +535,178 @@ export class ProductsPage {
                 `Image ${i + 1} is broken. Source: ${imageSource}`
             ).toBeGreaterThan(0);
 
-            console.log(`  Status       : PASS`);
-            console.log("----------------------------------------");
-            console.log("");
         }
 
-        console.log("========================================");
-        console.log("AE-076 Result: PASS");
-        console.log("All product images loaded successfully.");
-        console.log("========================================\n");
     }
 
-    // AE-077 - Verify Products page critical functionality
     async verifyProductsCriticalSmokeFlow() {
-
-        // ==========================================
-        // 1. Open Products page
-        // ==========================================
-
-        const baseURL = process.env.BASE_URL;
-        await this.page.goto(`${baseURL}/products`);
-
+        await this.page.goto(ROUTES.PRODUCTS);
         await this.page.waitForLoadState('domcontentloaded');
-
-
-        // ==========================================
-        // 2. Verify All Products
-        // ==========================================
-
-        await expect(
-            this.productsPage.heading
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 3. Search for product
-        // ==========================================
-
+        await expect(this.productsPage.heading).toBeVisible();
         await this.productsPage.searchInput.fill('top');
-
         await this.productsPage.searchButton.click();
+        await expect(this.productsPage.searchedProductsHeading).toBeVisible();
 
-
-        // ==========================================
-        // 4. Verify Searched Products
-        // ==========================================
-
-        await expect(
-            this.productsPage.searchedProductsHeading
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 5. Locate Blue Top
-        // ==========================================
-
-        const blueTopProduct = this.page.locator(
-            "//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]"
-        ).first();
-
-        await expect(
-            blueTopProduct
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 6. Open Blue Top product details
-        // ==========================================
-
-        const viewProduct = blueTopProduct.locator(
-            "xpath=.//a[contains(normalize-space(),'View Product')]"
-        ).first();
-
-        await expect(
-            viewProduct
-        ).toBeVisible();
-
+        const blueTopProduct = this.page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]").first();
+        await expect(blueTopProduct).toBeVisible();
+        const viewProduct = blueTopProduct.locator("xpath=.//a[contains(normalize-space(),'View Product')]").first();
+        await expect(viewProduct).toBeVisible();
         await viewProduct.click();
+        await expect(this.page).toHaveURL(/\/product_details\/\d+/);
+        const productInformation = this.page.locator("//div[contains(@class,'product-information')]");
+        await expect(productInformation).toBeVisible();
+        await expect(productInformation.locator("xpath=.//h2").first()).toHaveText('Blue Top');
+        await expect(productInformation.locator("xpath=.//p[contains(normalize-space(),'Category:')]")).toBeVisible();
+        await expect(productInformation.locator("xpath=.//span[contains(normalize-space(),'Rs.')]").first()).toBeVisible();
+        await expect(productInformation.locator("xpath=.//p[contains(normalize-space(),'Availability:')]")).toBeVisible();
+        await expect(productInformation.locator("xpath=.//p[contains(normalize-space(),'Condition:')]")).toBeVisible();
+        await expect(productInformation.locator("xpath=.//p[contains(normalize-space(),'Brand:')]")).toBeVisible();
 
-
-        // ==========================================
-        // 7. Verify Product Details page
-        // ==========================================
-
-        await expect(
-            this.page
-        ).toHaveURL(/\/product_details\/\d+/);
-
-
-        const productInformation = this.page.locator(
-            "//div[contains(@class,'product-information')]"
-        );
-
-        await expect(
-            productInformation
-        ).toBeVisible();
-
-
-        // Product name
-        await expect(
-            productInformation.locator(
-                "xpath=.//h2"
-            ).first()
-        ).toHaveText('Blue Top');
-
-
-        // Category
-        await expect(
-            productInformation.locator(
-                "xpath=.//p[contains(normalize-space(),'Category:')]"
-            )
-        ).toBeVisible();
-
-
-        // Price
-        await expect(
-            productInformation.locator(
-                "xpath=.//span[contains(normalize-space(),'Rs.')]"
-            ).first()
-        ).toBeVisible();
-
-
-        // Availability
-        await expect(
-            productInformation.locator(
-                "xpath=.//p[contains(normalize-space(),'Availability:')]"
-            )
-        ).toBeVisible();
-
-
-        // Condition
-        await expect(
-            productInformation.locator(
-                "xpath=.//p[contains(normalize-space(),'Condition:')]"
-            )
-        ).toBeVisible();
-
-
-        // Brand
-        await expect(
-            productInformation.locator(
-                "xpath=.//p[contains(normalize-space(),'Brand:')]"
-            )
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 8. Return to Products page
-        // ==========================================
-
-        await this.page.goto('/products');
-
+        await this.page.goto(ROUTES.PRODUCTS);
         await this.page.waitForLoadState('domcontentloaded');
+        await expect(this.productsPage.heading).toBeVisible();
 
-        await expect(
-            this.productsPage.heading
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 9. Locate Blue Top again
-        // ==========================================
-
-        const blueTopAgain = this.page.locator(
-            "//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]"
-        ).first();
-
-        await expect(
-            blueTopAgain
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 10. Add Blue Top to Cart
-        // ==========================================
-
-        const addToCart = blueTopAgain.locator(
-            "xpath=.//a[contains(normalize-space(),'Add to cart')]"
-        ).first();
-
-        await expect(
-            addToCart
-        ).toBeVisible();
-
+        const blueTopAgain = this.page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]").first();
+        await expect(blueTopAgain).toBeVisible();
+        const addToCart = blueTopAgain.locator("xpath=.//a[contains(normalize-space(),'Add to cart')]").first();
+        await expect(addToCart).toBeVisible();
         await addToCart.click();
+        await expect(this.cartConfirmation.modal).toBeVisible();
+        await expect(this.cartConfirmation.addedMessage).toBeVisible();
 
-
-        // ==========================================
-        // 11. Verify Added confirmation
-        // ==========================================
-
-        await expect(
-            this.cartConfirmation.modal
-        ).toBeVisible();
-
-        await expect(
-            this.cartConfirmation.addedMessage
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 12. Open Cart
-        // ==========================================
-
-        await expect(
-            this.cartConfirmation.viewCart
-        ).toBeVisible();
-
+        await expect(this.cartConfirmation.viewCart).toBeVisible();
         await this.cartConfirmation.viewCart.click();
+        await expect(this.page).toHaveURL(ROUTES.CART);
 
+        const blueTopCartRow = this.page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]").first();
+        await expect(blueTopCartRow).toBeVisible();
 
-        // ==========================================
-        // 13. Verify Cart page
-        // ==========================================
+        await expect(blueTopCartRow.locator("td.cart_description a")).toHaveText('Blue Top');
+        await expect(blueTopCartRow.locator("td.cart_price p")).toHaveText('Rs. 500');
+        await expect(blueTopCartRow.locator("td.cart_quantity button")).toHaveText('1');
+        await expect(blueTopCartRow.locator("td.cart_total p")).toHaveText('Rs. 500');
 
-        await expect(
-            this.page
-        ).toHaveURL(/\/view_cart/);
-
-
-        // ==========================================
-        // 14. Locate Blue Top in Cart
-        // ==========================================
-
-        const blueTopCartRow = this.page.locator(
-            "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]"
-        ).first();
-
-        await expect(
-            blueTopCartRow
-        ).toBeVisible();
-
-
-        // ==========================================
-        // 15. Verify product name
-        // ==========================================
-
-        await expect(
-            blueTopCartRow.locator(
-                "td.cart_description a"
-            )
-        ).toHaveText('Blue Top');
-
-
-        // ==========================================
-        // 16. Verify price
-        // ==========================================
-
-        await expect(
-            blueTopCartRow.locator(
-                "td.cart_price p"
-            )
-        ).toHaveText('Rs. 500');
-
-
-        // ==========================================
-        // 17. Verify quantity
-        // ==========================================
-
-        await expect(
-            blueTopCartRow.locator(
-                "td.cart_quantity button"
-            )
-        ).toHaveText('1');
-
-
-        // ==========================================
-        // 18. Verify total
-        // ==========================================
-
-        await expect(
-            blueTopCartRow.locator(
-                "td.cart_total p"
-            )
-        ).toHaveText('Rs. 500');
-
-
-        // ==========================================
-        // 19. Final log
-        // ==========================================
-
-        console.log(
-            'AE-077 - Products critical functionality: PASS'
-        );
     }
-
-    // AE-078 - Verify Product Details page loads successfully
     async verifyProductDetailsPage() {
 
-        await this.page.goto(
-            'https://automationexercise.com/product_details/2'
-        );
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        await expect(this.page).toHaveURL('https://automationexercise.com/product_details/2');
-
+        await expect(this.page).toHaveURL(ROUTES.PRODUCTDETAILS);
         await expect(this.productDetails.information).toBeVisible();
-
         await expect(this.productDetails.name).toHaveText('Men Tshirt');
-
         await expect(this.productDetails.category).toBeVisible();
-
         await expect(this.productDetails.price).toHaveText('Rs. 400');
-
         await expect(this.productDetails.availability).toBeVisible();
-
         await expect(this.productDetails.condition).toBeVisible();
-
         await expect(this.productDetails.brand).toBeVisible();
-
-        console.log(
-            'AE-078 - Product Details page: PASS'
-        );
     }
 
-    // AE-079 - Verify all essential product information
     async verifyEssentialProductInformation() {
-
-        // Product name
         await expect(this.productDetails.name).toHaveText('Men Tshirt');
-
-        // Category
         await expect(this.productDetails.category).toContainText('Category: Men > Tshirts');
-
-        // Price
         await expect(this.productDetails.price).toHaveText('Rs. 400');
-
-        // Availability
         await expect(this.productDetails.availability).toContainText('Availability: In Stock');
-
-        // Condition
         await expect(this.productDetails.condition).toContainText('Condition: New');
-
-        // Brand
         await expect(this.productDetails.brand).toContainText('Brand: H&M');
-
-        console.log(
-            'AE-079 - Essential product information: PASS'
-        );
     }
 
-    // AE-080 - Verify the product image is displayed correctly
     async verifyProductDetailsImage() {
-
-        // Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // Verify image is visible
         await expect(this.productDetailsImage).toBeVisible();
-
-        // Verify the image is loaded and not broken
         const imageLoaded = await this.productDetailsImage.evaluate(
             (img) => img.complete && img.naturalWidth > 0
         );
-
         expect(imageLoaded).toBe(true);
-
-        console.log('AE-080 - Product Details image: PASS');
     }
-
-    // AE-081 - Verify default product quantity
     async verifyDefaultProductQuantity() {
-
-        // Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // Verify the quantity field is visible
         await expect(this.productQuantity).toBeVisible();
-
-        // Verify default quantity
         await expect(this.productQuantity).toHaveValue('1');
-
-        console.log('AE-081 - Default product quantity: PASS');
     }
-
-    // AE-082 - Verify product can be added to Cart with the default quantity
     async addProductToCartWithDefaultQuantity() {
 
-        // 1. Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // 2. Verify product information
         await expect(this.productDetails.name).toHaveText('Men Tshirt');
-
-        // Verify default quantity
         await expect(this.productQuantity).toHaveValue('1');
-
-        // 3. Click Add to Cart
         await this.productDetailsAddToCart.click();
-
-        // 4. Verify a confirmation message
         await expect(this.cartConfirmation.modal).toBeVisible();
-
         await expect(this.cartConfirmation.addedMessage).toHaveText('Added!');
-
-        // 5. Click View Cart
         await this.cartConfirmation.viewCart.click();
-
-        // 6. Verify product in Cart
-        const menTshirtCartRow = this.page.locator(
-            "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]"
-        ).first();
-
+        const menTshirtCartRow = this.page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]").first();
         await expect(menTshirtCartRow).toBeVisible();
-
-        // Verify quantity
         await expect(menTshirtCartRow.locator("td.cart_quantity button")).toHaveText('1');
-
-        await this.page.waitForTimeout(5000);
-
-        console.log('AE-082 - Men Tshirt added to Cart with default quantity: PASS');
     }
 
-
-    // AE-083 - Verify custom product quantity is maintained in Cart
     async verifyCustomProductQuantityInCart() {
 
-        // 1. Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // 2. Change quantity to 4
         await this.productQuantity.fill('4');
-
-        // Verify the selected quantity
         await expect(this.productQuantity).toHaveValue('4');
-
-        // 3. Click Add to Cart
         await this.productDetailsAddToCart.click();
-
-        // 4. Verify Add to Cart confirmation
         await expect(this.cartConfirmation.modal).toBeVisible();
-
         await expect(this.cartConfirmation.addedMessage).toHaveText('Added!');
-
-        // Click View Cart
         await this.cartConfirmation.viewCart.click();
-
-        // 5. Locate Men Tshirt cart row
-        const menTshirtCartRow = this.page.locator(
-            "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]"
-        ).first();
-
+        const menTshirtCartRow = this.page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]").first();
         await expect(menTshirtCartRow).toBeVisible();
-
-        // Verify quantity is exactly 4
         await expect(menTshirtCartRow.locator("td.cart_quantity button")).toHaveText('4');
-
-        await this.page.waitForTimeout(5000);
-
-        console.log('AE-083 - Custom product quantity 4 maintained in Cart: PASS');
     }
 
-    // AE-084 - Verify valid product review submission
     async verifyValidProductReview() {
 
-        // 1. Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // 2. Verify Write Your Review section
         await expect(this.page.locator("//a[normalize-space()='Write Your Review']")).toBeVisible();
-
-        // 3. Enter valid name
         await this.productReview.name.fill('QA Tester');
-
-        // 4. Enter valid email
         await this.productReview.email.fill('mosaeb009@gmail.com');
-
-        // 5. Enter review
         await this.productReview.review.fill('Good product');
-
-        await this.page.waitForTimeout(5000);
-
-        // 6. Click Submit
         await this.productReview.submit.click();
-
-        // 7. Verify a success message
         await expect(this.productReview.successMessage).toBeVisible();
-
         await expect(this.productReview.successMessage).toHaveText('Thank you for your review.');
-
-        console.log('AE-084 - Valid product review submission: PASS');
     }
 
-    // AE-085 - Verify review validation with invalid email
     async verifyInvalidReviewEmail() {
 
-        // Open the Product Details page
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // Enter valid name
         await this.productReview.name.fill('QA Tester');
-
-        // Enter invalid email
         await this.productReview.email.fill('invalid-email');
-
-        // Enter review
         await this.productReview.review.fill('Good product');
-
-        // Click Submit
         await this.productReview.submit.click();
-
-        // Verify browser keeps focus on the invalid email field
         await expect(this.productReview.email).toBeFocused();
-
-        // Get native browser validation message
-        const validationMessage =
-            await this.productReview.email.evaluate(
-                (input) => input.validationMessage
-            );
-
-        // Verify validation message exists
+        const validationMessage = await this.productReview.email.evaluate((input) => input.validationMessage);
         expect(validationMessage).not.toBe('');
-
-        console.log(`AE-085 - Validation message: ${validationMessage}`);
     }
 
-    // AE-086 - Verify invalid Product Details ID handling
     async verifyInvalidProductDetailsId() {
 
-        // Navigate to invalid Product Details ID
-        const response = await this.page.goto('https://automationexercise.com/product_details/999999');
-
-        // Verify page received a response
+        const response = await this.page.goto(ROUTES.PRODUCTDETAILS_TWO);
         expect(response).not.toBeNull();
-
-        // Wait for page loading
         await this.page.waitForLoadState('domcontentloaded');
-
-        // Get HTTP status
         const status = response.status();
-
-        console.log(`AE-086 - Invalid Product Details ID response status: ${status}`);
-
-        // Verify application does not return a server error
         expect(status).toBeLessThan(500);
-
-        // Verify the browser page is still accessible
-        await expect(this.page).toHaveURL('https://automationexercise.com/product_details/999999');
-
-        console.log('AE-086 - Invalid Product Details ID handling: PASS');
+        await expect(this.page).toHaveURL(ROUTES.PRODUCTDETAILS_TWO);
     }
-
-    // AE-087 - Verify critical Product Details end-to-end flow
     async verifyCriticalProductDetailsFlow() {
-
-        // 1. Open Product ID 2
-        await this.page.goto('https://automationexercise.com/product_details/2');
-
+        await this.page.goto(ROUTES.PRODUCTDETAILS);
         await this.page.waitForLoadState('domcontentloaded');
-
-        // 2. Verify product name
         await expect(this.productDetails.name).toHaveText('Men Tshirt');
-
-        // 3. Verify price
         await expect(this.productDetails.price).toHaveText('Rs. 400');
-
-        // 4. Verify availability
         await expect(this.productDetails.availability).toContainText('In Stock');
-
-        // 5. Verify brand
         await expect(this.productDetails.brand).toContainText('H&M');
-
-        // 6. Change quantity to 4
         await this.productQuantity.fill('4');
-
         await expect(this.productQuantity).toHaveValue('4');
-
-        // 7. Add product to Cart
         await this.productDetailsAddToCart.click();
-
-        // Verify Add to Cart confirmation
         await expect(this.cartConfirmation.modal).toBeVisible();
-
         await expect(this.cartConfirmation.addedMessage).toHaveText('Added!');
-
-        // 8. Open Cart
         await this.cartConfirmation.viewCart.click();
-
-        // 9. Verify Men Tshirt in Cart
-        const menTshirtCartRow = this.page.locator(
-            "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]"
-        ).first();
-
+        const menTshirtCartRow = this.page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]").first();
         await expect(menTshirtCartRow).toBeVisible();
-
-        // Verify product name
         await expect(menTshirtCartRow.locator("td.cart_description a")).toHaveText('Men Tshirt');
-
-        // 10. Verify quantity is exactly 4
         await expect(menTshirtCartRow.locator("td.cart_quantity button")).toHaveText('4');
 
-        await this.page.waitForTimeout(5000);
-        
-        console.log('AE-087 - Men Tshirt quantity 4 maintained in Cart: PASS');
     }
 }
