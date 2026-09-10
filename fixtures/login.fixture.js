@@ -10,20 +10,8 @@ export const test = base.extend({
 
     loginPage: async ({ page }, use) => {
 
-        // CREATE LOGIN PAGE OBJECT
-
         const loginPage = new LoginPage(page);
-
-        // OPEN LOGIN PAGE
-
         await loginPage.open();
-
-        // WAIT FOR PAGE TO LOAD
-
-        // await loginPage.waitForPageLoad();
-
-        // SEND LOGIN PAGE TO TEST
-        
         await use(loginPage);
     },
 
