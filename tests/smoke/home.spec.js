@@ -1,13 +1,15 @@
 import { test, expect } from '../../fixtures/Home.fixture';
 import {ROUTES} from "../../test-data/routes";
+import {getProductData} from "../../test-data/productData";
+const productData = getProductData()
 
 
 test.describe('Home Page', () => {
     test('AE-042 - Verify that the Home page loads successfully', async ({ homePage }) => {
-            await homePage.open();
+            await homePage.goto(ROUTES.HOME); await homePage.page.goto(ROUTES.CONTACT_US);
             await homePage.waitForPageLoad();
             await expect(homePage.page).toHaveURL(ROUTES.HOME);
-            await homePage.verifyHomePageDisplayed();
+            await expect(homePage.homeHeading).toBeVisible();
 
         }
     );
@@ -16,21 +18,29 @@ test.describe('Home Page', () => {
             await homePage.open();
             await homePage.waitForPageLoad();
             await expect(homePage.page).toHaveTitle(/Automation Exercise/);
-            await homePage.verifyHomePageDisplayed();
+            await expect(homePage.homeHeading).toBeVisible();
         }
     );
 
     test('AE-044 - Verify that the main navigation is displayed', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyMainNavigation();
+            await expect(homePage.homeLink).toBeVisible();
+            await expect(homePage.productsLink).toBeVisible();
+            await expect(homePage.cartLink).toBeVisible();
+            await expect(homePage.signupLoginLink).toBeVisible();
+            await expect(homePage.contactUsLink).toBeVisible();
         }
     );
 
     test('AE-045 - Verify that the main page content is not visually broken', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyMainPageSections();
+            await expect(homePage.header).toBeVisible();
+            await expect(homePage.banner).toBeVisible();
+            await expect(homePage.categories).toBeVisible();
+            await expect(homePage.products).toBeVisible();
+            await expect(homePage.footer).toBeVisible();
         }
     );
 
@@ -38,16 +48,19 @@ test.describe('Home Page', () => {
             await homePage.open();
             await homePage.waitForPageLoad();
             await homePage.signupLoginLink.click();
-            await homePage.verifySignupLoginPage();
+            await expect(homePage.page).toHaveURL(ROUTES.LOGIN);
+            await expect(homePage.loginInfo.first()).toBeVisible();
             await homePage.open();
             await homePage.productsLink.click();
-            await homePage.verifyProductsPage();
+            await expect(homePage.page).toHaveURL(ROUTES.PRODUCTS);
+            await expect(homePage.productInfo.first()).toBeVisible();
             await homePage.open();
             await homePage.cartLink.click();
-            await homePage.verifyCartPage();
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
             await homePage.open();
             await homePage.contactUsLink.click();
-            await homePage.verifyContactUsPage();
+            await expect(homePage.page).toHaveURL(ROUTES.CONTACT_US);
+            await expect(homePage.contactInfo.first()).toBeVisible();
             await homePage.open();
         }
     );
@@ -55,136 +68,236 @@ test.describe('Home Page', () => {
     test('AE-048 - Verify all available product categories and subcategories', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyProductCategories();
+            await expect(homePage.categories.section).toBeVisible();
+            await expect(homePage.categories.women.category).toBeVisible();
+            await homePage.categories.women.category.click();
+            await expect(homePage.categories.women.dress).toBeVisible();
+            await expect(homePage.categories.women.tops).toBeVisible();
+            await expect(homePage.categories.women.saree).toBeVisible();
+            await expect(homePage.categories.men.category).toBeVisible();
+            await homePage.categories.men.category.click();
+            await expect(homePage.categories.men.tshirts).toBeVisible();
+            await expect(homePage.categories.men.jeans).toBeVisible();
+            await expect(homePage.categories.kids.category).toBeVisible();
+            await homePage.categories.kids.category.click();
+            await expect(homePage.categories.kids.dress).toBeVisible();
+            await expect(homePage.categories.kids.topsShirts).toBeVisible();
         }
     );
 
     test('AE-049 - Verify each category and subcategory navigates to correct product listing', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            // Women → Dress
+
             await homePage.categories.women.category.click();
             await homePage.categories.women.dress.click();
-            await homePage.verifyCategoryProductListing();
-            // Women → Tops
+            await expect(homePage.page).toHaveURL(ROUTES.WOMANDRESS);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.women.category.click();
             await homePage.categories.women.tops.click();
-            await homePage.verifyCategoryProductListing();
-            // Women → Saree
+            await expect(homePage.page).toHaveURL(ROUTES.TOP);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.women.category.click();
             await homePage.categories.women.saree.click();
-            await homePage.verifyCategoryProductListing();
-            // Men → t-Shirts
+            await expect(homePage.page).toHaveURL(ROUTES.SAREE);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.men.category.click();
             await homePage.categories.men.tshirts.click();
-            await homePage.verifyCategoryProductListing();
-            // Men → Jeans
+            await expect(homePage.page).toHaveURL(ROUTES.TSHIRTS);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.men.category.click();
             await homePage.categories.men.jeans.click();
-            await homePage.verifyCategoryProductListing();
-            // Kids → Dress
+            await expect(homePage.page).toHaveURL(ROUTES.JEANS);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.kids.category.click();
             await homePage.categories.kids.dress.click();
-            await homePage.verifyCategoryProductListing();
-            // Kids → Tops & Shirts
+            await expect(homePage.page).toHaveURL(ROUTES.KIDDRESS);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.categories.kids.category.click();
             await homePage.categories.kids.topsShirts.click();
-            await homePage.verifyCategoryProductListing();
+            await expect(homePage.page).toHaveURL(ROUTES.KIDTOPSHIRTS);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
             await homePage.open();
         }
     );
     test('AE-050 - Verify available brands and brand navigation', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyBrandsSection();
-            // Polo
+            await expect(homePage.brands.section).toBeVisible();
+            await expect(homePage.brands.polo).toBeVisible();
+            await expect(homePage.brands.hm).toBeVisible();
+            await expect(homePage.brands.madame).toBeVisible();
+            await expect(homePage.brands.mastAndHarbour).toBeVisible();
+            await expect(homePage.brands.babyhug).toBeVisible();
+            await expect(homePage.brands.allenSollyJunior).toBeVisible();
+            await expect(homePage.brands.kookieKids).toBeVisible();
+            await expect(homePage.brands.biba).toBeVisible();
+
             await homePage.brands.polo.click();
-            await homePage.verifyBrandProductListing();
-            // H&M
+            await expect(homePage.page).toHaveURL(ROUTES.POLO);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.hm.click();
-            await homePage.verifyBrandProductListing();
-            // Madame
+            await expect(homePage.page).toHaveURL(ROUTES.HM);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.madame.click();
-            await homePage.verifyBrandProductListing();
-            // Mast & Harbour
+            await expect(homePage.page).toHaveURL(ROUTES.MADAME);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.mastAndHarbour.click();
-            await homePage.verifyBrandProductListing();
-            // Baby hug
+            await expect(homePage.page).toHaveURL(ROUTES.MASTHARBOUR);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.babyhug.click();
-            await homePage.verifyBrandProductListing();
-            // Allen Solly Junior
+            await expect(homePage.page).toHaveURL(ROUTES.BABYHUG);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.allenSollyJunior.click();
-            await homePage.verifyBrandProductListing();
-            // Kookie Kids
+            await expect(homePage.page).toHaveURL(ROUTES.ALLENSOLLYJUNIOR);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.kookieKids.click();
-            await homePage.verifyBrandProductListing();
-            // Biba
+            await expect(homePage.page).toHaveURL(ROUTES.KOOKIE);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
+
             await homePage.open();
             await homePage.brands.biba.click();
-            await homePage.verifyBrandProductListing();
+            await expect(homePage.page).toHaveURL(ROUTES.BIBA);
+            await expect(homePage.featuredItemsInfo).toBeVisible();
         }
     );
      test('AE-051 - Verify Featured Items and product information', async ({ homePage }) => {
                     await homePage.open();
                     await homePage.waitForPageLoad();
-                    await homePage.verifyFeaturedItems();
+                    await expect(homePage.featuredItems.section).toBeVisible();
+                    await expect(homePage.featuredItems.products.first()).toBeVisible();
+                    await expect(homePage.featuredItems.productImages.first()).toBeVisible();
+                    await expect(homePage.featuredItems.productNames.first()).toBeVisible();
+                    await expect(homePage.featuredItems.productPrices.first()).toBeVisible();
+                    await expect(homePage.featuredItems.addToCart.first()).toBeVisible();
             }
         );
 
         test('AE-052 - Verify product can be opened from Home page', async ({ homePage }) => {
                 await homePage.open();
                 await homePage.waitForPageLoad();
-                await homePage.verifyBlueTopProductDetails();
+                await expect(homePage.productDetails.blueTop).toBeVisible();
+                await homePage.productDetails.blueTopViewProduct.click();
+                await homePage.page.waitForLoadState('domcontentloaded');
+                await expect(homePage.page).toHaveURL(ROUTES.PRODUCTDETAILS);
+                await expect(homePage.productDetails.name).toHaveText(productData.nameOne);
+                await expect(homePage.productDetails.category).toContainText(productData.Category);
+                await expect(homePage.productDetails.price).toBeVisible();
+                await expect(homePage.productDetails.availability).toContainText(productData.Availability);
+                await expect(homePage.productDetails.condition).toContainText(productData.Condition);
+                await expect(homePage.productDetails.brand).toContainText(productData.Brand);
             }
         );
     test('AE-053 - Verify product can be added to Cart from Home page', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.addBlueTopToCart();
+            await expect(homePage.productDetails.blueTop).toBeVisible();
+            await homePage.cart.blueTopAddToCart.click();
+            await expect(homePage.cart.viewCart).toBeVisible();
+            await homePage.cart.viewCart.click();
+            await homePage.page.waitForLoadState('domcontentloaded');
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.cartBlueTop).toBeVisible();
         }
     );
     test('AE-054 - Verify Cart contains correct product and pricing information', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
             await homePage.addBlueTopToCart();
-            await homePage.verifyCartProductInformation();
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.productName).toHaveText(productData.nameTwo);
+            await expect(homePage.cart.productPrice).toHaveText(productData.priceTwo);
+            await expect(homePage.cart.quantity).toHaveText(productData.productQuantity);
+            await expect(homePage.cart.totalPrice).toHaveText(productData.priceTwo);
         }
     );
     test('AE-055 - Verify Continue Shopping behavior', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyContinueShopping();
+            await expect(homePage.productDetails.blueTop).toBeVisible();
+            await homePage.cart.blueTopAddToCart.click();
+            await expect(homePage.cart.continueShopping).toBeVisible();
+            await homePage.cart.continueShopping.click();
+            await expect(homePage.cart.continueShopping).toBeHidden();
+            await expect(homePage.page).toHaveURL(ROUTES.HOME);
+            await expect(homePage.productDetails.blueTop).toBeVisible();
+    
+            await homePage.addToCart.first().click();
+            await homePage.page.waitForLoadState('domcontentloaded');
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.cartBlueTop).toBeVisible();
         }
     );
     test('AE-059 - Verify Footer content', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyFooterContent();
+            await homePage.page.evaluate(() => {window.scrollTo(0, document.body.scrollHeight);});
+            await expect(homePage.footerSections.subscription).toBeVisible();
+            await expect(homePage.footerSections.footer).toBeVisible();
+            await expect(homePage.footerSections.footer).toContainText(productData.footerMessage);
+            await expect(homePage.footerSections.footer).toBeInViewport();
         }
     );
 
     test('AE-062 - Verify multiple products are added to Cart correctly', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyMultipleProductsInCart();
+            await homePage.cart.blueTopAddToCart.click();
+            await homePage.cart.continueShopping.click();
+            await expect(homePage.cart.continueShopping).toBeHidden();
+            await homePage.cart.menTshirtAddToCart.click();
+            await homePage.cart.viewCart.click();
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.blueTopCartRow).toBeVisible();
+            await expect(homePage.cart.menTshirtCartRow).toBeVisible();
+            await expect(homePage.cart.bluePrice).toHaveText(productData.priceTwo);
+            await expect(homePage.cart.blueQuantity).toHaveText(productData.productQuantity);
+            await expect(homePage.cart.menTshirtPrice).toHaveText(productData.priceOne);
+            await expect(homePage.cart.menTshirtQuantity).toHaveText(productData.productQuantity);
         }
     );
     test('AE-064 - Verify critical Home to Product to Cart journey', async ({ homePage }) => {
             await homePage.open();
             await homePage.waitForPageLoad();
-            await homePage.verifyCriticalShoppingJourney();
+            await expect(homePage.page).toHaveURL(ROUTES.HOME);
+            await expect(homePage.featuredItems.section).toBeVisible();
+            await homePage.blueTopDetails.first().click();
+            await expect(homePage.page).toHaveURL(ROUTES.PRODUCTDETAILS_ONE);
+            await expect(homePage.blueTopDetailsName).toBeVisible();
+            await expect(homePage.blueTopDetailsPrice).toBeVisible();
+            await homePage.blueTopDetailsAddtoCart.click();
+            await homePage.blueTopDetailsViewCart.click();
+            await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.blueTopCartRow).toBeVisible();
+            await expect(homePage.cart.bluePrice).toHaveText(productData.priceTwo);
+            await expect(homePage.cart.blueQuantity).toHaveText(productData.productQuantity);
+            await homePage.homebutton.first().click();
+            await expect(homePage.page).toHaveURL(ROUTES.HOME);
+            await expect(homePage.homeHeading).toBeVisible();
         }
     );
 });

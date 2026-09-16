@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
 import {ROUTES} from "../test-data/routes";
-
 
 export class SignupPage {
 
@@ -26,21 +24,6 @@ export class SignupPage {
     async clickSignup() {
         await this.signupButton.click();
     }
-    async getNameValidationMessage() {
-        return await this.nameField.evaluate(
-            element => element.validationMessage
-        );
-    }
-
-    async verifySignupPage() {
-        await expect(this.signupHeading).toBeVisible();
-        await expect(this.nameField).toBeVisible();
-        await expect(this.nameField).toBeEnabled();
-        await expect(this.emailField).toBeVisible();
-        await expect(this.emailField).toBeEnabled();
-        await expect(this.signupButton).toBeVisible();
-        await expect(this.signupButton).toBeEnabled();
-    }
 
     async open() {
 
@@ -49,9 +32,6 @@ export class SignupPage {
     async navigateToSignup() {
 
         await this.signupLoginLink.click();
-
-        await this.signupHeading.waitFor({
-            state: 'visible'
-        });
+        await this.signupHeading.waitFor({state: 'visible'});
     }
 }

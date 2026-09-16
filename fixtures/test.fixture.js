@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
 import { SignupPage } from '../pages/SignupPage.js';
-import ROUTES {  } from '../test-data/routes';
+import  {ROUTES} from '../test-data/routes';
 import { AccountInformationPage } from '../pages/AccountInformationPage.js';
 
 export const test = base.extend({
@@ -42,8 +42,6 @@ export const test = base.extend({
 
         await use(data);
     },
-
-    // ACCOUNT INFORMATION PAGE
 
     accountInformationPages: async ({ page, signupTestData }, use) => {
 

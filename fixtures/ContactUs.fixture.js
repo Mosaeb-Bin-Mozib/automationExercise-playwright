@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect } from './base.fixture';
 import { ContactUsPage } from '../pages/ContactUsPage';
 
 export const test = base.extend({
