@@ -21,3 +21,10 @@ export function getUserAccountData() {
         mobile_number: '01302692330'
     };
 }
+
+export const validLoginData = {
+    email: 'mosaeb009@gmail.com',
+    password: '1234',
+    invalidEmail: 'invalid_user@test.com',
+    invalidPassword: 'WrongPassword123',
+};

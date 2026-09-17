@@ -1,18 +1,19 @@
 import { test, expect } from '../../fixtures/api.login.fixture';
-import { getUserAccountData } from "../../test-data/userAccountData";
+import {getUserAccountData, validLoginData} from "../../test-data/userAccountData";
 import { HTTP_STATUS, API_MESSAGE } from "../../test-data/api.constants";
 
 test.describe('Login API Tests', () => {
 
-    test(
-        'AE-API-007 - Verify login with valid credentials',
-        async ({ loginApi }) => {
+    test('AE-API-007 - Verify login with valid credentials', async ({ loginApi }) => {
 
-            const response = await loginApi.login(
-                'mosaeb009@gmail.com',
-                '1234'
+        const userData = getUserAccountData();
+
+        const response = await loginApi.login(
+                validLoginData.email,
+                validLoginData.password
             );
             const responseBody = await response.text();
+
             expect(response.status()).toBe(HTTP_STATUS.OK);
             expect(responseBody).toContain('User exists!');
         }
@@ -30,8 +31,8 @@ test.describe('Login API Tests', () => {
 
     test('AE-API-009 - Verify login with invalid credentials', async ({ loginApi }) => {
             const response = await loginApi.loginWithInvalidCredentials(
-                'invalid_user@test.com',
-                'WrongPassword123'
+                validLoginData.invalidEmail,
+                validLoginData.invalidPassword
             );
             const responseBody = await response.text();
             expect(response.status()).toBe(HTTP_STATUS.NOT_FOUND);
@@ -42,38 +43,59 @@ test.describe('Login API Tests', () => {
     test('AE-API-010 - Verify user account creation', async ({ userAccountApi }) => {
 
         const userData = getUserAccountData();
-        const response = await userAccountApi.createAccount(userData);
-        const responseBody = await response.text();
-        expect(response.status()).toBe(HTTP_STATUS.CREATED);
-        expect(responseBody).toContain('User created!');
-        await userAccountApi.deleteAccount(
-            userData.email,
-            userData.password
-        );
+
+        try {
+            const response = await userAccountApi.createAccount(userData);
+            const responseBody = await response.text();
+
+            expect(response.status()).toBe(HTTP_STATUS.CREATED);
+            expect(responseBody).toContain('User created!');
+
+        } finally {
+            try {
+                await userAccountApi.deleteAccount(
+                    userData.email,
+                    userData.password
+                );
+            } catch (cleanupError) {
+                console.warn('Account cleanup failed:', cleanupError.message);
+            }
+        }
     });
 
     test('AE-API-011 - Verify user account update', async ({ userAccountApi }) => {
 
         const userData = getUserAccountData();
-        const createResponse = await userAccountApi.createAccount(userData);
-        expect(createResponse.status()).toBe(HTTP_STATUS.CREATED);
-        const updateData = {
-            email: userData.email,
-            password: userData.password,
-            firstname: 'Musa',
-            lastname: 'Bin Mozib',
-            address1: 'Sadar Road Barishal',
-            city: 'Barishal'
-        };
 
-        const response = await userAccountApi.updateAccount(updateData);
-        const responseBody = await response.text();
-        expect(response.status()).toBe(HTTP_STATUS.CREATED);
-        expect(responseBody).toContain('User updated!');
-        await userAccountApi.deleteAccount(
-            userData.email,
-            userData.password
-        );
+        try {
+            const createResponse = await userAccountApi.createAccount(userData);
+            expect(createResponse.status()).toBe(HTTP_STATUS.CREATED);
+
+            const updateData = {
+                email: userData.email,
+                password: userData.password,
+                firstname: 'Musa',
+                lastname: 'Bin Mozib',
+                address1: 'Sadar Road Barishal',
+                city: 'Barishal'
+            };
+
+            const response = await userAccountApi.updateAccount(updateData);
+            const responseBody = await response.text();
+
+            expect(response.status()).toBe(HTTP_STATUS.CREATED);
+            expect(responseBody).toContain('User updated!');
+
+        } finally {
+            try {
+                await userAccountApi.deleteAccount(
+                    userData.email,
+                    userData.password
+                );
+            } catch (cleanupError) {
+                console.warn('Account cleanup failed:', cleanupError.message);
+            }
+        }
     });
 
     test('AE-API-012 - Verify user details can be retrieved by email', async ({ userAccountApi }) => {
@@ -90,15 +112,30 @@ test.describe('Login API Tests', () => {
     test('AE-API-013 - Verify user account deletion', async ({ userAccountApi }) => {
 
         const userData = getUserAccountData();
-        const createResponse = await userAccountApi.createAccount(userData);
-        expect(createResponse.status()).toBe(HTTP_STATUS.CREATED);
-        const response = await userAccountApi.deleteAccount(
-            userData.email,
-            userData.password
-        );
-        const responseBody = await response.text();
-        expect(response.status()).toBe(HTTP_STATUS.OK);
-        expect(responseBody).toContain('Account deleted!');
+
+        try {
+            const createResponse = await userAccountApi.createAccount(userData);
+            expect(createResponse.status()).toBe(HTTP_STATUS.CREATED);
+
+            const response = await userAccountApi.deleteAccount(
+                userData.email,
+                userData.password
+            );
+            const responseBody = await response.text();
+
+            expect(response.status()).toBe(HTTP_STATUS.OK);
+            expect(responseBody).toContain('Account deleted!');
+
+        } finally {
+            try {
+                await userAccountApi.deleteAccount(
+                    userData.email,
+                    userData.password
+                );
+            } catch (cleanupError) {
+                console.warn('Account cleanup failed:', cleanupError.message);
+            }
+        }
     });
 
     test('AE-API-014 - Verify unsupported DELETE method for Login API', async ({ loginApi }) => {
