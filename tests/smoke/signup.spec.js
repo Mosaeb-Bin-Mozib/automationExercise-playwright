@@ -1,158 +1,114 @@
 import { test, expect } from '../../fixtures/test.fixture.js';
-import {getSignupData, invalidNumberSignupData} from '../../test-data/signupData';
-import { AccountInformationPage } from '../../pages/AccountInformationPage.js';
-
+import {getSignupData, } from '../../test-data/signupData';
 const signupData = getSignupData();
 
 test.describe('New User Signup', () => {
-
-    // AE-001
     test('AE-001 - Verify New User Signup page is displayed correctly', async ({ signupPage }) => {
-            await signupPage.verifySignupPage();
+            await expect(thsignupPageis.signupHeading).toBeVisible();
+            await expect(signupPage.nameField).toBeVisible();
+            await expect(signupPage.nameField).toBeEnabled();
+            await expect(signupPage.emailField).toBeVisible();
+            await expect(signupPage.emailField).toBeEnabled();
+            await expect(signupPage.signupButton).toBeVisible();
+            await expect(signupPage.signupButton).toBeEnabled();
         }
     );
 
-    // AE-002
     test('AE-002 - Verify user can signup with valid information', async ({ signupPage }) => {
 
         await signupPage.enterName(signupData.name);
         await signupPage.enterEmail(signupData.email);
-
         await expect(signupPage.nameField).toHaveValue(signupData.name);
         await expect(signupPage.emailField).toHaveValue(signupData.email);
-
-        await signupPage.clickSignup();
-
+        await signupPage.signupButton.click();
         await expect(signupPage.accountInformationHeading).toBeVisible();
     });
-
-
-    // AE-003
-    test('AE-003 - Verify user cannot signup with empty fields',
-        async ({ signupPage }) => {
-
+    
+    test('AE-003 - Verify user cannot signup with empty fields', async ({ signupPage }) => {
             await expect(signupPage.nameField).toHaveValue('');
-
             await expect(signupPage.emailField).toHaveValue('');
-
-            await signupPage.clickSignup();
-
+            await signupPage.signupButton.click();
             await expect(signupPage.nameField).toHaveJSProperty('validity.valueMissing', true);
             await expect(signupPage.emailField).toHaveJSProperty('validity.valueMissing', true);
         }
     );
 
-
-    // AE-004
     test('AE-004 - Verify application rejects invalid email format',
         async ({ signupPage }) => {
 
             await signupPage.enterName(signupData.name);
             await signupPage.enterEmail(signupData.invalidEmail);
-
             await expect(signupPage.emailField).toHaveValue(signupData.invalidEmail);
-
-            await signupPage.clickSignup();
-
+            await signupPage.signupButton.click();
             await expect(signupPage.accountInformationHeading).not.toBeVisible();
-
             await expect(signupPage.emailField).toHaveJSProperty('validity.typeMismatch', true);
         }
     );
 
-    //AE-005
-    test('AE-005 - Verify user cannot signup with an already registered email',
-        async ({ signupPage }) => {
+    test('AE-005 - Verify user cannot signup with an already registered email', async ({ signupPage }) => {
 
-            // Enter valid name
             await signupPage.enterName(signupData.name);
-
-            // Enter already registered email
             await signupPage.enterEmail(signupData.registeredEmail);
-
-            // Click Signup
-            await signupPage.clickSignup();
-
-            // Verify duplicate email error message
+            await signupPage.signupButton.click();
             await expect(signupPage.errorMessages).toBeVisible();
-
-            // Verify the user does not proceed to Account Information
             await expect(signupPage.accountInformationHeading).not.toBeVisible();
         }
     );
 
-    //AE-006
     test('AE-006 - Verify Account Information and Address Information sections', async ({ accountInformationPage }) => {
 
-            // Verify an Account Information section
-            await accountInformationPage.verifyAccountInformationSection();
-
-            // Scroll to an Address Information section
+            await expect(accountInformationPage.accountInformationHeading).toBeVisible();
+            await expect(accountInformationPage.titleMr).toBeVisible();
+            await expect(accountInformationPage.titleMrs).toBeVisible();
+            await expect(accountInformationPage.nameField).toBeVisible();
+            await expect(accountInformationPage.emailField).toBeVisible();
+            await expect(accountInformationPage.passwordField).toBeVisible();
+            await expect(accountInformationPage.dayDropdown).toBeVisible();
+            await expect(accountInformationPage.monthDropdown).toBeVisible();
+            await expect(accountInformationPage.yearDropdown).toBeVisible();
+            await expect(accountInformationPage.newsletterCheckbox).toBeVisible();
+            await expect(accountInformationPage.specialOffersCheckbox).toBeVisible();
             await accountInformationPage.addressField.scrollIntoViewIfNeeded();
 
-            // Verify an Address Information section
-            await accountInformationPage.verifyAddressInformationSection();
+            await expect(accountInformationPage.addressInformationHeading).toBeVisible();
+            await expect(accountInformationPage.firstNameField).toBeVisible();
+            await expect(accountInformationPage.lastNameField).toBeVisible();
+            await expect(accountInformationPage.companyField).toBeVisible();
+            await expect(accountInformationPage.addressField).toBeVisible();
+            await expect(accountInformationPage.address2Field).toBeVisible();
+            await expect(accountInformationPage.countryDropdown).toBeVisible();
+            await expect(accountInformationPage.stateField).toBeVisible();
+            await expect(accountInformationPage.cityField).toBeVisible();
+            await expect(accountInformationPage.zipcodeField).toBeVisible();
+            await expect(accountInformationPage.mobileNumberField).toBeVisible();
+            await expect(accountInformationPage.createAccountButton).toBeVisible();
+            await expect(accountInformationPage.createAccountButton).toBeEnabled();
         }
     );
 
-    // AE-007
-    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPage, signupTestData
-    }) => {
+    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPage, signupTestData}) => {
 
         await accountInformationPage.selectGender(signupTestData.title);
-
-        await accountInformationPage.enterPassword(signupTestData.password);
-
-        await accountInformationPage.selectDateOfBirth(
-            signupTestData.dateOfBirth
-        );
-
-        await accountInformationPage.enterFirstName(
-            signupTestData.firstName
-        );
-
-        await accountInformationPage.enterLastName(
-            signupTestData.lastName
-        );
-
-        await accountInformationPage.enterCompanyName(
-            signupTestData.company
-        );
-
-        await accountInformationPage.addressOne(
-            signupTestData.address
-        );
-
-        await accountInformationPage.addressTwo(
-            signupTestData.address2
-        );
-
-        await accountInformationPage.selectCountry(
-            signupTestData.country
-        );
-
-        await accountInformationPage.State(
-            signupTestData.state
-        );
-
-        await accountInformationPage.City(
-            signupTestData.city
-        );
-
-        await accountInformationPage.zipCode(
-            signupTestData.zip
-        );
-
-        await accountInformationPage.mobileNumber(
-            signupTestData.phone
-        );
+        await accountInformationPage.passwordField.fill(signupTestData.password);
+        await accountInformationPage.dayDropdown.selectOption(getSignupData.dateOfBirth.day);
+        await accountInformationPage.monthDropdown.selectOption({ label: getSignupData.dateOfBirth.month });
+        await accountInformationPage.yearDropdown.selectOption(getSignupData.dateOfBirth.year);
+        await accountInformationPage.firstNameField.fill(signupTestData.firstName);
+        await accountInformationPage.lastNameField.fill(signupTestData.lastName);
+        await accountInformationPage.companyField.fill(signupTestData.company);
+        await accountInformationPage.addressField.fill(signupTestData.address);
+        await accountInformationPage.address2Field.fill(signupTestData.address2);
+        await accountInformationPage.countryDropdown.selectOption(signupTestData.country);
+        await accountInformationPage.stateField.fill(signupTestData.state);
+        await accountInformationPage.cityField.fill(signupTestData.city);
+        await accountInformationPage.zipcodeField.fill(signupTestData.zip);
+        await accountInformationPage.mobileNumberField.fill(signupTestData.phone);
     });
 
-    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({accountInformationPages, signupTestData}) => {
-
-        await signupPage.enterName(nameOne);
-        await signupPage.enterEmail(email);
-        await signupPage.clickSignup();
+    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({accountInformationPages,signupPage, signupTestData}) => {
+        await signupPage.nameField.fill(signupData.name);
+        await signupPage.emailField.fill(signupData.email);
+        await signupPage.signupButton.click();
 
         }
     );

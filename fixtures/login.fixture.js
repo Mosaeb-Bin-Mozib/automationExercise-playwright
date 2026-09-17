@@ -1,5 +1,4 @@
-import {test as base, expect} from '@playwright/test';
-
+import { test as base, expect } from './base.fixture';
 import { LoginPage } from '../pages/LoginPage.js';
 import { SignupPage } from '../pages/SignupPage.js';
 import { AccountInformationPage } from '../pages/AccountInformationPage.js';
@@ -10,20 +9,8 @@ export const test = base.extend({
 
     loginPage: async ({ page }, use) => {
 
-        // CREATE LOGIN PAGE OBJECT
-
         const loginPage = new LoginPage(page);
-
-        // OPEN LOGIN PAGE
-
         await loginPage.open();
-
-        // WAIT FOR PAGE TO LOAD
-
-        // await loginPage.waitForPageLoad();
-
-        // SEND LOGIN PAGE TO TEST
-        
         await use(loginPage);
     },
 

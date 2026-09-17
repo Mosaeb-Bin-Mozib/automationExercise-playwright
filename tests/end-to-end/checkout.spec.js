@@ -1,87 +1,57 @@
 import {test, expect} from '../../fixtures/login.fixture';
-
-
+import {getCheckoutData} from '../../test-data/checkoutData';
+const checkoutData = getCheckoutData();
 test('E2E-002 - Verify an existing customer can successfully complete a purchase', async ({loginPage, signupPage, accountInformationPage}) => {
-
-        // const name = 'Automation User';
-        //
-        // const email = `automation_${Date.now()}@example.com`;
-        //
-        // const password = '1234';
-
-
-        // 1. Open website
         await signupPage.open();
-
-
-        // 2. Go to Signup/Login
-        await signupPage.navigateToSignup();
-
-
-        // 3. Verify Signup page
-        await signupPage.verifySignupPage();
-
-
-        // 4. Enter a name and unique email
-        await signupPage.enterName(name);
-
+        await signupPage.signupLoginLink.click();
+        await signupPage.signupHeading.waitFor({state: 'visible'});
+        await expect(signupPage.signupHeading).toBeVisible();
+        await expect(signupPage.nameField).toBeVisible();
+        await expect(signupPage.nameField).toBeEnabled();
+        await expect(signupPage.emailField).toBeVisible();
+        await expect(signupPage.emailField).toBeEnabled();
+        await expect(signupPage.signupButton).toBeVisible();
+        await expect(signupPage.signupButton).toBeEnabled();
+        await signupPage.enterName();
         await signupPage.enterEmail(email);
-
-
-        // 5. Click Signup
         await signupPage.clickSignup();
+        await expect(accountInformationPage.accountInformationHeading).toBeVisible();
+        await expect(accountInformationPage.titleMr).toBeVisible();
+        await expect(accountInformationPage.titleMrs).toBeVisible();
+        await expect(accountInformationPage.nameField).toBeVisible();
+        await expect(accountInformationPage.emailField).toBeVisible();
+        await expect(accountInformationPage.passwordField).toBeVisible();
+        await expect(accountInformationPage.dayDropdown).toBeVisible();
+        await expect(accountInformationPage.monthDropdown).toBeVisible();
+        await expect(accountInformationPage.yearDropdown).toBeVisible();
+        await expect(accountInformationPage.newsletterCheckbox).toBeVisible();
+        await expect(accountInformationPage.specialOffersCheckbox).toBeVisible();
+        await accountInformationPage.titleMr.check();
+    
+        await accountInformationPage.passwordField.fill(password);
+    
+        await accountInformationPage.dayDropdown.selectOption(checkoutData.day);
+    
+        await accountInformationPage.monthDropdown.selectOption({label: checkoutData.month});
+    
+        await accountInformationPage.yearDropdown.selectOption(checkoutData.year);
+        await accountInformationPage.firstNameField.fill(checkoutData.firstName);
+        await accountInformationPage.lastNameField.fill(checkoutData.lastName);
+        await accountInformationPage.companyField.fill(checkoutData.company);
+        await accountInformationPage.addressField.fill(checkoutData.address);
+        await accountInformationPage.address2Field.fill(checkoutData.address2);
+        await accountInformationPage.countryDropdown.selectOption({label: checkoutData.country});
+        await accountInformationPage.stateField.fill(checkoutData.state);
+        await accountInformationPage.cityField.fill(checkoutData.city);
+        await accountInformationPage.zipcodeField.fill(checkoutData.zipcode);
+        await accountInformationPage.mobileNumberField.fill(checkoutData.mobile);
 
-
-        // 6. Verify Account Information
-        await accountInformationPage.verifyAccountInformationSection();
-
-
-        // 7. Fill Account Information
-        await accountInformationPage.fillAccountInformation(password);
-
-
-        // 8. Fill Address Information
-        await accountInformationPage.fillAddressInformation({
-
-            firstName: 'Automation',
-
-            lastName: 'Tester',
-
-            company: 'Automation Company',
-
-            address: '123 Automation Street',
-
-            address2: 'Test Area',
-
-            country: 'India',
-
-            state: 'Dhaka',
-
-            city: 'Dhaka',
-
-            zipcode: '1207',
-
-            mobile: '01700000000'
-        });
-
-
-        // 9. Create Account
         await accountInformationPage.clickCreateAccount();
-
-
-        // 10. Verify Account Created
-        await accountInformationPage.verifyAccountCreated();
-
-
-        // 11. Continue
-        await accountInformationPage.clickContinue();
-
-
-        // 12. Verify logged-in user
-        await loginPage.verifyLoggedInUser(name);
-
-
-        // 13. Verify Logout
+        await expect(accountInformationPage.page.getByText('Account Created!')).toBeVisible();
+        await accountInformationPage.page.getByRole('link', {name: 'Continue'}).click();
+        await expect(accountInformationPage.loggedInAs).toBeVisible();
+    
+        await expect(accountInformationPage.loggedInAs).toContainText(`Logged in as ${username}`);
         await expect(loginPage.logoutLink).toBeVisible();
     }
 );

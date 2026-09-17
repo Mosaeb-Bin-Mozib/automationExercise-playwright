@@ -1,7 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
-import { ProductApi } from '../pages/ProductApiPage';
 import { BrandApi } from '../pages/BrandApiPage';
 
 dotenv.config({
