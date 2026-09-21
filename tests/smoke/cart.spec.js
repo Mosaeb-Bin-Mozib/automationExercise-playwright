@@ -20,7 +20,7 @@ test.describe('Cart Page', () => {
     test('AE-089 - Verify single product can be added and displayed in Cart', async ({ cartPage }) => {
         await cartPage.page.goto(ROUTES.PRODUCTS);
         await cartPage.page.waitForLoadState('domcontentloaded');
-        const blueTopProduct = cartPage.page.locator(cartPage.blueTopProduct.blueTop).first();
+        const blueTopProduct = cartPage.blueTopProduct.blueTop.first();
         await expect(blueTopProduct).toBeVisible();
         await blueTopProduct.locator(cartPage.blueTopProduct.addToCart).first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();

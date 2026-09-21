@@ -4,7 +4,7 @@ const signupData = getSignupData();
 
 test.describe('New User Signup', () => {
     test('AE-001 - Verify New User Signup page is displayed correctly', async ({ signupPage }) => {
-            await expect(thsignupPageis.signupHeading).toBeVisible();
+            await expect(signupPage.signupHeading).toBeVisible();
             await expect(signupPage.nameField).toBeVisible();
             await expect(signupPage.nameField).toBeEnabled();
             await expect(signupPage.emailField).toBeVisible();

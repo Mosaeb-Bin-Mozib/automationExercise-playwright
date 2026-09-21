@@ -7,11 +7,11 @@ export class CartPage {
         this.emptyCartMessage = page.locator("//p[contains(normalize-space(),'Cart is empty!')]");
         this.emptyCartBuyProductsLink = page.locator("//p[contains(normalize-space(),'Cart is empty!')]//a");
         this.cartProduct = {
-            row: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]").first(),
-            name: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]//td[contains(@class,'cart_description')]//a").first(),
-            price: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]//td[contains(@class,'cart_price')]//p").first(),
-            quantity: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]//td[contains(@class,'cart_quantity')]//button").first(),
-            total: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]//td[contains(@class,'cart_total')]//p").first(),
+            row: page.getByRole('row', { name: 'Product Image Blue Top Women' }).first(),
+            name: page.getByRole('link', { name: 'Blue Top' }).first(),
+            price: page.getByText('Rs.').first().first(),
+            quantity:page.getByRole('button', { name: '1' }).first(),
+            total:page.getByText('Rs.').nth(1).first(),
         };
         this.cartConfirmation = {
 

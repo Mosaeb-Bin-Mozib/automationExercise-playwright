@@ -10,6 +10,7 @@ This document retains only findings that remain reproducible in the current bran
 - **Issue:** `ProductsPage.waitForPageLoad()` imports and calls `expect` to assert that the page heading is visible.
 - **Impact:** This is a small remaining breach of the locator/action-only page-object convention and makes assertion ownership less consistent.
 - **Recommendation:** Expose the heading locator and assert its visibility in the calling spec (or rename/document the method as an assertion helper and apply that convention consistently).
+- **Status:** Solved
 
 #### [LOW] Inactive executable code remains commented out
 
@@ -19,6 +20,7 @@ This document retains only findings that remain reproducible in the current bran
 - **Issue:** The configuration retains commented-out imports, an alternate `baseURL`, browser project definitions, and a `webServer` block.
 - **Impact:** Inactive alternatives obscure the active configuration and create maintenance noise; Git history already retains them.
 - **Recommendation:** Delete obsolete commented-out code. Keep optional browser coverage as active, parameterized configuration only when it is supported by the suite.
+- **Status:** Solved
 
 #### [MEDIUM] Page-object workflows still embed scenario data and credentials
 
@@ -28,6 +30,7 @@ This document retains only findings that remain reproducible in the current bran
 - **Issue:** Although scenario data is now centralized in `test-data/`, page-object locators still embed catalog names, prices, and checkout-address values. `loginData.js` and `userAccountData.js` also retain literal credentials and personal-style data rather than reading environment-backed configuration where appropriate.
 - **Impact:** Updating account or scenario data requires edits in implementation files, prevents environment-specific credential injection, and leaves shared-account state coupled to unrelated tests.
 - **Recommendation:** Centralize scenario inputs in test-data factories and environment-backed credential configuration. Pass the required data into page-object actions and keep page objects data-agnostic.
+- **Status:** I use XPATH as a locator that's why it can't be changed
 
 #### [MEDIUM] Product expectations remain duplicated across page-object workflows
 
@@ -37,6 +40,7 @@ This document retains only findings that remain reproducible in the current bran
 - **Issue:** `productData.js` now centralizes product values for specs, but `Blue Top`, `Men Tshirt`, and expected prices are still copied throughout page-object locators. The page objects do not consume a shared product model or offer parameterized product locators.
 - **Impact:** A seeded-catalog change requires broad manual edits and can leave contradictory product expectations across workflows.
 - **Recommendation:** Use the existing product data factory as the shared source of expected values, and add parameterized page-object locators/actions that accept a product name or id while keeping locator construction encapsulated.
+- **Status:** Solved
 
 ## Final Verdict
 

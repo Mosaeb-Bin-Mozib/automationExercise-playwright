@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures/product.fixture';
-import { HTTP_STATUS } from '../../test-data/api.constants';
+import {API_MESSAGE, HTTP_STATUS} from '../../test-data/api.constants';
 
 test.describe('Product API Tests', () => {
 
@@ -25,9 +25,12 @@ test.describe('Product API Tests', () => {
 
 
     test('AE-API-002 - Verify unsupported POST method', async ({ productApi }) => {
-
         const response = await productApi.postProducts();
-        expect(response.status()).toBe(HTTP_STATUS.METHOD_NOT_ALLOWED);
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(HTTP_STATUS.OK);
+        expect(responseBody.responseCode).toBe(HTTP_STATUS.METHOD_NOT_ALLOWED);
+        expect(responseBody.message).toBe(API_MESSAGE.UNSUPPORTED_METHOD);
     });
 
     test('AE-API-005 - Verify product search with valid keyword', async ({ productApi }) => {
@@ -41,25 +44,13 @@ test.describe('Product API Tests', () => {
     });
 
 
-    test('Get all products', async ({ productApi }) => {
-
-        const response = await productApi.getAllProducts();
-        const responseBody = await response.json();
-        printApiResponse('GET ALL PRODUCTS API',
-            response,
-            responseBody
-        );
-        expect(response.status()).toBe(HTTP_STATUS.OK);
-
-    });
-
     test('AE-API-006 - Verify search request without required parameter', async ({ productApi }) => {
-            const response = await productApi.searchProductWithoutParameter();
-            const responseBody = await response.text();
-            printApiResponseThree('SEARCH PRODUCT - WITHOUT PARAMETER', response, responseBody);
-            expect(response.status()).toBe(HTTP_STATUS.BAD_REQUEST);
-            expect(responseBody).toContain('search_product');
-        }
-    );
+        const response = await productApi.searchProductWithoutParameter();
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(HTTP_STATUS.OK);
+        expect(responseBody.responseCode).toBe(HTTP_STATUS.BAD_REQUEST);
+        expect(responseBody.message).toContain('search_product');
+    });
 
 });

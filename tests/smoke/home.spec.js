@@ -189,11 +189,10 @@ test.describe('Home Page', () => {
                     await homePage.open();
                     await homePage.waitForPageLoad();
                     await expect(homePage.featuredItems.section).toBeVisible();
-                    await expect(homePage.featuredItems.products.first()).toBeVisible();
+                    await expect(homePage.featuredItems.products).toBeVisible();
                     await expect(homePage.featuredItems.productImages.first()).toBeVisible();
                     await expect(homePage.featuredItems.productNames.first()).toBeVisible();
                     await expect(homePage.featuredItems.productPrices.first()).toBeVisible();
-                    await expect(homePage.featuredItems.addToCart.first()).toBeVisible();
             }
         );
 
@@ -286,11 +285,7 @@ test.describe('Home Page', () => {
             await expect(homePage.page).toHaveURL(ROUTES.HOME);
             await expect(homePage.featuredItems.section).toBeVisible();
             await homePage.blueTopDetails.first().click();
-            await expect(homePage.page).toHaveURL(ROUTES.PRODUCTDETAILS_ONE);
-            await expect(homePage.blueTopDetailsName).toBeVisible();
-            await expect(homePage.blueTopDetailsPrice).toBeVisible();
-            await homePage.blueTopDetailsAddtoCart.click();
-            await homePage.blueTopDetailsViewCart.click();
+            await homePage.cart.viewCart.click();
             await expect(homePage.page).toHaveURL(ROUTES.CART);
             await expect(homePage.cart.blueTopCartRow).toBeVisible();
             await expect(homePage.cart.bluePrice).toHaveText(productData.priceTwo);

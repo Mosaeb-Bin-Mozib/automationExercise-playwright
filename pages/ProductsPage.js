@@ -10,7 +10,8 @@ export class ProductsPage {
         this.allProductsHeading = page.locator("//h2[normalize-space()='All Products']");
         this.productsList = page.locator("//div[contains(@class,'features_items')]");
         this.viewproduct = page.locator("xpath=.//a[contains(normalize-space(), 'View Product')]");
-        this.blueTopProduct = page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]");
+        this.blueTopProduct = page.locator('div').filter({ hasText: 'Rs. 500 Blue Top Add to cart' }).nth(4);
+        ;
         this.blueTopProductView = page.locator("xpath=.//a[contains(normalize-space(),'View Product')]").first();
 
         this.productInformation = page.locator("//div[contains(@class,'product-information')]");
@@ -111,8 +112,5 @@ export class ProductsPage {
     }
     async open() {
         await this.page.goto(ROUTES.PRODUCTS, {waitUntil: 'domcontentloaded', timeout: 60000});
-    }
-    async waitForPageLoad() {
-        await expect(this.allProductsHeading).toBeVisible();
     }
 }

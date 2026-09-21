@@ -7,5 +7,5 @@ export const HTTP_STATUS = Object.freeze({
 });
 
 export const API_MESSAGE = Object.freeze({
-    UNSUPPORTED_METHOD: 'This request method is not supported'
+    UNSUPPORTED_METHOD: 'This request method is not supported.'
 });
