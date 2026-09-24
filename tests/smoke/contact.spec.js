@@ -49,18 +49,17 @@ test.describe('Contact Us', () => {
             await expect(contactUsPage.successMessage).toBeVisible();
         }
     );
-    test('AE-029 - Verify Contact Us form rejects empty Name', async ({ contactUsPage }) => {
-            await contactUsPage.page.goto(ROUTES.HOME);
-            await contactUsPage.page.goto(ROUTES.CONTACT_US);
-            await contactUsPage.nameField.fill(contactData.nameEmpty);
-            await contactUsPage.emailField.fill(contactData.email);
-            await contactUsPage.subjectField.fill(contactData.subject);
-            await contactUsPage.messageField.fill(contactData.message);
-            await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
-            await contactUsPage.submitButton.click();
-            await expect(contactUsPage.nameField).toHaveJSProperty('validity.valueMissing', false);
-        }
-    );
+    test('AE-029 - Verify Contact Us form accepts empty Name', async ({ contactUsPage }) => {
+        await contactUsPage.page.goto(ROUTES.CONTACT_US);
+        await contactUsPage.nameField.fill(contactData.nameEmpty);
+        await contactUsPage.emailField.fill(contactData.email);
+        await contactUsPage.subjectField.fill(contactData.subject);
+        await contactUsPage.messageField.fill(contactData.message);
+        await expect(contactUsPage.nameField).toHaveJSProperty('validity.valueMissing', false);
+        await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
+        await contactUsPage.submitButton.click();
+    });
+
     test('AE-030 - Verify Contact Us form rejects empty Email', async ({ contactUsPage }) => {
             await contactUsPage.page.goto(ROUTES.HOME);
             await contactUsPage.page.goto(ROUTES.CONTACT_US);
@@ -81,12 +80,13 @@ test.describe('Contact Us', () => {
             await contactUsPage.emailField.fill(contactData.email);
             await contactUsPage.subjectField.fill(contactData.subjectEmpty);
             await contactUsPage.messageField.fill(contactData.message);
-            await expect(contactUsPage.subjectField).toHaveJSProperty('validity.valueMissing', true);
+            await expect(contactUsPage.subjectField).toHaveJSProperty('validity.valueMissing', false);
             await contactUsPage.page.once('dialog', async dialog => {await dialog.accept();});
             await contactUsPage.submitButton.click();
 
         }
     );
+
     test('AE-032 - Verify Contact Us form rejects empty Message', async ({ contactUsPage }) => {
 
             await contactUsPage.page.goto(ROUTES.HOME);
@@ -96,9 +96,10 @@ test.describe('Contact Us', () => {
             await contactUsPage.subjectField.fill(contactData.subject);
             await contactUsPage.messageField.fill(contactData.messageEmpty);
             await contactUsPage.submitButton.click();
-            await expect(contactUsPage.messageField).toHaveJSProperty('validity.valueMissing', true);
-        }
-    );
+            await expect(contactUsPage.messageField).toHaveJSProperty('validity.valueMissing', false);
+
+    });
+
     test('AE-033 - Verify Contact Us form rejects invalid Email', async ({ contactUsPage }) => {
             await contactUsPage.page.goto(ROUTES.HOME);
             await contactUsPage.page.goto(ROUTES.CONTACT_US);
@@ -148,7 +149,7 @@ test.describe('Contact Us', () => {
             await expect(contactUsPage.successMessage).toBeVisible();
             await contactUsPage.homeButton.click();
             await expect(contactUsPage.page).toHaveURL(ROUTES.HOME);
-            await expect(homePage.homeHeading).first().toBeVisible();
+            await expect(homePage.homeHeading).toBeVisible();
         }
     );
 

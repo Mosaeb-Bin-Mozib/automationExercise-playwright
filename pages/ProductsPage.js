@@ -1,13 +1,15 @@
-import { expect } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
 import {ROUTES} from "../test-data/routes";
+import {getProductData} from "../test-data/productData";
+const productData = getProductData()
+
 
 export class ProductsPage {
 
     constructor(page) {
         this.page = page;
-        this.allProductsHeading = page.locator("//h2[normalize-space()='All Products']");
+        this.allProductsHeading =page.getByRole('heading', { name: 'All Products' });
         this.productsList = page.locator("//div[contains(@class,'features_items')]");
         this.viewproduct = page.locator("xpath=.//a[contains(normalize-space(), 'View Product')]");
         this.blueTopProduct = page.locator('div').filter({ hasText: 'Rs. 500 Blue Top Add to cart' }).nth(4);
@@ -15,22 +17,22 @@ export class ProductsPage {
         this.blueTopProductView = page.locator("xpath=.//a[contains(normalize-space(),'View Product')]").first();
 
         this.productInformation = page.locator("//div[contains(@class,'product-information')]");
-        this.productInformationName = page.locator("xpath=.//h2");
+        this.productInformationName = page.getByRole('heading', { name: productData.nameTwo })
         this.productInformationCategory = page.locator("xpath=.//p[contains(normalize-space(),'Category:')]");
         this.productInformationPrice = page.locator("xpath=.//span[contains(normalize-space(),'Rs.')]");
         this.productInformationAvailability = page.locator("xpath=.//p[contains(normalize-space(),'Availability:')]");
         this.productInformationCondition = page.locator("xpath=.//p[contains(normalize-space(),'Condition:')]");
         this.productInformationBrand = page.locator("xpath=.//p[contains(normalize-space(),'Brand:')]");
 
-        this.menTshirtCartRow = page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]");
-        this.menTshirtCartRowQuantity = page.locator("//button[normalize-space()='1']");
-        this.menTshirtCartRowQuantityFour = page.locator("//button[normalize-space()='4']");
-        this.menTshirtCartRowName = page.locator("//a[normalize-space()='Men Tshirt']");
+        this.menTshirtCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()=${productData.nameOne}]]`);
+        this.menTshirtCartRowQuantity = page.locator(`//button[normalize-space()=${productData.productQuantity}]`);
+        this.menTshirtCartRowQuantityFour = page.locator(`//button[normalize-space()=${productData.Quantity}]`);
+        this.menTshirtCartRowName = page.locator(`//a[normalize-space()=${productData.nameOne}]`);
         this.menTshirtReview = page.locator("//a[normalize-space()='Write Your Review']");
 
-        this.blueTopAgain = page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]");
-        this.blueTopAgainaddToCart = page.locator("xpath=.//a[contains(normalize-space(),'Add to cart')]");
-        this.blueTopCartRow = page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]");
+        this.blueTopAgain = page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${productData.nameTwo}]]`);
+        this.blueTopAgainaddToCart = page.locator("//body/section/div[@class='container']/div[@class='row']/div[@class='col-sm-9 padding-right']/div[@class='features_items']/div[2]/div[1]/div[1]/div[1]/a[1]");
+        this.blueTopCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()=${productData.nameTwo}]]`);
         this.blueTopCartRowName = page.locator("td.cart_description a");
         this.blueTopCartRowPrice = page.locator("td.cart_price p");
         this.blueTopCartRowQuantity = page.locator("td.cart_quantity button");
@@ -46,21 +48,21 @@ export class ProductsPage {
         this.products = {
 
             cards: page.locator("//div[contains(@class,'product-image-wrapper')]"),
-            blueTop: page.locator("//p[normalize-space()='Blue Top']").first(),
+            blueTop: page.locator(`//p[normalize-space()=${productData.nameTwo}]`).first(),
 
-            blueTopImage: page.locator("//div[.//p[normalize-space()='Blue Top']]//img").first(),
+            blueTopImage: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//img`).first(),
 
-            blueTopName: page.locator("//p[normalize-space()='Blue Top']").first(),
+            blueTopName: page.locator(`//p[normalize-space()=${productData.nameTwo}]`).first(),
 
-            blueTopPrice: page.locator("//div[.//p[normalize-space()='Blue Top']]//h2").first(),
+            blueTopPrice: page.getByRole('heading', { name: productData.priceTwo }).first(),
 
-            blueTopAddToCart: page.locator("//div[.//p[normalize-space()='Blue Top']]//a[contains(@class,'add-to-cart')]").first(),
+            blueTopAddToCart: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//a[contains(@class,'add-to-cart')]`).first(),
 
-            blueTopViewProduct: page.locator("//div[.//p[normalize-space()='Blue Top']]//a[contains(@href,'product_details')]").first(),
+            blueTopViewProduct: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//a[contains(@href,'product_details')]`).first(),
 
-            menTshirt: page.locator("//p[normalize-space()='Men Tshirt']").first(),
+            menTshirt: page.locator(`//p[normalize-space()=${productData.nameOne}]`).first(),
 
-            menTshirtAddToCart: page.locator("//div[.//p[normalize-space()='Men Tshirt']]//a[contains(@class,'add-to-cart')]").first(),
+            menTshirtAddToCart: page.locator(`//div[.//p[normalize-space()=${productData.nameOne}]]//a[contains(@class,'add-to-cart')]`).first(),
         };
 
         this.cartConfirmation = {
@@ -85,7 +87,7 @@ export class ProductsPage {
             information: page.locator("//div[contains(@class,'product-information')]"),
             name: page.locator("//div[contains(@class,'product-information')]//h2"),
             category: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Category:')]"),
-            price: page.locator("//span[normalize-space()='Rs. 400']"),
+            price: page.locator(`//span[normalize-space()=${productData.priceOne}]`),
             availability: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Availability:')]"),
             condition: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Condition:')]"),
             brand: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Brand:')]"),

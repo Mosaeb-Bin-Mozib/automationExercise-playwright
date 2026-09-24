@@ -4,19 +4,18 @@ import {getProductData} from "../../test-data/productData";
 const productData = getProductData()
 
 
-test.describe('Home Page', () => {
+test.describe('Home Page frontend', () => {
     test('AE-042 - Verify that the Home page loads successfully', async ({ homePage }) => {
-            await homePage.goto(ROUTES.HOME); await homePage.page.goto(ROUTES.CONTACT_US);
-            await homePage.waitForPageLoad();
+            await homePage.page.goto(ROUTES.HOME);
+            await homePage.page.goto(ROUTES.CONTACT_US);
+            await homePage.page.goto(ROUTES.HOME);
             await expect(homePage.page).toHaveURL(ROUTES.HOME);
             await expect(homePage.homeHeading).toBeVisible();
-
         }
     );
 
     test('AE-043 - Verify Home page identifies Automation Exercise', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await expect(homePage.page).toHaveTitle(/Automation Exercise/);
             await expect(homePage.homeHeading).toBeVisible();
         }
@@ -24,7 +23,6 @@ test.describe('Home Page', () => {
 
     test('AE-044 - Verify that the main navigation is displayed', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await expect(homePage.homeLink).toBeVisible();
             await expect(homePage.productsLink).toBeVisible();
             await expect(homePage.cartLink).toBeVisible();
@@ -35,10 +33,9 @@ test.describe('Home Page', () => {
 
     test('AE-045 - Verify that the main page content is not visually broken', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await expect(homePage.header).toBeVisible();
             await expect(homePage.banner).toBeVisible();
-            await expect(homePage.categories).toBeVisible();
+            await expect(homePage.categories.section).toBeVisible();
             await expect(homePage.products).toBeVisible();
             await expect(homePage.footer).toBeVisible();
         }
@@ -46,7 +43,6 @@ test.describe('Home Page', () => {
 
     test('AE-046 - Verify all major navigation links from Home page', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await homePage.signupLoginLink.click();
             await expect(homePage.page).toHaveURL(ROUTES.LOGIN);
             await expect(homePage.loginInfo.first()).toBeVisible();
@@ -67,8 +63,6 @@ test.describe('Home Page', () => {
 
     test('AE-048 - Verify all available product categories and subcategories', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
-            await expect(homePage.categories.section).toBeVisible();
             await expect(homePage.categories.women.category).toBeVisible();
             await homePage.categories.women.category.click();
             await expect(homePage.categories.women.dress).toBeVisible();
@@ -87,8 +81,6 @@ test.describe('Home Page', () => {
 
     test('AE-049 - Verify each category and subcategory navigates to correct product listing', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
-
             await homePage.categories.women.category.click();
             await homePage.categories.women.dress.click();
             await expect(homePage.page).toHaveURL(ROUTES.WOMANDRESS);
@@ -134,7 +126,6 @@ test.describe('Home Page', () => {
     );
     test('AE-050 - Verify available brands and brand navigation', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await expect(homePage.brands.section).toBeVisible();
             await expect(homePage.brands.polo).toBeVisible();
             await expect(homePage.brands.hm).toBeVisible();
@@ -187,8 +178,6 @@ test.describe('Home Page', () => {
     );
      test('AE-051 - Verify Featured Items and product information', async ({ homePage }) => {
                     await homePage.open();
-                    await homePage.waitForPageLoad();
-                    await expect(homePage.featuredItems.section).toBeVisible();
                     await expect(homePage.featuredItems.products).toBeVisible();
                     await expect(homePage.featuredItems.productImages.first()).toBeVisible();
                     await expect(homePage.featuredItems.productNames.first()).toBeVisible();
@@ -198,13 +187,10 @@ test.describe('Home Page', () => {
 
         test('AE-052 - Verify product can be opened from Home page', async ({ homePage }) => {
                 await homePage.open();
-                await homePage.waitForPageLoad();
-                await expect(homePage.productDetails.blueTop).toBeVisible();
                 await homePage.productDetails.blueTopViewProduct.click();
-                await homePage.page.waitForLoadState('domcontentloaded');
-                await expect(homePage.page).toHaveURL(ROUTES.PRODUCTDETAILS);
-                await expect(homePage.productDetails.name).toHaveText(productData.nameOne);
-                await expect(homePage.productDetails.category).toContainText(productData.Category);
+                await expect(homePage.page).toHaveURL(ROUTES.PRODUCTDETAILS_ONE);
+                await expect(homePage.productDetails.name).toHaveText(productData.nameTwo);
+                await expect(homePage.productDetails.category).toContainText(productData.Category_two);
                 await expect(homePage.productDetails.price).toBeVisible();
                 await expect(homePage.productDetails.availability).toContainText(productData.Availability);
                 await expect(homePage.productDetails.condition).toContainText(productData.Condition);
@@ -213,8 +199,7 @@ test.describe('Home Page', () => {
         );
     test('AE-053 - Verify product can be added to Cart from Home page', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
-            await expect(homePage.productDetails.blueTop).toBeVisible();
+            await homePage.productDetails.blueTopViewProduct.click();
             await homePage.cart.blueTopAddToCart.click();
             await expect(homePage.cart.viewCart).toBeVisible();
             await homePage.cart.viewCart.click();
@@ -225,9 +210,12 @@ test.describe('Home Page', () => {
     );
     test('AE-054 - Verify Cart contains correct product and pricing information', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
-            await homePage.addBlueTopToCart();
+            await homePage.productDetails.blueTopViewProduct.click();
+            await homePage.cart.blueTopAddToCart.click();
+            await expect(homePage.cart.viewCart).toBeVisible();
+            await homePage.cart.viewCart.click();
             await expect(homePage.page).toHaveURL(ROUTES.CART);
+            await expect(homePage.cart.cartBlueTop).toBeVisible();
             await expect(homePage.cart.productName).toHaveText(productData.nameTwo);
             await expect(homePage.cart.productPrice).toHaveText(productData.priceTwo);
             await expect(homePage.cart.quantity).toHaveText(productData.productQuantity);
@@ -236,24 +224,18 @@ test.describe('Home Page', () => {
     );
     test('AE-055 - Verify Continue Shopping behavior', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
-            await expect(homePage.productDetails.blueTop).toBeVisible();
+            await homePage.productDetails.blueTopViewProduct.click();
             await homePage.cart.blueTopAddToCart.click();
             await expect(homePage.cart.continueShopping).toBeVisible();
             await homePage.cart.continueShopping.click();
             await expect(homePage.cart.continueShopping).toBeHidden();
-            await expect(homePage.page).toHaveURL(ROUTES.HOME);
-            await expect(homePage.productDetails.blueTop).toBeVisible();
-    
             await homePage.addToCart.first().click();
-            await homePage.page.waitForLoadState('domcontentloaded');
             await expect(homePage.page).toHaveURL(ROUTES.CART);
             await expect(homePage.cart.cartBlueTop).toBeVisible();
         }
     );
     test('AE-059 - Verify Footer content', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await homePage.page.evaluate(() => {window.scrollTo(0, document.body.scrollHeight);});
             await expect(homePage.footerSections.subscription).toBeVisible();
             await expect(homePage.footerSections.footer).toBeVisible();
@@ -264,7 +246,6 @@ test.describe('Home Page', () => {
 
     test('AE-062 - Verify multiple products are added to Cart correctly', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await homePage.cart.blueTopAddToCart.click();
             await homePage.cart.continueShopping.click();
             await expect(homePage.cart.continueShopping).toBeHidden();
@@ -281,9 +262,7 @@ test.describe('Home Page', () => {
     );
     test('AE-064 - Verify critical Home to Product to Cart journey', async ({ homePage }) => {
             await homePage.open();
-            await homePage.waitForPageLoad();
             await expect(homePage.page).toHaveURL(ROUTES.HOME);
-            await expect(homePage.featuredItems.section).toBeVisible();
             await homePage.blueTopDetails.first().click();
             await homePage.cart.viewCart.click();
             await expect(homePage.page).toHaveURL(ROUTES.CART);

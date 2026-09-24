@@ -1,12 +1,11 @@
 import {ROUTES} from "../test-data/routes";
+import {getProductData} from '../test-data/productData';
+const productData = getProductData();
+
 export class HomePage {
     constructor(page) {
         this.page = page;
-        this.homeHeading = page
-            .getByRole('heading', {
-                name: 'Full-Fledged practice website for Automation Engineers'
-            })
-            .first();
+        this.homeHeading = page.getByRole('heading', {name: 'Full-Fledged practice website for Automation Engineers'}).first();
 
         this.homeLink = page.getByRole('link', { name: /Home/ }).first();
         this.productsLink = page.getByRole('link', { name: /Products/ }).first();
@@ -20,10 +19,6 @@ export class HomePage {
         this.featuredItemsInfo = page.locator("//div[contains(@class,'features_items')]");
         this.addToCart = page.locator("//a[normalize-space()='Cart']");
         this.blueTopDetails = page.getByText('Add to cart', { exact: true });
-        // this.blueTopDetailsName = page.locator("//h2[normalize-space()='Blue Top']");
-        // this.blueTopDetailsPrice = page.locator("//span[normalize-space()='Rs. 500']");
-        // this.blueTopDetailsAddtoCart = page.locator("//button[normalize-space()='Add to cart']");
-        // this.blueTopDetailsViewCart = page.locator("//u[normalize-space()='View Cart']");
         this.homebutton = page.locator("//a[normalize-space()='Home']");
 
         this.header = page.locator('header');
@@ -131,24 +126,15 @@ export class HomePage {
         };
 
         this.featuredItems = {
-            section: page.getByText('Features Items  Added! Your'),
-
-            products: page.locator('div').filter({hasText: 'Rs. 500 Blue Top Add to cart'}).nth(4),
+            products: page.locator("//div[contains(@class,'features_items')]"),
             productImages: page.getByRole('img', { name: 'ecommerce website products' }),
-            productNames: page.getByText('Blue Top', { exact: true }),
-            productPrices:page.getByRole('heading', { name: 'Rs. 500' }),
-            addToCart: page.locator(
-                "//div[contains(@class,'features_items')]//a[contains(@class,'add-to-cart')]"
-            ),
-
-            viewProduct: page.locator(
-                "//div[contains(@class,'features_items')]//a[contains(normalize-space(),'View Product')]"
-            ),
+            productNames: page.getByText(productData.nameTwo, { exact: true }),
+            productPrices: page.getByRole('heading', { name: productData.priceTwo }),
+            addToCart: page.locator("//div[contains(@class,'features_items')]//a[contains(@class,'add-to-cart')]"),
+            viewProduct: page.locator("//div[contains(@class,'features_items')]//a[contains(normalize-space(),'View Product')]"),
         };
 
         this.productDetails = {
-            blueTop: page.locator('div').filter({ hasText: 'Rs. 500 Blue Top Add to cart' }).nth(4).first(),
-
             blueTopViewProduct:page.getByRole('link', { name: 'View Product' }).first(),
 
             name: page.locator("//div[contains(@class,'product-information')]//h2"),
@@ -165,10 +151,10 @@ export class HomePage {
         };
 
         this.cart = {
-            bluePrice:page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 500')]"),
-            blueQuantity:page.locator("//tr[@id='product-1']//button[@class='disabled'][normalize-space()='1']"),
-            menTshirtPrice:page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 400')]"),
-            menTshirtQuantity:page.locator("//tr[@id='product-2']//button[@class='disabled'][normalize-space()='1']"),
+            bluePrice: page.locator('tr').filter({ hasText: productData.nameTwo }).locator('td.cart_price p'),
+            blueQuantity:page.locator(`//tr[@id='product-1']//button[@class='disabled'][normalize-space()=${productData.productQuantity}]`),
+            menTshirtPrice:page.locator('#product-2 td.cart_price p'),
+            menTshirtQuantity:page.locator(`//tr[@id='product-2']//button[@class='disabled'][normalize-space()=${productData.productQuantity}]`),
             blueTopAddToCart: page.getByText('Add to cart', { exact: true }).first(),
 
             viewCart: page.locator(
@@ -176,7 +162,7 @@ export class HomePage {
             ).first(),
 
             cartBlueTop: page.locator(
-                "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]"
+                `//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameTwo}']]`
             ).first(),
 
             productName: page.locator(
@@ -202,11 +188,11 @@ export class HomePage {
             menTshirtAddToCart:page.locator('[data-product-id="2"]').first(),
 
             blueTopCartRow: page.locator(
-                "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Blue Top']]"
+                `//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameTwo}']]`
             ).first(),
 
             menTshirtCartRow: page.locator(
-                "//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='Men Tshirt']]"
+                `//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameOne}']]`
             ).first(),
         };
 
@@ -227,7 +213,5 @@ export class HomePage {
     async open() {
         await this.page.goto(ROUTES.HOME, {waitUntil: 'domcontentloaded', timeout: 60000});
     }
-    async waitForPageLoad() {
-        await this.page.waitForLoadState('domcontentloaded');
-    }
+
 }

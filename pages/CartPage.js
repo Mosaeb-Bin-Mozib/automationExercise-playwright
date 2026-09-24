@@ -1,3 +1,5 @@
+import {getCartData} from '../test-data/cartData';
+const cartData = getCartData()
 export class CartPage {
 
     constructor(page) {
@@ -8,9 +10,9 @@ export class CartPage {
         this.emptyCartBuyProductsLink = page.locator("//p[contains(normalize-space(),'Cart is empty!')]//a");
         this.cartProduct = {
             row: page.getByRole('row', { name: 'Product Image Blue Top Women' }).first(),
-            name: page.getByRole('link', { name: 'Blue Top' }).first(),
+            name: page.getByRole('link', { name: cartData.productName }).first(),
             price: page.getByText('Rs.').first().first(),
-            quantity:page.getByRole('button', { name: '1' }).first(),
+            quantity:page.getByRole('button', { name: cartData.productQuantity }).first(),
             total:page.getByText('Rs.').nth(1).first(),
         };
         this.cartConfirmation = {
@@ -22,7 +24,6 @@ export class CartPage {
             proceedToCheckout: page.locator("//a[normalize-space()='Proceed To Checkout']"),
             checkoutConfirmationMessage: page.locator("//h2[normalize-space()='Address Details']"),
             checkoutCartProductList: page.locator("//h2[normalize-space()='Review Your Order']"),
-            remainingProduct: page.locator("//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()=cartData.productName2]]"),
             checkoutPlaceOrder: page.locator("//a[normalize-space()='Place Order']"),
             totalText: page.locator("(//p[@class='cart_total_price'][normalize-space()='Rs. 1500'])[2]"),
             commentBox: page.locator("//textarea[@name='message']"),
@@ -45,8 +46,8 @@ export class CartPage {
         };
 
         this.products = {
-            blueTop: page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Blue Top']]").first(),
-            menTshirt: page.locator("//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='Men Tshirt']]").first(),
+            blueTop: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${cartData.productName}]]`).first(),
+            menTshirt: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${cartData.productName2}]]`).first(),
         };
 
         this.productDetails = {
@@ -55,43 +56,52 @@ export class CartPage {
         };
 
         this.blueTopProduct = {
-            blueTop: page.locator("//div[@class='productinfo text-center']//p[contains(text(),'Blue Top')]"),
+            blueTop: page.locator(`//div[@class='productinfo text-center']//p[contains(text(),${cartData.productName})]`),
             blueTopRow: page.locator("(//tr[@id='product-1'])[1]"),
             blueTopRowName: page.locator("//tr[@id='product-1']//td[@class='cart_description']"),
-            blueTopRowNameTwo: page.locator("//a[normalize-space()='Blue Top']"),
-            blueTopPrice: page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 500')]"),
-            blueTopQuantity: page.locator("//tr[@id='product-1']//button[@class='disabled'][normalize-space()='1']"),
-            blueTopTotal: page.locator("//p[@class='cart_total_price'][normalize-space()='Rs. 500']"),
+            blueTopRowNameTwo: page.locator(`//a[normalize-space()=${cartData.productName}]`),
+            blueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice})]`),
+            blueTopQuantity: page.getByRole('row', { name: /Blue Top Women/ }).getByRole('button'),
+
+            blueTopTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()=${cartData.productPrice}]`),
             blueTopDelete: page.locator("//tr[@id='product-1']//a[@class='cart_quantity_delete']"),
             addToCart: page.locator("(//a[@class='btn btn-default add-to-cart'][normalize-space()='Add to cart'])[1]"),
         };
         this.manTshirtProduct = {
-            manTshirt: page.locator("(//p[contains(text(),'Men Tshirt')])[1]"),
+            manTshirt: page.locator(`(//p[contains(text(),${cartData.productName2})])[1]`),
             manTshirtRow: page.locator("(//tr[@id='product-2'])[1]"),
             manTshirtRowName: page.locator("(//td[@class='cart_description'])[1]"),
-            manTshirtRowNameTwo: page.locator("//a[normalize-space()='Men Tshirt']"),
-            manTshirtPrice: page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 400')]"),
-            manTshirtPrice2: page.locator("(//p[normalize-space()='Rs. 400'])[1]"),
+            manTshirtRowNameTwo: page.locator(`//a[normalize-space()=${cartData.productName2}]`),
+            manTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice2})]`),
+            manTshirtPrice2: page.locator(`(//p[normalize-space()=${cartData.productPrice2}])[1]`),
             manTshirtQuantity: page.locator("//tr[@id='product-2']//button[@class='disabled'][normalize-space()='1']"),
-            manTshirtQuantityThree: page.locator("//button[normalize-space()='3']"),
-            manTshirtQuantitySix: page.locator("//button[normalize-space()='6']"),
-            manTshirtTotal: page.locator("//p[@class='cart_total_price'][normalize-space()='Rs. 400']"),
+            manTshirtQuantityThree: page.locator(`//button[normalize-space()=${cartData.quantityInput}]`),
+            manTshirtQuantitySix: page.locator(`//button[normalize-space()=${cartData.quantityInput2}]`),
+            manTshirtTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()=${cartData.productPrice2}]`),
             manTshirtTotalThreeProduct: page.locator("(//p[@class='cart_total_price'])[1]"),
             addToCart: page.locator("(//a[@class='btn btn-default add-to-cart'][normalize-space()='Add to cart'])[3]"),
         };
 
         this.cartProductList = {
             checkoutBlueTop: page.locator("(//tr[@id='product-1'])[1]"),
-            checkoutBlueTopName: page.locator("(//a[normalize-space()='Blue Top'])[1]"),
-            checkoutBlueTopPrice: page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 500')]"),
-            checkoutBlueTopQuantity: page.locator("(//button[normalize-space()='1'])[1]"),
-            checkoutBlueTopTotal: page.locator("(//p[contains(text(),'Rs. 500')])[3]"),
+            checkoutBlueTopName: page.locator(`(//a[normalize-space()=${cartData.productName}])[1]`),
+            checkoutBlueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice})]`),
+            checkoutBlueTopQuantity: page.getByRole('button', { name: cartData.productQuantity }),
+            checkoutBlueTopTotal: page
+            .getByRole('row', { name: /Blue Top Women > Tops/ })
+            .locator('td')
+            .nth(4)
+            .locator('p'),
 
             checkoutManTshirt: page.locator("(//tr[@id='product-2'])[1]"),
-            checkoutManTshirtName: page.locator("//a[normalize-space()='Men Tshirt']"),
-            checkoutManTshirtPrice: page.locator("//td[@class='cart_price']//p[contains(text(),'Rs. 400')]"),
+            checkoutManTshirtName: page.locator(`//a[normalize-space()=${cartData.productName2}]`),
+            checkoutManTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice2})]`),
             checkoutManTshirtQuantity: page.locator("(//button[normalize-space()='1'])[1]"),
-            checkoutManTshirtTotal: page.locator("(//p[contains(text(),'Rs. 400')])[3]"),
+            checkoutManTshirtTotal: page
+            .getByRole('row', { name: /Men Tshirt Men > Tshirts/ })
+            .locator('td')
+            .nth(4)
+            .locator('p'),
         };
     }
 }

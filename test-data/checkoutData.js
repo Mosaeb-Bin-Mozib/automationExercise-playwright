@@ -8,7 +8,7 @@ export function getCheckoutData() {
         company: 'Automation Company',
         address: '123 Automation Street',
         address2: 'Test Area',
-        country: 'Bangladesh',
+        country: 'India',
         state: 'Dhaka',
         city: 'Dhaka',
         zipcode: '1207',

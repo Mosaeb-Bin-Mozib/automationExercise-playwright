@@ -10,6 +10,7 @@ Only findings that remain reproducible against the current branch are retained b
 - **Issue:** `BasePage.login()` imports and calls `expect` to assert that the "Logged in as" text is visible after submitting the login form.
 - **Impact:** The page object owns both the login action and a test assertion, so assertion ownership is inconsistent and callers cannot reuse the action when a different outcome is expected.
 - **Recommendation:** Keep `login()` limited to navigation and form submission. Expose the logged-in indicator as a locator and assert it in the calling spec.
+- **Status:** Solved
 
 #### [LOW] Inactive executable code remains commented out
 
@@ -19,6 +20,7 @@ Only findings that remain reproducible against the current branch are retained b
 - **Issue:** Four obsolete `blueTopDetails*` locators remain commented out in the constructor.
 - **Impact:** These inactive alternatives add maintenance noise and make the active locator model less clear; Git history already preserves them.
 - **Recommendation:** Delete the commented-out locators. Reintroduce them only as active, maintained locators if a test needs them.
+- **Status:** Solved
 
 #### [MEDIUM] Page-object workflows still embed scenario data and credentials
 
@@ -28,6 +30,7 @@ Only findings that remain reproducible against the current branch are retained b
 - **Issue:** Page-object locators still embed product names, prices, and checkout-address values. Login and account data also include literal credentials and personal-style values rather than environment-backed configuration where appropriate.
 - **Impact:** Catalog, account, or checkout-data changes require edits across implementation files, inhibit environment-specific credential injection, and retain coupling to shared account state.
 - **Recommendation:** Pass scenario data into parameterized page-object actions/locators from centralized test-data factories. Read reusable login credentials from environment-backed configuration.
+- **Status:** Solved
 
 #### [MEDIUM] Product expectations remain duplicated across page-object workflows
 
@@ -37,6 +40,7 @@ Only findings that remain reproducible against the current branch are retained b
 - **Issue:** `Blue Top`, `Men Tshirt`, and their expected prices are duplicated in page-object locators even though product values are also defined in `productData.js` and `cartData.js`.
 - **Impact:** A seeded-catalog change requires broad manual updates and can leave workflows with inconsistent expectations.
 - **Recommendation:** Define one structured product model and use parameterized page-object locators/actions that accept its name or id while keeping locator construction encapsulated.
+- **Status:** Solved
 
 ## Final Verdict
 

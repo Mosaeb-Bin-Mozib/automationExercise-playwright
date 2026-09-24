@@ -2,7 +2,7 @@ export function getUserAccountData() {
     const uniqueId = Date.now();
 
     return {
-        name: 'Hasan Mahmud ',
+        name: 'Hasan Mahmud',
         email: `hasan_${uniqueId}@example.com`,
         password: 'Test@1234',
         title: 'Mr',

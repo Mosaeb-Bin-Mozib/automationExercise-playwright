@@ -7,8 +7,7 @@ test.describe('Login API Tests', () => {
     test('AE-API-007 - Verify login with valid credentials', async ({ loginApi }) => {
 
         const response = await loginApi.login(
-                validLoginData.email,
-                validLoginData.password
+                validLoginData.email,process.env.PASSWORD
             );
             expect(response.status()).toBe(HTTP_STATUS.OK);
         }
@@ -48,8 +47,7 @@ test.describe('Login API Tests', () => {
         } finally {
             try {
                 await userAccountApi.deleteAccount(
-                    userData.email,
-                    userData.password
+                    userData.email, process.env.PASSWORD
                 );
             } catch (cleanupError) {
                 console.warn('Account cleanup failed:', cleanupError.message);
@@ -69,7 +67,7 @@ test.describe('Login API Tests', () => {
 
             const updateData = {
                 email: userData.email,
-                password: userData.password,
+                password: process.env.PASSWORD,
                 firstname: 'Musa',
                 lastname: 'Bin Mozib',
                 address1: 'Sadar Road Barishal',
@@ -80,13 +78,13 @@ test.describe('Login API Tests', () => {
             const responseBody = await response.json();
 
             expect(response.status()).toBe(HTTP_STATUS.OK);
-            expect(responseBody.responseCode).toBe(HTTP_STATUS.CREATED);
+            expect(responseBody.responseCode).toBe(HTTP_STATUS.OK);
             expect(responseBody.message).toBe('User updated!');
         } finally {
             try {
                 await userAccountApi.deleteAccount(
                     userData.email,
-                    userData.password
+                    process.env.PASSWORD
                 );
             } catch (cleanupError) {
                 console.warn('Account cleanup failed:', cleanupError.message);
@@ -113,7 +111,7 @@ test.describe('Login API Tests', () => {
             try {
                 await userAccountApi.deleteAccount(
                     userData.email,
-                    userData.password
+                    process.env.PASSWORD
                 );
             } catch (cleanupError) {
                 console.warn('Account cleanup failed:', cleanupError.message);
@@ -127,12 +125,13 @@ test.describe('Login API Tests', () => {
 
         try {
             const createResponse = await userAccountApi.createAccount(userData);
-            expect(createResponse.status()).toBe(HTTP_STATUS.CREATED);
+            const createBody = await createResponse.json();
 
-            const response = await userAccountApi.deleteAccount(
-                userData.email,
-                userData.password
-            );
+            expect(createResponse.status()).toBe(HTTP_STATUS.OK);
+            expect(createBody.responseCode).toBe(HTTP_STATUS.CREATED);
+
+            const response = await userAccountApi.deleteAccount(userData.email, process.env.PASSWORD);
+
             const responseBody = await response.text();
 
             expect(response.status()).toBe(HTTP_STATUS.OK);
@@ -142,7 +141,7 @@ test.describe('Login API Tests', () => {
             try {
                 await userAccountApi.deleteAccount(
                     userData.email,
-                    userData.password
+                    process.env.PASSWORD
                 );
             } catch (cleanupError) {
                 console.warn('Account cleanup failed:', cleanupError.message);
@@ -151,11 +150,12 @@ test.describe('Login API Tests', () => {
     });
 
     test('AE-API-014 - Verify unsupported DELETE method for Login API', async ({ loginApi }) => {
-
         const response = await loginApi.deleteLogin();
-        const responseBody = await response.text();
-        expect(response.status()).toBe(HTTP_STATUS.METHOD_NOT_ALLOWED);
-        expect(responseBody).toContain(API_MESSAGE.UNSUPPORTED_METHOD);
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(HTTP_STATUS.OK);
+        expect(responseBody.responseCode).toBe(HTTP_STATUS.METHOD_NOT_ALLOWED);
+        expect(responseBody.message).toContain(API_MESSAGE.UNSUPPORTED_METHOD);
     });
 
 });

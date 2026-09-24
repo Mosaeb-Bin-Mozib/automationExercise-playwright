@@ -1,6 +1,7 @@
 import {test, expect} from '../../fixtures/login.fixture';
 import {getCheckoutData} from '../../test-data/checkoutData';
 const checkoutData = getCheckoutData();
+const uniqueEmail = `mozib_${Date.now()}@example.com`;
 test('E2E-002 - Verify an existing customer can successfully complete a purchase', async ({loginPage, signupPage, accountInformationPage}) => {
         await signupPage.open();
         await signupPage.signupLoginLink.click();
@@ -12,8 +13,8 @@ test('E2E-002 - Verify an existing customer can successfully complete a purchase
         await expect(signupPage.emailField).toBeEnabled();
         await expect(signupPage.signupButton).toBeVisible();
         await expect(signupPage.signupButton).toBeEnabled();
-        await signupPage.enterName();
-        await signupPage.enterEmail(email);
+        await signupPage.enterName(`${checkoutData.firstName} ${checkoutData.lastName}`);
+        await signupPage.enterEmail(uniqueEmail);
         await signupPage.clickSignup();
         await expect(accountInformationPage.accountInformationHeading).toBeVisible();
         await expect(accountInformationPage.titleMr).toBeVisible();
@@ -28,7 +29,7 @@ test('E2E-002 - Verify an existing customer can successfully complete a purchase
         await expect(accountInformationPage.specialOffersCheckbox).toBeVisible();
         await accountInformationPage.titleMr.check();
     
-        await accountInformationPage.passwordField.fill(password);
+        await accountInformationPage.passwordField.fill(process.env.TEST_PASSWORD);
     
         await accountInformationPage.dayDropdown.selectOption(checkoutData.day);
     
@@ -49,9 +50,8 @@ test('E2E-002 - Verify an existing customer can successfully complete a purchase
         await accountInformationPage.clickCreateAccount();
         await expect(accountInformationPage.page.getByText('Account Created!')).toBeVisible();
         await accountInformationPage.page.getByRole('link', {name: 'Continue'}).click();
-        await expect(accountInformationPage.loggedInAs).toBeVisible();
-    
-        await expect(accountInformationPage.loggedInAs).toContainText(`Logged in as ${username}`);
+        await expect(loginPage.loggedInAs).toContainText(`Logged in as ${checkoutData.firstName} ${checkoutData.lastName}`);
+
         await expect(loginPage.logoutLink).toBeVisible();
     }
 );

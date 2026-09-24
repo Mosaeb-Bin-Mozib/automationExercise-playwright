@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/test.fixture.js';
 import {getSignupData, } from '../../test-data/signupData';
 const signupData = getSignupData();
 
-test.describe('New User Signup', () => {
+test.describe('New User Signup frontend', () => {
     test('AE-001 - Verify New User Signup page is displayed correctly', async ({ signupPage }) => {
             await expect(signupPage.signupHeading).toBeVisible();
             await expect(signupPage.nameField).toBeVisible();
@@ -86,31 +86,29 @@ test.describe('New User Signup', () => {
         }
     );
 
-    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPage, signupTestData}) => {
+    test('AE-007 - Verify valid Account Information can be entered successfully', async ({accountInformationPage}) => {
 
-        await accountInformationPage.selectGender(signupTestData.title);
-        await accountInformationPage.passwordField.fill(signupTestData.password);
-        await accountInformationPage.dayDropdown.selectOption(getSignupData.dateOfBirth.day);
-        await accountInformationPage.monthDropdown.selectOption({ label: getSignupData.dateOfBirth.month });
-        await accountInformationPage.yearDropdown.selectOption(getSignupData.dateOfBirth.year);
-        await accountInformationPage.firstNameField.fill(signupTestData.firstName);
-        await accountInformationPage.lastNameField.fill(signupTestData.lastName);
-        await accountInformationPage.companyField.fill(signupTestData.company);
-        await accountInformationPage.addressField.fill(signupTestData.address);
-        await accountInformationPage.address2Field.fill(signupTestData.address2);
-        await accountInformationPage.countryDropdown.selectOption(signupTestData.country);
-        await accountInformationPage.stateField.fill(signupTestData.state);
-        await accountInformationPage.cityField.fill(signupTestData.city);
-        await accountInformationPage.zipcodeField.fill(signupTestData.zip);
-        await accountInformationPage.mobileNumberField.fill(signupTestData.phone);
+        await accountInformationPage.selectGender(signupData.title);
+        await accountInformationPage.passwordField.fill(signupData.password);
+        await accountInformationPage.dayDropdown.selectOption(signupData.dateOfBirth.day);
+        await accountInformationPage.monthDropdown.selectOption({ label: signupData.dateOfBirth.month});
+        await accountInformationPage.yearDropdown.selectOption(signupData.dateOfBirth.year);
+        await accountInformationPage.firstNameField.fill(signupData.firstName);
+        await accountInformationPage.lastNameField.fill(signupData.lastName);
+        await accountInformationPage.companyField.fill(signupData.company);
+        await accountInformationPage.addressField.fill(signupData.address);
+        await accountInformationPage.address2Field.fill(signupData.address2);
+        await accountInformationPage.countryDropdown.selectOption(signupData.country);
+        await accountInformationPage.stateField.fill(signupData.state);
+        await accountInformationPage.cityField.fill(signupData.city);
+        await accountInformationPage.zipcodeField.fill(signupData.zip);
+        await accountInformationPage.mobileNumberField.fill(signupData.phone);
     });
 
-    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({accountInformationPages,signupPage, signupTestData}) => {
+    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({ signupPage }) => {
         await signupPage.nameField.fill(signupData.name);
         await signupPage.emailField.fill(signupData.email);
         await signupPage.signupButton.click();
-
-        }
-    );
+    });
 
 });

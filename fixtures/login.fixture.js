@@ -3,8 +3,6 @@ import { LoginPage } from '../pages/LoginPage.js';
 import { SignupPage } from '../pages/SignupPage.js';
 import { AccountInformationPage } from '../pages/AccountInformationPage.js';
 
-
-
 export const test = base.extend({
 
     loginPage: async ({ page }, use) => {

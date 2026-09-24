@@ -1,10 +1,11 @@
 import { test, expect } from '../../fixtures/login.fixture';
-import {getLoginData} from '../../test-data/loginData';
 import {getCheckoutData} from '../../test-data/checkoutData';
 const checkoutData = getCheckoutData();
-const loginData = getLoginData();
+import dotenv from 'dotenv';
+dotenv.config();
+const uniqueEmail = `mozib_${Date.now()}@example.com`;
 
-test('E2E-001 - Customer can successfully create an account', async ({loginPage, signupPage, accountInformationPage, userAccountApi}) => {
+test('E2E-001 - Customer can successfully create an account', async ({loginPage, signupPage, accountInformationPage}) => {
 
                     await signupPage.open();
                     await signupPage.signupLoginLink.click();
@@ -16,8 +17,8 @@ test('E2E-001 - Customer can successfully create an account', async ({loginPage,
                     await expect(signupPage.emailField).toBeEnabled();
                     await expect(signupPage.signupButton).toBeVisible();
                     await expect(signupPage.signupButton).toBeEnabled();
-                    await signupPage.nameField.fill(loginData.username);
-                    await signupPage.emailField.fill(loginData.email);
+                    await signupPage.nameField.fill(process.env.TEST_USERNAME);
+                    await signupPage.emailField.fill(uniqueEmail);
                     await signupPage.signupButton.click();
                     await expect(accountInformationPage.accountInformationHeading).toBeVisible();
                     await expect(accountInformationPage.titleMr).toBeVisible();
@@ -31,7 +32,7 @@ test('E2E-001 - Customer can successfully create an account', async ({loginPage,
                     await expect(accountInformationPage.newsletterCheckbox).toBeVisible();
                     await expect(accountInformationPage.specialOffersCheckbox).toBeVisible();
                     await accountInformationPage.titleMr.check();
-                    await accountInformationPage.passwordField.fill(password);
+                    await accountInformationPage.passwordField.fill(process.env.TEST_PASSWORD);
                     await accountInformationPage.dayDropdown.selectOption(checkoutData.day);
                     await accountInformationPage.monthDropdown.selectOption({label: checkoutData.month});
                     await accountInformationPage.yearDropdown.selectOption(checkoutData.year);
@@ -49,8 +50,7 @@ test('E2E-001 - Customer can successfully create an account', async ({loginPage,
                     await accountInformationPage.clickCreateAccount();
                     await expect(accountInformationPage.page.getByText('Account Created!')).toBeVisible();
                     await accountInformationPage.page.getByRole('link', {name: 'Continue'}).click();
-                    await expect(accountInformationPage.loggedInAs).toBeVisible();
-                    await expect(accountInformationPage.loggedInAs).toContainText(`Logged in as ${username}`);
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
                     await expect(loginPage.logoutLink).toBeVisible();
     }
 );

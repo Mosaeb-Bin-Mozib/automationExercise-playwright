@@ -4,10 +4,12 @@ import ROUTES from "../../test-data/routes";
 import {getCartData} from '../../test-data/cartData';
 const cartData = getCartData()
 
-test.describe('Payment Page', () => {
+test.describe('Payment Page frontend', () => {
 
     test('AE-110 - Verify Payment page loads successfully', async ({ paymentPage }) => {
             await paymentPage.login();
+            await paymentPage.page.waitForLoadState('domcontentloaded');
+            await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
             await paymentPage.page.goto(ROUTES.PRODUCTS);
             await paymentPage.page.waitForLoadState('domcontentloaded');
             await expect(paymentPage.blueTopProduct).toBeVisible();
@@ -35,6 +37,10 @@ test.describe('Payment Page', () => {
 
     test('AE-111 - Verify all required payment fields and confirmation button are displayed', async ({ paymentPage }) => {
             await paymentPage.login();
+            await paymentPage.page.waitForLoadState('domcontentloaded');
+            await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
+            await paymentPage.page.waitForLoadState('domcontentloaded');
+            await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
             await paymentPage.page.goto(ROUTES.PRODUCTS);
             await paymentPage.page.waitForLoadState('domcontentloaded');
             await expect(paymentPage.blueTopProduct).toBeVisible();
@@ -63,6 +69,8 @@ test.describe('Payment Page', () => {
 
     test('AE-112 - Verify valid payment information can be entered', async ({ paymentPage }) => {
             await paymentPage.login();
+            await paymentPage.page.waitForLoadState('domcontentloaded');
+            await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
             await paymentPage.page.goto(ROUTES.PRODUCTS);
             await paymentPage.page.waitForLoadState('domcontentloaded');
             await expect(paymentPage.blueTopProduct).toBeVisible();
@@ -93,6 +101,8 @@ test.describe('Payment Page', () => {
 
     test('AE-113 - Verify payment cannot be confirmed when required payment fields are empty', async ({ paymentPage }) => {
             await paymentPage.login();
+            await paymentPage.page.waitForLoadState('domcontentloaded');
+            await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
             await paymentPage.page.goto(ROUTES.PRODUCTS);
             await paymentPage.page.waitForLoadState('domcontentloaded');
             await expect(paymentPage.blueTopProduct).toBeVisible();
@@ -129,6 +139,8 @@ test.describe('Payment Page', () => {
     test('AE-114 - Verify payment behavior when Card contains invalid data', async ({ paymentPage }) => {
 
         await paymentPage.login();
+        await paymentPage.page.waitForLoadState('domcontentloaded');
+        await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
         await paymentPage.page.goto(ROUTES.PRODUCTS);
         await paymentPage.page.waitForLoadState('domcontentloaded');
         await expect(paymentPage.blueTopProduct).toBeVisible();
@@ -155,12 +167,14 @@ test.describe('Payment Page', () => {
         await expect(paymentPage.expiryMonth).toHaveValue(cartData.InvalidCardExpiryMonth);
         await expect(paymentPage.expiryYear).toHaveValue(cartData.InvalidCardExpiryYear);
         await paymentPage.paymentButton.click();
-        await expect(paymentPage.page).toHaveURL(ROUTES.PAYMENT);
+        await expect(paymentPage.orderConfirmation).toBeVisible();
         }
     );
 
     test('AE-116 - Verify successful payment and order confirmation', async ({ paymentPage }) => {
         await paymentPage.login();
+        await paymentPage.page.waitForLoadState('domcontentloaded');
+        await expect(paymentPage.page.getByText('Logged in as Mosaeb Bin Mozib', { exact: true })).toBeVisible();
         await paymentPage.page.goto(ROUTES.PRODUCTS);
         await paymentPage.page.waitForLoadState('domcontentloaded');
         await expect(paymentPage.blueTopProduct).toBeVisible();

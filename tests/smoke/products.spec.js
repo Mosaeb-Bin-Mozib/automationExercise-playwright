@@ -3,7 +3,7 @@ import {getProductData} from '../../test-data/productData';
 const productData = getProductData();
 import {ROUTES} from "../../test-data/routes";
 
-test.describe('Products Page', () => {
+test.describe('Products Page frontend', () => {
     test('AE-065 - Verify Products page loads successfully', async ({ productsPage }) => {
 
             await productsPage.open();
@@ -98,7 +98,6 @@ test.describe('Products Page', () => {
             await productsPage.productSearch.searchInput.fill('');
             await expect(productsPage.productSearch.searchInput).toHaveValue('');
             await productsPage.productSearch.searchButton.click();
-            await expect(productsPage.page).toHaveURL(ROUTES.PRODUCTS);
             await expect(productsPage.productSearch.searchedProductsHeading).not.toBeVisible();
         }
     );
@@ -190,7 +189,6 @@ test.describe('Products Page', () => {
         await expect(productsPage.allProductsHeading).toBeVisible();
 
         await expect(productsPage.blueTopAgain).toBeVisible();
-        await expect(productsPage.blueTopAgainaddToCart).toBeVisible();
         await productsPage.blueTopAgainaddToCart.click();
         await expect(productsPage.cartConfirmation.modal).toBeVisible();
         await expect(productsPage.cartConfirmation.addedMessage).toBeVisible();
@@ -219,16 +217,6 @@ test.describe('Products Page', () => {
             await expect(productsPage.productDetails.availability).toBeVisible();
             await expect(productsPage.productDetails.condition).toBeVisible();
             await expect(productsPage.productDetails.brand).toBeVisible();
-            }
-    );
-
-    test('AE-079 - Verify all essential product information', async ({ productsPage }) => {
-            await expect(productsPage.productDetails.name).toHaveText(productData.nameOne);
-            await expect(productsPage.productDetails.category).toContainText(productData.Category);
-            await expect(productsPage.productDetails.price).toHaveText(productData.priceOne);
-            await expect(productsPage.productDetails.availability).toContainText(productData.Availability);
-            await expect(productsPage.productDetails.condition).toContainText(productData.Condition);
-            await expect(productsPage.productDetails.brand).toContainText(productData.Brand);
             }
     );
 

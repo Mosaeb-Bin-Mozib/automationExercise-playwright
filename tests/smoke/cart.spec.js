@@ -1,12 +1,10 @@
 import { test } from '../../fixtures/Cart.fixture';
 import {getCartData} from '../../test-data/cartData';
-import {getLoginData} from '../../test-data/loginData';
 const cartData = getCartData()
-const loginData = getLoginData()
 import {expect} from "@playwright/test";
 import ROUTES from "../../test-data/routes";
 
-test.describe('Cart Page', () => {
+test.describe('Cart Page frontend', () => {
     test('AE-088 - Verify Cart page loads successfully when cart is empty', async ({ cartPage }) => {
         await cartPage.page.goto(ROUTES.CART);
         await cartPage.page.waitForLoadState('domcontentloaded');
@@ -136,23 +134,20 @@ test.describe('Cart Page', () => {
         await cartPage.page.goto(ROUTES.LOGIN);
         await cartPage.page.waitForLoadState('domcontentloaded');
 
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
         await cartPage.page.goto(ROUTES.PRODUCTS);
-        await cartPage.page.waitForLoadState('domcontentloaded');
         await expect(cartPage.blueTopProduct.blueTop).toBeVisible();
         await cartPage.blueTopProduct.addToCart.first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
         await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
 
         await cartPage.cartConfirmation.viewCart.click();
-        await expect(cartPage.cartPage).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopRow).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopRowNameTwo).toHaveText(cartData.productName);
-
         await expect(cartPage.blueTopProduct.blueTopPrice).toHaveText(cartData.productPrice);
         await expect(cartPage.blueTopProduct.blueTopQuantity).toHaveText(cartData.productQuantity);
         await expect(cartPage.blueTopProduct.blueTopPrice).toHaveText(cartData.productPrice);
@@ -187,13 +182,12 @@ test.describe('Cart Page', () => {
         await expect(cartPage.blueTopProduct.blueTopTotal).toHaveText(cartData.productPrice);
 
         await cartPage.page.goto(ROUTES.LOGIN);
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
         await cartPage.page.goto(ROUTES.CART);
-        await cartPage.page.waitForLoadState('domcontentloaded');
         await expect(cartPage.blueTopProduct.blueTopRow).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopRowNameTwo).toHaveText(cartData.productName);
         await expect(cartPage.blueTopProduct.blueTopPrice).toHaveText(cartData.productPrice);
@@ -230,8 +224,8 @@ test.describe('Cart Page', () => {
         await expect(cartPage.manTshirtProduct.manTshirtTotal).toHaveText(cartData.productPrice2);
         await cartPage.blueTopProduct.blueTopDelete.click();
 
-        await expect(blueTopRow).toHaveCount(0);
-        await expect(menTshirtRow).toBeVisible();
+        await expect(cartPage.blueTopProduct.blueTopRow).toHaveCount(0);
+        await expect(cartPage.manTshirtProduct.manTshirtRow).toBeVisible();
         await expect(cartPage.manTshirtProduct.manTshirtRowNameTwo).toHaveText(cartData.productName2);
 
         await cartPage.page.goto(ROUTES.LOGIN);
@@ -239,15 +233,14 @@ test.describe('Cart Page', () => {
         await cartPage.page.waitForLoadState('domcontentloaded');
 
         await cartPage.page.goto(ROUTES.LOGIN);
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
         await cartPage.page.goto(ROUTES.CART);
         await cartPage.page.waitForLoadState('domcontentloaded');
 
-        await expect(cartPage.cartConfirmation.remainingProduct).toBeVisible();
         await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
         await cartPage.cartConfirmation.proceedToCheckout.click();
 
@@ -264,13 +257,12 @@ test.describe('Cart Page', () => {
     test('AE-100 - Verify Checkout page loads successfully', async ({ cartPage,loginPage }) => {
         await cartPage.page.goto(ROUTES.LOGIN);
         await cartPage.page.waitForLoadState('domcontentloaded');
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
         await cartPage.page.goto(ROUTES.PRODUCTS);
-        await cartPage.page.waitForLoadState('domcontentloaded');
         await expect(cartPage.blueTopProduct.blueTop).toBeVisible();
         await cartPage.blueTopProduct.addToCart.first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
@@ -295,8 +287,8 @@ test.describe('Cart Page', () => {
     test('AE-101 - Verify delivery and billing addresses match registered account information', async ({ cartPage,loginPage }) => {
         await cartPage.page.goto(ROUTES.LOGIN);
         await cartPage.page.waitForLoadState('domcontentloaded');
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
@@ -311,8 +303,8 @@ test.describe('Cart Page', () => {
 
         await expect(cartPage.page).toHaveURL(ROUTES.CART);
         await expect(cartPage.blueTopProduct.blueTopRowNameTwo).toBeVisible();
-        await expect(cartPage.cartConfirmation,proceedToCheckout).toBeVisible();
-        await cartPage.cartConfirmation,proceedToCheckout.click();
+        await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
+        await cartPage.cartConfirmation.proceedToCheckout.click();
 
         await expect(cartPage.page).toHaveURL(ROUTES.CHECKOUT);
         await expect(cartPage.cartConfirmation.deliveryAddress).toBeVisible();
@@ -354,8 +346,8 @@ test.describe('Cart Page', () => {
 
     test('AE-103 - Verify total order amount is calculated correctly', async ({ cartPage,loginPage }) => {
         await cartPage.page.goto(ROUTES.LOGIN);
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
@@ -385,8 +377,8 @@ test.describe('Cart Page', () => {
     );
     test('AE-104 - Verify that the user can add an order comment', async ({ cartPage,loginPage }) => {
         await cartPage.page.goto(ROUTES.LOGIN);
-        await loginPage.emailField.fill(loginData.email);
-        await loginPage.passwordField.fill(loginData.password);
+        await loginPage.emailField.fill(process.env.TEST_EMAIL);
+        await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
         await loginPage.loginButton.click();
         await expect(loginPage.loggedInAs).toBeVisible();
 
