@@ -16,7 +16,7 @@ export function getCartData() {
         checkoutAddressName: 'MOSAEB BIN MOZIB',
         checkoutCompanyName: 'Syntax',
         checkoutAddressOne: 'Nathullabad barishal',
-        checkoutState: 'Dhaka Dhaka 1122',
+        checkoutState: 'Dhaka Dhaka',
         checkoutCountry: 'Australia',
         checkoutPhone: '01302692330',
         comment: 'Please deliver the order carefully.',

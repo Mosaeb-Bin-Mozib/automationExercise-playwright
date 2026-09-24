@@ -30,19 +30,19 @@ export class CartPage {
 
             deliveryAddress: page.locator("(//h3[normalize-space()='Your delivery address'])[1]"),
             deliveryAddressName: page.locator("//ul[@id='address_delivery']//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')]"),
-            deliveryAddressCompanyName: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()='Syntax'])[1]"),
-            deliveryAddressOne: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()='Nathullabad barishal'])[1]"),
-            deliveryAddressState: page.locator("//ul[@id='address_delivery']//li[@class='address_city address_state_name address_postcode'][contains(text(),'Dhaka Dhaka')]"),
-            deliveryAddressCountry: page.locator("//ul[@id='address_delivery']//li[@class='address_country_name'][normalize-space()='Australia']"),
-            deliveryAddressPhone: page.locator("//ul[@id='address_delivery']//li[@class='address_phone'][normalize-space()='01302692330']"),
+            deliveryAddressCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutCompanyName}])[1]`),
+            deliveryAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutAddressOne}])[1]`),
+            deliveryAddressState: page.locator(`//ul[@id='address_delivery']//li[@class='address_city address_state_name address_postcode'][contains(text(),${cartData.checkoutState})]`),
+            deliveryAddressCountry: page.locator(`//ul[@id='address_delivery']//li[@class='address_country_name'][normalize-space()=${cartData.checkoutCountry}]`),
+            deliveryAddressPhone: page.locator(`//ul[@id='address_delivery']//li[@class='address_phone'][normalize-space()=${cartData.checkoutPhone}]`),
 
             checkoutBillingAddress: page.locator("//h3[normalize-space()='Your billing address']"),
             checkoutBillingAddressName: page.locator("(//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')])[2]"),
-            checkoutBillingCompanyName: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()='Syntax'])[2]"),
-            checkoutBillingAddressOne: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()='Nathullabad barishal'])[3]"),
-            checkoutBillingState: page.locator("//ul[@id='address_invoice']//li[@class='address_city address_state_name address_postcode'][contains(text(),'Dhaka Dhaka')]"),
-            checkoutBillingCountry: page.locator("(//li[@class='address_country_name'][normalize-space()='Australia'])[2]"),
-            checkoutBillingPhone: page.locator("(//li[@class='address_phone'][normalize-space()='01302692330'])[2]"),
+            checkoutBillingCompanyName: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutCompanyName}])[2]"),
+            checkoutBillingAddressOne: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutAddressOne}])[3]"),
+            checkoutBillingState: page.locator(`//ul[@id='address_invoice']//li[@class='address_city address_state_name address_postcode'][contains(text(),${cartData.checkoutState})]`),
+            checkoutBillingCountry: page.locator(`(//li[@class='address_country_name'][normalize-space()=${cartData.checkoutCountry}])[2]`),
+            checkoutBillingPhone: page.locator(`(//li[@class='address_phone'][normalize-space()=${cartData.checkoutPhone}])[2]`),
         };
 
         this.products = {
