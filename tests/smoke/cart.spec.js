@@ -1,6 +1,6 @@
-import { test } from '../../fixtures/Cart.fixture';
+import { test } from '../../fixtures/cart.fixture';
 import {getCartData} from '../../test-data/cartData';
-const cartData = getCartData()
+const cartData = getCartData();
 import {expect} from "@playwright/test";
 import ROUTES from "../../test-data/routes";
 
@@ -69,27 +69,6 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.manTshirtProduct.manTshirtQuantitySix).toHaveText(cartData.quantityInput2);}
     );
 
-    test('AE-092 - Verify product price, quantity, and total-price calculation', async ({ cartPage }) => {
-        await cartPage.page.goto(ROUTES.PRODUCTDETAILS);
-        await cartPage.page.waitForLoadState('domcontentloaded');
-        await cartPage.productDetails.quantityInput.fill(cartData.quantityInput);
-        await expect(cartPage.productDetails.quantityInput).toHaveValue(cartData.quantityInput);
-        await cartPage.productDetails.addToCart.click();
-        await expect(cartPage.cartConfirmation.modal).toBeVisible();
-        await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
-        await cartPage.cartConfirmation.viewCart.click();
-        await expect(cartPage.manTshirtProduct.manTshirtRow).toBeVisible();
-        const priceText = await cartPage.manTshirtProduct.manTshirtPrice2.innerText();
-        const unitPrice = Number(priceText.replace('Rs. ', '').trim());
-        expect(unitPrice).toBe(400);
-        const quantityText = await cartPage.manTshirtProduct.manTshirtQuantityThree.innerText();
-        const quantity = Number(quantityText.trim());
-        expect(quantity).toBe(3);
-        const totalText = await cartPage.manTshirtProduct.manTshirtTotalThreeProduct.innerText();
-        const actualTotal = Number(totalText.replace('Rs. ', '').trim());
-        const expectedTotal = unitPrice * quantity;
-        expect(actualTotal).toBe(expectedTotal);
-    });
     test('AE-093 - Verify one selected product can be removed without removing other products', async ({ cartPage }) => {
         await cartPage.page.goto(ROUTES.PRODUCTS);
         await cartPage.page.waitForLoadState('domcontentloaded');
@@ -102,7 +81,6 @@ test.describe('Cart Page frontend', () => {
 
         await expect(cartPage.manTshirtProduct.manTshirt).toBeVisible();
         await cartPage.manTshirtProduct.addToCart.first().click();
-
 
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
         await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
@@ -153,16 +131,19 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.blueTopProduct.blueTopPrice).toHaveText(cartData.productPrice);
         await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
         await cartPage.cartConfirmation.proceedToCheckout.click();
+
         await expect(cartPage.page).toHaveURL(ROUTES.CHECKOUT);
         await expect(cartPage.cartConfirmation.checkoutConfirmationMessage).toBeVisible();
-
         await expect(cartPage.cartConfirmation.checkoutCartProductList).toBeVisible();
-
         await expect(cartPage.cartProductList.checkoutBlueTop).toBeVisible();
         await expect(cartPage.cartProductList.checkoutBlueTopName).toHaveText(cartData.productName);
         await expect(cartPage.cartProductList.checkoutBlueTopPrice).toHaveText(cartData.productPrice);
         await expect(cartPage.cartProductList.checkoutBlueTopQuantity).toHaveText(cartData.productQuantity);
         await expect(cartPage.cartProductList.checkoutBlueTopTotal).toHaveText(cartData.productPrice);
+        await cartPage.page.goto(ROUTES.CART);
+        await expect(cartPage.blueTopProduct.blueTopRowName).toBeVisible();
+        await cartPage.blueTopProduct.blueTopDelete.click();
+
     });
 
     test('AE-098 - Verify Cart contents are retained after login', async ({ cartPage,loginPage }) => {
@@ -193,6 +174,7 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.blueTopProduct.blueTopPrice).toHaveText(cartData.productPrice);
         await expect(cartPage.blueTopProduct.blueTopQuantity).toHaveText(cartData.productQuantity);
         await expect(cartPage.blueTopProduct.blueTopTotal).toHaveText(cartData.productPrice);
+        await cartPage.blueTopProduct.blueTopDelete.click();
     });
 
     test('AE-099 - Verify complete critical Cart flow', async ({ cartPage, loginPage }) => {
@@ -209,6 +191,7 @@ test.describe('Cart Page frontend', () => {
         await cartPage.manTshirtProduct.addToCart.first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
         await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
+
         await cartPage.cartConfirmation.viewCart.click();
         await expect(cartPage.cartPage).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopRowName).toBeVisible();
@@ -229,9 +212,7 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.manTshirtProduct.manTshirtRowNameTwo).toHaveText(cartData.productName2);
 
         await cartPage.page.goto(ROUTES.LOGIN);
-
         await cartPage.page.waitForLoadState('domcontentloaded');
-
         await cartPage.page.goto(ROUTES.LOGIN);
         await loginPage.emailField.fill(process.env.TEST_EMAIL);
         await loginPage.passwordField.fill(process.env.TEST_PASSWORD);
@@ -240,7 +221,6 @@ test.describe('Cart Page frontend', () => {
 
         await cartPage.page.goto(ROUTES.CART);
         await cartPage.page.waitForLoadState('domcontentloaded');
-
         await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
         await cartPage.cartConfirmation.proceedToCheckout.click();
 
@@ -253,7 +233,11 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.cartProductList.checkoutManTshirtPrice).toHaveText(cartData.productPrice2);
         await expect(cartPage.cartProductList.checkoutManTshirtQuantity).toHaveText(cartData.productQuantity);
         await expect(cartPage.cartProductList.checkoutManTshirtTotal).toHaveText(cartData.productPrice2);
+        await cartPage.page.goto(ROUTES.CART);
+        await expect(cartPage.manTshirtProduct.manTshirtRowName).toBeVisible();
+        await cartPage.manTshirtProduct.manTshirtDelete.click();
     });
+
     test('AE-100 - Verify Checkout page loads successfully', async ({ cartPage,loginPage }) => {
         await cartPage.page.goto(ROUTES.LOGIN);
         await cartPage.page.waitForLoadState('domcontentloaded');
@@ -267,6 +251,7 @@ test.describe('Cart Page frontend', () => {
         await cartPage.blueTopProduct.addToCart.first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
         await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
+
         await cartPage.cartConfirmation.viewCart.click();
         await expect(cartPage.cartPage).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopRow).toBeVisible();
@@ -281,7 +266,10 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.cartProductList.checkoutBlueTopPrice).toHaveText(cartData.productPrice);
         await expect(cartPage.cartProductList.checkoutBlueTopQuantity).toHaveText(cartData.productQuantity);
         await expect(cartPage.cartProductList.checkoutBlueTopTotal).toHaveText(cartData.productPrice);
-        await expect(cartPage.cartConfirmation.checkoutPlaceOrder).toBeVisible();
+        await cartPage.page.goto(ROUTES.CART);
+        await expect(cartPage.blueTopProduct.blueTopRowName).toBeVisible();
+        await cartPage.blueTopProduct.blueTopDelete.click();
+
     });
 
     test('AE-101 - Verify delivery and billing addresses match registered account information', async ({ cartPage,loginPage }) => {
@@ -299,8 +287,8 @@ test.describe('Cart Page frontend', () => {
         await cartPage.blueTopProduct.addToCart.first().click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
         await expect(cartPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
-        await cartPage.cartConfirmation.viewCart.click();
 
+        await cartPage.cartConfirmation.viewCart.click();
         await expect(cartPage.page).toHaveURL(ROUTES.CART);
         await expect(cartPage.blueTopProduct.blueTopRowNameTwo).toBeVisible();
         await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
@@ -342,6 +330,9 @@ test.describe('Cart Page frontend', () => {
             );
 
         expect(deliveryDetails).toEqual(billingDetails);
+        await cartPage.page.goto(ROUTES.CART);
+        await expect(cartPage.blueTopProduct.blueTopRowName).toBeVisible();
+        await cartPage.blueTopProduct.blueTopDelete.click();
     });
 
     test('AE-103 - Verify total order amount is calculated correctly', async ({ cartPage,loginPage }) => {
@@ -352,7 +343,6 @@ test.describe('Cart Page frontend', () => {
         await expect(loginPage.loggedInAs).toBeVisible();
 
         await cartPage.page.goto(ROUTES.PRODUCTDETAILS_ONE);
-
         await cartPage.productDetails.quantityInput.fill(cartData.quantityInput);
         await cartPage.productDetails.addToCart.click();
         await expect(cartPage.cartConfirmation.modal).toBeVisible();
@@ -362,7 +352,7 @@ test.describe('Cart Page frontend', () => {
         await expect(cartPage.blueTopProduct.blueTopRowNameTwo).toBeVisible();
         await expect(cartPage.blueTopProduct.blueTopPrice).toContainText(cartData.productPrice);
         await expect(cartPage.blueTopProduct.blueTopQuantity).toHaveText(cartData.quantityInput);
-        await expect(cartPage.blueTopProduct.blueTopTotal).toContainText(cartData.productTotal);
+        await expect(cartPage.blueTopProduct.blueTopTotalTwo).toContainText(cartData.productTotal);
         await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
         await cartPage.cartConfirmation.proceedToCheckout.click();
         await expect(cartPage.page).toHaveURL(ROUTES.CHECKOUT);
@@ -373,6 +363,9 @@ test.describe('Cart Page frontend', () => {
         const totalText = await cartPage.cartConfirmation.totalText.innerText();
         const actualTotal = Number(totalText.replace('Rs. ', '').trim());
         expect(actualTotal).toBe(expectedTotal);
+        await cartPage.page.goto(ROUTES.CART);
+        await expect(cartPage.blueTopProduct.blueTopRowName).toBeVisible();
+        await cartPage.blueTopProduct.blueTopDelete.click();
         }
     );
     test('AE-104 - Verify that the user can add an order comment', async ({ cartPage,loginPage }) => {

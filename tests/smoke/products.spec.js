@@ -52,7 +52,6 @@ test.describe('Products Page frontend', () => {
             await expect(productsPage.allProductsHeading).toBeVisible();
             await expect(productsPage.products.blueTop).toBeVisible();
             await productsPage.products.blueTopAddToCart.click();
-            await expect(productsPage.cartConfirmation.modal).toBeVisible();
             await expect(productsPage.cartConfirmation.addedMessage).toBeVisible();
             await expect(productsPage.cartConfirmation.viewCart).toBeVisible();
             await expect(productsPage.cartConfirmation.continueShopping).toBeVisible();

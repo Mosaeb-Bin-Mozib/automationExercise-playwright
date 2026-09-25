@@ -2,6 +2,7 @@ export function getCartData() {
     return {
         emptyCartMessage: 'Cart is empty!',
         addedMessage: 'Added!',
+        productId2: '2',
         productName: 'Blue Top',
         productName2: 'Men Tshirt',
         productPrice: 'Rs. 500',

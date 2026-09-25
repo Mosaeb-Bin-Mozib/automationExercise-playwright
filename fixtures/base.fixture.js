@@ -2,7 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage.js';
 import { CartPage } from '../pages/CartPage.js';
 import {HomePage} from "../pages/HomePage";
-import {ContactUsPage} from "../pages/contactUsPage";
+import {ContactUsPage} from "../pages/ContactUsPage";
 
 export const test = base.extend({
 

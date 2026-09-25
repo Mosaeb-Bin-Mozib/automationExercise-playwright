@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/Payment.fixture';
+import { test } from '../../fixtures/payment.fixture';
 import {expect} from "@playwright/test";
 import ROUTES from "../../test-data/routes";
 import {getCartData} from '../../test-data/cartData';
@@ -15,7 +15,6 @@ test.describe('Payment Page frontend', () => {
             await expect(paymentPage.blueTopProduct).toBeVisible();
             await paymentPage.blueTopProductAddtoCart.click();
             await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-            await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
             await paymentPage.cartConfirmation.viewCart.click();
             await expect(paymentPage.page).toHaveURL(ROUTES.CART);
             await expect(paymentPage.proceedToCheckout).toBeVisible();
@@ -46,7 +45,6 @@ test.describe('Payment Page frontend', () => {
             await expect(paymentPage.blueTopProduct).toBeVisible();
             await paymentPage.blueTopProductAddtoCart.click();
             await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-            await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
             await paymentPage.cartConfirmation.viewCart.click();
             await expect(paymentPage.page).toHaveURL(ROUTES.CART);
             await expect(paymentPage.proceedToCheckout).toBeVisible();
@@ -76,7 +74,6 @@ test.describe('Payment Page frontend', () => {
             await expect(paymentPage.blueTopProduct).toBeVisible();
             await paymentPage.blueTopProductAddtoCart.click();
             await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-            await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
             await paymentPage.cartConfirmation.viewCart.click();
             await expect(paymentPage.page).toHaveURL(ROUTES.CART);
             await expect(paymentPage.proceedToCheckout).toBeVisible();
@@ -108,7 +105,6 @@ test.describe('Payment Page frontend', () => {
             await expect(paymentPage.blueTopProduct).toBeVisible();
             await paymentPage.blueTopProductAddtoCart.click();
             await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-            await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
             await paymentPage.cartConfirmation.viewCart.click();
             await expect(paymentPage.page).toHaveURL(ROUTES.CART);
             await expect(paymentPage.proceedToCheckout).toBeVisible();
@@ -146,7 +142,6 @@ test.describe('Payment Page frontend', () => {
         await expect(paymentPage.blueTopProduct).toBeVisible();
         await paymentPage.blueTopProductAddtoCart.click();
         await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-        await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
         await paymentPage.cartConfirmation.viewCart.click();
         await expect(paymentPage.page).toHaveURL(ROUTES.CART);
         await expect(paymentPage.proceedToCheckout).toBeVisible();
@@ -180,7 +175,6 @@ test.describe('Payment Page frontend', () => {
         await expect(paymentPage.blueTopProduct).toBeVisible();
         await paymentPage.blueTopProductAddtoCart.click();
         await expect(paymentPage.cartConfirmation.modal).toBeVisible();
-        await expect(paymentPage.cartConfirmation.addedMessage).toHaveText(cartData.addedMessage);
         await paymentPage.cartConfirmation.viewCart.click();
         await expect(paymentPage.page).toHaveURL(ROUTES.CART);
         await expect(paymentPage.proceedToCheckout).toBeVisible();

@@ -4,7 +4,6 @@ import {ROUTES} from "../test-data/routes";
 import {getProductData} from "../test-data/productData";
 const productData = getProductData()
 
-
 export class ProductsPage {
 
     constructor(page) {
@@ -13,7 +12,7 @@ export class ProductsPage {
         this.productsList = page.locator("//div[contains(@class,'features_items')]");
         this.viewproduct = page.locator("xpath=.//a[contains(normalize-space(), 'View Product')]");
         this.blueTopProduct = page.locator('div').filter({ hasText: 'Rs. 500 Blue Top Add to cart' }).nth(4);
-        ;
+
         this.blueTopProductView = page.locator("xpath=.//a[contains(normalize-space(),'View Product')]").first();
 
         this.productInformation = page.locator("//div[contains(@class,'product-information')]");
@@ -24,15 +23,15 @@ export class ProductsPage {
         this.productInformationCondition = page.locator("xpath=.//p[contains(normalize-space(),'Condition:')]");
         this.productInformationBrand = page.locator("xpath=.//p[contains(normalize-space(),'Brand:')]");
 
-        this.menTshirtCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()=${productData.nameOne}]]`);
-        this.menTshirtCartRowQuantity = page.locator(`//button[normalize-space()=${productData.productQuantity}]`);
-        this.menTshirtCartRowQuantityFour = page.locator(`//button[normalize-space()=${productData.Quantity}]`);
-        this.menTshirtCartRowName = page.locator(`//a[normalize-space()=${productData.nameOne}]`);
+        this.menTshirtCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameOne}']]`);
+        this.menTshirtCartRowQuantity = page.locator(`//button[normalize-space()='${productData.productQuantity}']`);
+        this.menTshirtCartRowQuantityFour = page.locator(`//button[normalize-space()='${productData.Quantity}']`);
+        this.menTshirtCartRowName = page.locator(`//a[normalize-space()='${productData.nameOne}']`);
         this.menTshirtReview = page.locator("//a[normalize-space()='Write Your Review']");
 
-        this.blueTopAgain = page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${productData.nameTwo}]]`);
+        this.blueTopAgain = page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='${productData.nameTwo}']]`);
         this.blueTopAgainaddToCart = page.locator("//body/section/div[@class='container']/div[@class='row']/div[@class='col-sm-9 padding-right']/div[@class='features_items']/div[2]/div[1]/div[1]/div[1]/a[1]");
-        this.blueTopCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()=${productData.nameTwo}]]`);
+        this.blueTopCartRow = page.locator(`//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameTwo}']]`);
         this.blueTopCartRowName = page.locator("td.cart_description a");
         this.blueTopCartRowPrice = page.locator("td.cart_price p");
         this.blueTopCartRowQuantity = page.locator("td.cart_quantity button");
@@ -48,25 +47,24 @@ export class ProductsPage {
         this.products = {
 
             cards: page.locator("//div[contains(@class,'product-image-wrapper')]"),
-            blueTop: page.locator(`//p[normalize-space()=${productData.nameTwo}]`).first(),
+            blueTop: page.locator(`//p[normalize-space()='${productData.nameTwo}']`).first(),
 
-            blueTopImage: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//img`).first(),
+            blueTopImage: page.locator(`//div[.//p[normalize-space()='${productData.nameTwo}']]//img`).first(),
 
-            blueTopName: page.locator(`//p[normalize-space()=${productData.nameTwo}]`).first(),
+            blueTopName: page.locator(`//p[normalize-space()='${productData.nameTwo}']`).first(),
 
             blueTopPrice: page.getByRole('heading', { name: productData.priceTwo }).first(),
 
-            blueTopAddToCart: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//a[contains(@class,'add-to-cart')]`).first(),
+            blueTopAddToCart: page.locator(`//div[.//p[normalize-space()='${productData.nameTwo}']]//a[contains(@class,'add-to-cart')]`).first(),
 
-            blueTopViewProduct: page.locator(`//div[.//p[normalize-space()=${productData.nameTwo}]]//a[contains(@href,'product_details')]`).first(),
+            blueTopViewProduct: page.locator(`//div[.//p[normalize-space()='${productData.nameTwo}']]//a[contains(@href,'product_details')]`).first(),
 
             menTshirt: page.locator(`//p[normalize-space()=${productData.nameOne}]`).first(),
 
-            menTshirtAddToCart: page.locator(`//div[.//p[normalize-space()=${productData.nameOne}]]//a[contains(@class,'add-to-cart')]`).first(),
+            menTshirtAddToCart: page.locator(`//div[.//p[normalize-space()='${productData.nameOne}']]//a[contains(@class,'add-to-cart')]`).first(),
         };
 
         this.cartConfirmation = {
-
             modal: page.locator("//div[@class='modal-content']"),
             addedMessage: page.locator("//h4[normalize-space()='Added!']"),
             viewCart: page.locator("//u[normalize-space()='View Cart']"),
@@ -87,7 +85,7 @@ export class ProductsPage {
             information: page.locator("//div[contains(@class,'product-information')]"),
             name: page.locator("//div[contains(@class,'product-information')]//h2"),
             category: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Category:')]"),
-            price: page.locator(`//span[normalize-space()=${productData.priceOne}]`),
+            price: page.locator(`//span[normalize-space()='${productData.priceOne}']`),
             availability: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Availability:')]"),
             condition: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Condition:')]"),
             brand: page.locator("//div[contains(@class,'product-information')]//p[contains(normalize-space(),'Brand:')]"),

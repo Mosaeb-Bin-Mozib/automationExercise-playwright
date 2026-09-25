@@ -2,29 +2,29 @@ export function getUserAccountData() {
     const uniqueId = Date.now();
 
     return {
-        name: 'Hasan Mahmud',
+        name: process.env.TEST_USER_NAME,
         email: `hasan_${uniqueId}@example.com`,
-        password: 'Test@1234',
-        title: 'Mr',
-        birth_date: '27',
-        birth_month: '10',
-        birth_year: '2000',
-        firstname: 'Hasan',
-        lastname: 'Mahmud',
-        company: 'Sinergy It Solution',
-        address1: 'Nathullabad Barishal',
-        address2: 'South Banashree',
-        country: 'Bangladesh',
-        zipcode: '100001',
-        state: 'Dhaka',
-        city: 'Dhaka',
-        mobile_number: '01302692330'
+        password: process.env.TEST_USER_PASSWORD,
+        title: process.env.TEST_USER_TITLE,
+        birth_date: process.env.TEST_USER_BIRTH_DATE,
+        birth_month: process.env.TEST_USER_BIRTH_MONTH,
+        birth_year: process.env.TEST_USER_BIRTH_YEAR,
+        firstname: process.env.TEST_USER_FIRSTNAME,
+        lastname: process.env.TEST_USER_LASTNAME,
+        company: process.env.TEST_USER_COMPANY,
+        address1: process.env.TEST_USER_ADDRESS1,
+        address2: process.env.TEST_USER_ADDRESS2,
+        country: process.env.TEST_USER_COUNTRY,
+        zipcode: process.env.TEST_USER_ZIPCODE,
+        state: process.env.TEST_USER_STATE,
+        city: process.env.TEST_USER_CITY,
+        mobile_number: process.env.TEST_USER_MOBILE
     };
 }
 
 export const validLoginData = {
-    email: 'mosaeb009@gmail.com',
-    password: '1234',
+    email: process.env.VALID_LOGIN_EMAIL,
+    password: process.env.VALID_LOGIN_PASSWORD,
     invalidEmail: 'invalid_user@test.com',
-    invalidPassword: 'WrongPassword123',
+    invalidPassword: 'WrongPassword123'
 };

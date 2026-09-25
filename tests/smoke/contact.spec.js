@@ -1,4 +1,4 @@
-import { test,expect } from '../../fixtures/ContactUs.fixture';
+import { test,expect } from '../../fixtures/contactus.fixture';
 import {getContactData, } from '../../test-data/contactData';
 import {ROUTES} from "../../test-data/routes";
 

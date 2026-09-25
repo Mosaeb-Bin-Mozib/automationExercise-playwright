@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/Home.fixture';
+import { test, expect } from '../../fixtures/home.fixture';
 import {ROUTES} from "../../test-data/routes";
 import {getProductData} from "../../test-data/productData";
 const productData = getProductData()

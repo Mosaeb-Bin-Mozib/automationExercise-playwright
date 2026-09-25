@@ -30,24 +30,24 @@ export class CartPage {
 
             deliveryAddress: page.locator("(//h3[normalize-space()='Your delivery address'])[1]"),
             deliveryAddressName: page.locator("//ul[@id='address_delivery']//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')]"),
-            deliveryAddressCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutCompanyName}])[1]`),
-            deliveryAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutAddressOne}])[1]`),
-            deliveryAddressState: page.locator(`//ul[@id='address_delivery']//li[@class='address_city address_state_name address_postcode'][contains(text(),${cartData.checkoutState})]`),
-            deliveryAddressCountry: page.locator(`//ul[@id='address_delivery']//li[@class='address_country_name'][normalize-space()=${cartData.checkoutCountry}]`),
-            deliveryAddressPhone: page.locator(`//ul[@id='address_delivery']//li[@class='address_phone'][normalize-space()=${cartData.checkoutPhone}]`),
+            deliveryAddressCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutCompanyName}'])[1]`),
+            deliveryAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutAddressOne}'])[1]`),
+            deliveryAddressState: page.locator(`//ul[@id='address_delivery']//li[@class='address_city address_state_name address_postcode'][contains(text(),'${cartData.checkoutState}')]`),
+            deliveryAddressCountry: page.locator(`//ul[@id='address_delivery']//li[@class='address_country_name'][normalize-space()='${cartData.checkoutCountry}']`),
+            deliveryAddressPhone: page.locator(`//ul[@id='address_delivery']//li[@class='address_phone'][normalize-space()='${cartData.checkoutPhone}']`),
 
             checkoutBillingAddress: page.locator("//h3[normalize-space()='Your billing address']"),
             checkoutBillingAddressName: page.locator("(//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')])[2]"),
-            checkoutBillingCompanyName: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutCompanyName}])[2]"),
-            checkoutBillingAddressOne: page.locator("(//li[@class='address_address1 address_address2'][normalize-space()=${cartData.checkoutAddressOne}])[3]"),
-            checkoutBillingState: page.locator(`//ul[@id='address_invoice']//li[@class='address_city address_state_name address_postcode'][contains(text(),${cartData.checkoutState})]`),
-            checkoutBillingCountry: page.locator(`(//li[@class='address_country_name'][normalize-space()=${cartData.checkoutCountry}])[2]`),
-            checkoutBillingPhone: page.locator(`(//li[@class='address_phone'][normalize-space()=${cartData.checkoutPhone}])[2]`),
+            checkoutBillingCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutCompanyName}'])[2]`),
+            checkoutBillingAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutAddressOne}'])[3]`),
+            checkoutBillingState: page.locator(`//ul[@id='address_invoice']//li[@class='address_city address_state_name address_postcode'][contains(text(),'${cartData.checkoutState}')]`),
+            checkoutBillingCountry: page.locator(`(//li[@class='address_country_name'][normalize-space()='${cartData.checkoutCountry}'])[2]`),
+            checkoutBillingPhone: page.locator(`(//li[@class='address_phone'][normalize-space()='${cartData.checkoutPhone}'])[2]`),
         };
 
         this.products = {
-            blueTop: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${cartData.productName}]]`).first(),
-            menTshirt: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()=${cartData.productName2}]]`).first(),
+            blueTop: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='${cartData.productName}']]`).first(),
+            menTshirt: page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='${cartData.productName2}']]`).first(),
         };
 
         this.productDetails = {
@@ -56,36 +56,38 @@ export class CartPage {
         };
 
         this.blueTopProduct = {
-            blueTop: page.locator(`//div[@class='productinfo text-center']//p[contains(text(),${cartData.productName})]`),
+            blueTop: page.locator(`//div[@class='productinfo text-center']//p[contains(text(),'${cartData.productName}')]`),
             blueTopRow: page.locator("(//tr[@id='product-1'])[1]"),
             blueTopRowName: page.locator("//tr[@id='product-1']//td[@class='cart_description']"),
-            blueTopRowNameTwo: page.locator(`//a[normalize-space()=${cartData.productName}]`),
-            blueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice})]`),
+            blueTopRowNameTwo: page.locator(`//a[normalize-space()='${cartData.productName}']`),
+            blueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice}')]`),
             blueTopQuantity: page.getByRole('row', { name: /Blue Top Women/ }).getByRole('button'),
 
-            blueTopTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()=${cartData.productPrice}]`),
+            blueTopTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()='${cartData.productPrice}']`),
+            blueTopTotalTwo: page.locator(`//p[@class='cart_total_price'][normalize-space()='${cartData.productTotal}']`),
             blueTopDelete: page.locator("//tr[@id='product-1']//a[@class='cart_quantity_delete']"),
             addToCart: page.locator("(//a[@class='btn btn-default add-to-cart'][normalize-space()='Add to cart'])[1]"),
         };
         this.manTshirtProduct = {
-            manTshirt: page.locator(`(//p[contains(text(),${cartData.productName2})])[1]`),
+            manTshirt: page.locator(`(//p[contains(text(),'${cartData.productName2}')])[1]`),
             manTshirtRow: page.locator("(//tr[@id='product-2'])[1]"),
             manTshirtRowName: page.locator("(//td[@class='cart_description'])[1]"),
-            manTshirtRowNameTwo: page.locator(`//a[normalize-space()=${cartData.productName2}]`),
-            manTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice2})]`),
+            manTshirtRowNameTwo: page.locator(`//a[normalize-space()='${cartData.productName2}']`),
+            manTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice2}')]`),
             manTshirtPrice2: page.locator(`(//p[normalize-space()=${cartData.productPrice2}])[1]`),
             manTshirtQuantity: page.locator("//tr[@id='product-2']//button[@class='disabled'][normalize-space()='1']"),
-            manTshirtQuantityThree: page.locator(`//button[normalize-space()=${cartData.quantityInput}]`),
-            manTshirtQuantitySix: page.locator(`//button[normalize-space()=${cartData.quantityInput2}]`),
-            manTshirtTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()=${cartData.productPrice2}]`),
+            manTshirtQuantityThree: page.locator(`//button[normalize-space()='${cartData.quantityInput}']`),
+            manTshirtQuantitySix: page.locator(`//button[normalize-space()='${cartData.quantityInput2}']`),
+            manTshirtTotal: page.locator(`//p[@class='cart_total_price'][normalize-space()='${cartData.productPrice2}']`),
+            manTshirtDelete: page.locator(`#product-${cartData.productId2} .cart_quantity_delete`),
             manTshirtTotalThreeProduct: page.locator("(//p[@class='cart_total_price'])[1]"),
             addToCart: page.locator("(//a[@class='btn btn-default add-to-cart'][normalize-space()='Add to cart'])[3]"),
         };
 
         this.cartProductList = {
             checkoutBlueTop: page.locator("(//tr[@id='product-1'])[1]"),
-            checkoutBlueTopName: page.locator(`(//a[normalize-space()=${cartData.productName}])[1]`),
-            checkoutBlueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice})]`),
+            checkoutBlueTopName: page.locator(`(//a[normalize-space()='${cartData.productName}'])[1]`),
+            checkoutBlueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice}')]`),
             checkoutBlueTopQuantity: page.getByRole('button', { name: cartData.productQuantity }),
             checkoutBlueTopTotal: page
             .getByRole('row', { name: /Blue Top Women > Tops/ })
@@ -94,8 +96,8 @@ export class CartPage {
             .locator('p'),
 
             checkoutManTshirt: page.locator("(//tr[@id='product-2'])[1]"),
-            checkoutManTshirtName: page.locator(`//a[normalize-space()=${cartData.productName2}]`),
-            checkoutManTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),${cartData.productPrice2})]`),
+            checkoutManTshirtName: page.locator(`//a[normalize-space()='${cartData.productName2}']`),
+            checkoutManTshirtPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice2}')]`),
             checkoutManTshirtQuantity: page.locator("(//button[normalize-space()='1'])[1]"),
             checkoutManTshirtTotal: page
             .getByRole('row', { name: /Men Tshirt Men > Tshirts/ })
