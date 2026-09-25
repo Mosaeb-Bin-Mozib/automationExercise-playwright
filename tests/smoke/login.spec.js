@@ -1,207 +1,157 @@
 import {test, expect} from '../../fixtures/login.fixture.js';
 import { getLoginData } from '../../test-data/loginData.js';
+import {ROUTES} from "../../test-data/routes";
 const loginData = getLoginData();
 
-test.describe('Login', () => {
-        // AE-011
+test.describe('Login frontend test', () => {
         test('AE-011 - Verify that the Login page is displayed correctly', async ({ loginPage }) => {
-
-                await loginPage.verifyLoginPage();
-
+                await expect(loginPage.loginHeading).toBeVisible();
+                await expect(loginPage.emailField).toBeVisible();
+                await expect(loginPage.emailField).toBeEnabled();
+                await expect(loginPage.passwordField).toBeVisible();
+                await expect(loginPage.passwordField).toBeEnabled();
+                await expect(loginPage.loginButton).toBeVisible();
+                await expect(loginPage.loginButton).toBeEnabled()
+                await expect(loginPage.loginHeading).toBeVisible();
             }
         );
-    // AE-012
         test('AE-012 - Verify that a registered user can log in using valid credentials', async ({ loginPage }) => {
 
-                await loginPage.enterEmail(loginData.email);
-                await loginPage.enterPassword(loginData.password);
-                // Verify email was entered correctly
-                await expect(loginPage.emailField).toHaveValue(loginData.email);
-                // Verify password was entered correctly
-                await expect(loginPage.passwordField).toHaveValue(loginData.password);
-                await loginPage.clickLogin();
-                // Verify user is logged in
-                await loginPage.verifyLoggedInUser(loginData.username);
+                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await expect(loginPage.emailField).toHaveValue(process.env.TEST_EMAIL);
+                await expect(loginPage.passwordField).toHaveValue(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
+                await expect(loginPage.loggedInAs).toBeVisible();
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
              }
         );
 
-    // AE-013
         test('AE-013 - Verify login fails with incorrect email and password', async ({ loginPage }) => {
-
                 await loginPage.enterEmail(loginData.incorrectEmail);
                 await loginPage.enterPassword(loginData.incorrectPassword);
-                await loginPage.clickLogin();
-                await loginPage.verifyLoginErrorMessage();
+                await loginPage.loginButton.click();
+                await expect(loginPage.loginErrorMessage).toBeVisible();
             }
         );
 
-        // AE-014
         test('AE-014 - Verify login fails with valid email and incorrect password', async ({ loginPage }) => {
-                    await loginPage.enterEmail(loginData.email);
+                    await loginPage.enterEmail(process.env.TEST_EMAIL);
                     await loginPage.enterPassword(loginData.incorrectPassword);
-                    await loginPage.clickLogin();
-                    await loginPage.verifyLoginErrorMessage();
+                    await loginPage.loginButton.click();
+                    await expect(loginPage.loginErrorMessage).toBeVisible();
             }
         );
 
-        // AE-015
         test('AE-015 - Verify login fails with unregistered email and password', async ({ loginPage }) => {
                 await loginPage.enterEmail(loginData.unregisteredEmail);
-                await loginPage.enterPassword(loginData.password);
-                await loginPage.clickLogin();
-                await loginPage.verifyLoginErrorMessage();
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
+                await expect(loginPage.loginErrorMessage).toBeVisible();
 
             }
         );
 
-        // AE-016
         test('AE-016 - Verify login cannot be submitted with empty email and password', async ({ loginPage }) => {
                 await loginPage.enterEmail(loginData.emptyEmail);
                 await loginPage.enterPassword(loginData.emptyPassword);
-                await loginPage.clickLogin();
+                await loginPage.loginButton.click();
                 await expect(loginPage.emailField).toHaveJSProperty('validity.valueMissing', true);
                 await expect(loginPage.passwordField).toHaveJSProperty('validity.valueMissing', true);
             }
         );
 
-        // AE-017
         test('AE-017 - Verify login fails when email is empty and password is provided', async ({ loginPage }) => {
                 await loginPage.enterEmail(loginData.emptyEmail);
-                await loginPage.enterPassword(loginData.password);
-                await loginPage.clickLogin();
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
                 await expect(loginPage.emailField).toHaveJSProperty('validity.valueMissing', true);
             }
         );
 
-        // AE-018
         test('AE-018 - Verify login fails when password is empty and valid email is provided', async ({ loginPage }) => {
-                await loginPage.enterEmail(loginData.email);
+                await loginPage.enterEmail(process.env.TEST_EMAIL);
                 await loginPage.enterPassword(loginData.emptyPassword);
-                await loginPage.clickLogin();
+                await loginPage.loginButton.click();
                 await expect(loginPage.passwordField).toHaveJSProperty('validity.valueMissing', true);
             }
         );
 
-        // AE-019
         test('AE-019 - Verify login fails with invalid email format', async ({ loginPage }) => {
                 await loginPage.enterEmail(loginData.invalidEmailFormat);
-                await loginPage.enterPassword(loginData.password);
-                await loginPage.clickLogin();
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
                 await expect(loginPage.emailField).toHaveJSProperty('validity.typeMismatch', true);
             }
         );
 
-        // AE-020
         test('AE-020 - Verify that the Password field masks the entered password', async ({ loginPage }) => {
-                await loginPage.enterPassword(loginData.password);
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
                 await expect(loginPage.passwordField).toHaveAttribute('type', 'password');
             }
         );
 
-        // AE-021
         test('AE-021 - Verify user can log in by pressing Enter', async ({ loginPage }) => {
-                await loginPage.enterEmail(loginData.email);
-                await loginPage.enterPassword(loginData.password);
+                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
                 await loginPage.passwordField.press('Enter');
-                await loginPage.verifyLoggedInUser(loginData.username);
+                await expect(loginPage.loggedInAs).toBeVisible();
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
             }
         );
 
-        // AE-022
         test('AE-022 - Verify authenticated state is maintained when navigating to Products and Cart', async ({ loginPage }) => {
-                    await loginPage.enterEmail(loginData.email);
-                    await loginPage.enterPassword(loginData.password);
-                    await loginPage.clickLogin();
-                    // Verify user is logged in
-                    await loginPage.verifyLoggedInUser(loginData.username);
-                    await loginPage.page.goto('/products');
+                    await loginPage.enterEmail(process.env.TEST_EMAIL);
+                    await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                    await loginPage.loginButton.click();
+                    await expect(loginPage.loggedInAs).toBeVisible();
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                    await loginPage.page.goto(ROUTES.PRODUCTS);
                     await loginPage.page.getByText('All Products').waitFor({state: 'visible', timeout: 10000});
-                    await loginPage.verifyLoggedInUser(loginData.username);
-                    // Navigate to Cart page
-                    await loginPage.page.goto('/view_cart');
-                    // Verify authenticated state is maintained
-                    await loginPage.verifyLoggedInUser(loginData.username);
+                    await expect(loginPage.loggedInAs).toBeVisible();
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                    await loginPage.page.goto(ROUTES.CART);
+                    await expect(loginPage.loggedInAs).toBeVisible();
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
             }
         );
-
-        // AE-023
         test('AE-023 - Verify that a logged-in user can log out successfully', async ({ loginPage }) => {
 
-            // Login with valid credentials
-                await loginPage.enterEmail(loginData.email);
-                await loginPage.enterPassword(loginData.password);
-                await loginPage.clickLogin();
-                // Verify user is logged in
-                await loginPage.verifyLoggedInUser(loginData.username);
-                // Click Log out
-                await loginPage.clickLogout();
-                // Verify Login page is displayed
+                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
+                await expect(loginPage.loggedInAs).toBeVisible();
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                await loginPage.logoutLink.click();
                 await expect(loginPage.loginHeading).toBeVisible();
-
-                // Verify the user is no longer logged in
                 await expect(loginPage.loggedInAs).not.toBeVisible();
-                // Verify URL
-                await expect(loginPage.page).toHaveURL("/login");
+                await expect(loginPage.page).toHaveURL(ROUTES.LOGIN);
             }
         );
 
-        // AE-025
-        test('AE-025 - Verify logged-out user cannot proceed to checkout', async ({ loginPage }) => {
-                await loginPage.enterEmail(loginData.email);
-                await loginPage.enterPassword(loginData.password);
-                await loginPage.clickLogin();
-
-                // 2. Verify authenticated state
-                 await loginPage.verifyLoggedInUser(loginData.username);
-
-                // 3. Navigate to the Products page
-                await loginPage.page.goto('/products');
-
-                // 4. Wait for Products page
+        test('AE-025 - Verify logged-out user cannot proceed to checkout', async ({ loginPage,cartPage }) => {
+                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                await loginPage.enterPassword(process.env.TEST_PASSWORD);
+                await loginPage.loginButton.click();
+                await expect(loginPage.loggedInAs).toBeVisible();
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                await loginPage.page.goto(ROUTES.PRODUCTS);
                 await expect(loginPage.page.getByText('All Products')).toBeVisible();
-
-                // Find the Blue Top product card
-                const product = loginPage.page.locator('.product-image-wrapper').filter({ hasText: 'Blue Top' }).first();
-
-                // Verify the Blue Top product is visible
-                await expect(product).toBeVisible();
-
-                 // Click Blue Top's Add to cart
-                await product.locator('a.add-to-cart[data-product-id="1"]').first().click();
-
-                // 8. Navigate to Cart
-                await loginPage.page.goto('/view_cart');
-
-                // 9. Verify Blue Top is in the cart
-                await expect(loginPage.page.getByText('Blue Top')).toBeVisible();
-
-                // 10. Verify Proceed To Checkout is available
-                await expect(loginPage.page.getByText('Proceed To Checkout')).toBeVisible();
-
-                // 11. Logout
-                await loginPage.clickLogout();
-
-                // 12. Verify Login page is displayed
+                await expect(cartPage.blueTopProduct.blueTop).toBeVisible();
+                await cartPage.blueTopProduct.addToCart.first().click();
+                await loginPage.page.goto(ROUTES.CART);
+                await expect(cartPage.blueTopProduct.blueTopRow).toBeVisible();
+                await expect(cartPage.cartConfirmation.proceedToCheckout).toBeVisible();
+                await loginPage.logoutLink.click();
                 await expect(loginPage.loginHeading).toBeVisible();
-
-                // 13. Verify the user is no longer logged in
                 await expect(loginPage.loggedInAs).not.toBeVisible();
-
-                // 14. Go back to Cart after logout
-                await loginPage.page.goto('/view_cart');
-
-                // 15. Verify the user is still logged out
+                await loginPage.page.goto(ROUTES.CART);
                 await expect(loginPage.loggedInAs).not.toBeVisible();
-
-                // 16. Check whether Proceed To Checkout is available
-                const checkoutButton = loginPage.page.getByText('Proceed To Checkout', { exact: true }
-                );
-
-                // 17. If checkout is available, attempt to access it
-                if (await checkoutButton.isVisible()) {await checkoutButton.click();
-                    // User must not be treated as authenticated
+                const checkoutButton = cartPage.cartConfirmation.proceedToCheckout;
+                if (await checkoutButton.isVisible())
+                    {   await checkoutButton.click();
                     await expect(loginPage.loggedInAs).not.toBeVisible();
-                }
+                    }
             }
         );
     }

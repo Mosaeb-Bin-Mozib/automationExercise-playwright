@@ -1,7 +1,5 @@
 import { test as base } from '@playwright/test';
-
-import { PaymentPage } from '../pages/PaymentPage';
-
+import {PaymentPage} from '../pages/PaymentPage';
 
 export const test = base.extend({
 
