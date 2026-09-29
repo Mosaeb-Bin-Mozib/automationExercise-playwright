@@ -7,10 +7,10 @@ export class BasePage {
         this.loginPassword = page.getByPlaceholder('Password');
         this.loginButton = page.getByRole('button', { name: 'Login' }).first();
     }
-    async login() {
+    async login(user) {
         await this.page.goto(ROUTES.LOGIN);
         await this.page.waitForLoadState('domcontentloaded');
-        await this.loginEmail.fill(process.env.TEST_EMAIL);
+        await this.loginEmail.fill(user.email);
         await this.loginPassword.fill(process.env.TEST_PASSWORD);
         await this.loginButton.click();
     }

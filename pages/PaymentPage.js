@@ -9,6 +9,8 @@ export class PaymentPage extends BasePage {
         super(page);
         this.blueTopProduct = page.locator(`//div[contains(@class,'product-image-wrapper')][.//p[normalize-space()='${cartData.productName}']]`).first();
         this.blueTopProductAddtoCart = page.locator("(//a[contains(text(),'Add to cart')])[1]");
+        this.loggedInAs = page.locator('li:has-text("Logged in as")');
+        this.logoutLink = page.getByRole('link', {name: 'Logout'});
 
         this.cartConfirmation = {
 

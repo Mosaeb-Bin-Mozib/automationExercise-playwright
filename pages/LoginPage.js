@@ -1,4 +1,7 @@
 import {ROUTES} from "../test-data/routes";
+import {getLoginData} from "../test-data/loginData";
+const loginData = getLoginData();
+
 export class LoginPage {
 
     constructor(page) {
@@ -8,7 +11,7 @@ export class LoginPage {
         this.emailField = page.locator('input[data-qa="login-email"]');
         this.passwordField = page.locator('input[data-qa="login-password"]');
         this.loginButton = page.getByRole('button', {name: 'Login'});
-        this.loggedInAs = page.locator('li:has-text("Logged in as")');
+        this.loggedInAs= page.locator('header').getByText(/Logged in as/);
         this.loginErrorMessage = page.getByText('Your email or password is incorrect!');
         this.logoutLink = page.getByRole('link', {name: 'Logout'});
         this.signupLoginLink = page.getByRole('link', {name: 'Signup / Login'});

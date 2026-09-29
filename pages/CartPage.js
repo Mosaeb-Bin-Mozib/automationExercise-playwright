@@ -29,17 +29,17 @@ export class CartPage {
             commentBox: page.locator("//textarea[@name='message']"),
 
             deliveryAddress: page.locator("(//h3[normalize-space()='Your delivery address'])[1]"),
-            deliveryAddressName: page.locator("//ul[@id='address_delivery']//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')]"),
-            deliveryAddressCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutCompanyName}'])[1]`),
+            deliveryAddressName:page.locator('#address_delivery').getByText(cartData.checkoutAddressName),
+            deliveryAddressCompanyName:page.locator('#address_delivery').getByText(cartData.checkoutCompanyName),
             deliveryAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutAddressOne}'])[1]`),
             deliveryAddressState: page.locator(`//ul[@id='address_delivery']//li[@class='address_city address_state_name address_postcode'][contains(text(),'${cartData.checkoutState}')]`),
             deliveryAddressCountry: page.locator(`//ul[@id='address_delivery']//li[@class='address_country_name'][normalize-space()='${cartData.checkoutCountry}']`),
             deliveryAddressPhone: page.locator(`//ul[@id='address_delivery']//li[@class='address_phone'][normalize-space()='${cartData.checkoutPhone}']`),
 
             checkoutBillingAddress: page.locator("//h3[normalize-space()='Your billing address']"),
-            checkoutBillingAddressName: page.locator("(//li[@class='address_firstname address_lastname'][contains(text(),'Mr. MOSAEB')])[2]"),
+            checkoutBillingAddressName:page.locator('#address_invoice').getByText(cartData.checkoutAddressName),
             checkoutBillingCompanyName: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutCompanyName}'])[2]`),
-            checkoutBillingAddressOne: page.locator(`(//li[@class='address_address1 address_address2'][normalize-space()='${cartData.checkoutAddressOne}'])[3]`),
+            checkoutBillingAddressOne:  page.locator('#address_invoice').getByText(cartData.checkoutAddressTwo),
             checkoutBillingState: page.locator(`//ul[@id='address_invoice']//li[@class='address_city address_state_name address_postcode'][contains(text(),'${cartData.checkoutState}')]`),
             checkoutBillingCountry: page.locator(`(//li[@class='address_country_name'][normalize-space()='${cartData.checkoutCountry}'])[2]`),
             checkoutBillingPhone: page.locator(`(//li[@class='address_phone'][normalize-space()='${cartData.checkoutPhone}'])[2]`),
@@ -88,7 +88,8 @@ export class CartPage {
             checkoutBlueTop: page.locator("(//tr[@id='product-1'])[1]"),
             checkoutBlueTopName: page.locator(`(//a[normalize-space()='${cartData.productName}'])[1]`),
             checkoutBlueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice}')]`),
-            checkoutBlueTopQuantity: page.getByRole('button', { name: cartData.productQuantity }),
+            checkoutBlueTopQuantity: page.locator('#product-1').getByRole('button'),
+
             checkoutBlueTopTotal: page
             .getByRole('row', { name: /Blue Top Women > Tops/ })
             .locator('td')

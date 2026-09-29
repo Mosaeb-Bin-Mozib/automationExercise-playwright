@@ -1,6 +1,7 @@
 export function getProductData() {
     return {
         rightProductKeyword: 'Blue Top',
+        productId2: '2',
         nameOne: 'Men Tshirt',
         nameTwo: 'Blue Top',
         nameThree: 'Sleeveless dress',

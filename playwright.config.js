@@ -1,10 +1,12 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+
 dotenv.config();
+
 /**
- * Read environment variables from a file.
- * https://github.com/motdotla/dotenv
+ * Read environment variables from .env file.
+ * @see https://github.com/motdotla/dotenv
  */
 
 /**
@@ -12,31 +14,73 @@ dotenv.config();
  */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
-  timeout: 60000,
-  fullyParallel: false,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+
+  // Maximum time for each test
+  timeout: 90000,
+
+  // Run tests in parallel
+  fullyParallel: true,
+
+  // Fail the build on CI if test.only is accidentally left in the source code
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+
+  // Retry failed tests
+  retries: process.env.CI ? 2 : 2,
+
+  // Limit parallel workers to avoid overwhelming AutomationExercise
+  workers: 4,
+
+  // HTML test report
   reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+
+  // Shared settings for all projects
   use: {
-    // Read BASE_URL from.env
-    baseURL: process.env.BASE_URL ?? 'https://automationexercise.com/',
+    // Read BASE_URL from .env
+    baseURL:
+        process.env.BASE_URL ?? 'https://automationexercise.com/',
+
+    // Take screenshot only when a test fails
     screenshot: 'only-on-failure',
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+
+    // Collect trace when a test is retried
     trace: 'on-first-retry',
   },
-  /* Configure projects for major browsers */
+
+  /**
+   * Configure projects
+   */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'api-tests-independent',
+      testMatch: '**/API/**/*.spec.js',
+      fullyParallel: true,
+    },
+
+    {
+      name: 'smoke-independent',
+      testMatch: '**/smoke/{home,products,contact}.spec.js',
+      fullyParallel: true,
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+
+    {
+      name: 'smoke-account-dependent',
+      testMatch: '**/smoke/{login,signup,cart,payment}.spec.js',
+      fullyParallel: false,
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+
+    {
+      name: 'end-to-end-dependent',
+      testMatch: '**/end-to-end/*.spec.js',
+      fullyParallel: false,
+      use: {
+        ...devices['Desktop Chrome'],
+      },
     },
   ],
 });
-

@@ -2,6 +2,7 @@ import {test, expect} from '../../fixtures/login.fixture.js';
 import { getLoginData } from '../../test-data/loginData.js';
 import {ROUTES} from "../../test-data/routes";
 const loginData = getLoginData();
+import {getUser} from '../../helper/user';
 
 test.describe('Login frontend test', () => {
         test('AE-011 - Verify that the Login page is displayed correctly', async ({ loginPage }) => {
@@ -15,17 +16,21 @@ test.describe('Login frontend test', () => {
                 await expect(loginPage.loginHeading).toBeVisible();
             }
         );
-        test('AE-012 - Verify that a registered user can log in using valid credentials', async ({ loginPage }) => {
 
-                await loginPage.enterEmail(process.env.TEST_EMAIL);
+        test('AE-012 - Verify registered user can login', async ({ loginPage }) => {
+
+                const user = getUser(1);
+                await loginPage.enterEmail(user.email);
                 await loginPage.enterPassword(process.env.TEST_PASSWORD);
-                await expect(loginPage.emailField).toHaveValue(process.env.TEST_EMAIL);
+
+                await expect(loginPage.emailField).toHaveValue(user.email);
                 await expect(loginPage.passwordField).toHaveValue(process.env.TEST_PASSWORD);
+
                 await loginPage.loginButton.click();
                 await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
-             }
-        );
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                await loginPage.logoutLink.click();
+        });
 
         test('AE-013 - Verify login fails with incorrect email and password', async ({ loginPage }) => {
                 await loginPage.enterEmail(loginData.incorrectEmail);
@@ -36,7 +41,8 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-014 - Verify login fails with valid email and incorrect password', async ({ loginPage }) => {
-                    await loginPage.enterEmail(process.env.TEST_EMAIL);
+                    const user = getUser(1);
+                    await loginPage.enterEmail(user.email);
                     await loginPage.enterPassword(loginData.incorrectPassword);
                     await loginPage.loginButton.click();
                     await expect(loginPage.loginErrorMessage).toBeVisible();
@@ -70,7 +76,8 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-018 - Verify login fails when password is empty and valid email is provided', async ({ loginPage }) => {
-                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                const user = getUser(1);
+                await loginPage.enterEmail(user.email);
                 await loginPage.enterPassword(loginData.emptyPassword);
                 await loginPage.loginButton.click();
                 await expect(loginPage.passwordField).toHaveJSProperty('validity.valueMissing', true);
@@ -92,36 +99,41 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-021 - Verify user can log in by pressing Enter', async ({ loginPage }) => {
-                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                const user = getUser(1);
+                await loginPage.enterEmail(user.email);
                 await loginPage.enterPassword(process.env.TEST_PASSWORD);
                 await loginPage.passwordField.press('Enter');
                 await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                await loginPage.logoutLink.click();
             }
         );
 
         test('AE-022 - Verify authenticated state is maintained when navigating to Products and Cart', async ({ loginPage }) => {
-                    await loginPage.enterEmail(process.env.TEST_EMAIL);
+                    const user = getUser(1);
+                    await loginPage.enterEmail(user.email);
                     await loginPage.enterPassword(process.env.TEST_PASSWORD);
                     await loginPage.loginButton.click();
                     await expect(loginPage.loggedInAs).toBeVisible();
-                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
                     await loginPage.page.goto(ROUTES.PRODUCTS);
                     await loginPage.page.getByText('All Products').waitFor({state: 'visible', timeout: 10000});
                     await expect(loginPage.loggedInAs).toBeVisible();
-                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
                     await loginPage.page.goto(ROUTES.CART);
                     await expect(loginPage.loggedInAs).toBeVisible();
-                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                    await loginPage.logoutLink.click();
             }
         );
         test('AE-023 - Verify that a logged-in user can log out successfully', async ({ loginPage }) => {
 
-                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                const user = getUser(2);
+                await loginPage.enterEmail(user.email);
                 await loginPage.enterPassword(process.env.TEST_PASSWORD);
                 await loginPage.loginButton.click();
                 await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
                 await loginPage.logoutLink.click();
                 await expect(loginPage.loginHeading).toBeVisible();
                 await expect(loginPage.loggedInAs).not.toBeVisible();
@@ -130,11 +142,12 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-025 - Verify logged-out user cannot proceed to checkout', async ({ loginPage,cartPage }) => {
-                await loginPage.enterEmail(process.env.TEST_EMAIL);
+                const user = getUser(2);
+                await loginPage.enterEmail(user.email);
                 await loginPage.enterPassword(process.env.TEST_PASSWORD);
                 await loginPage.loginButton.click();
                 await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${process.env.TEST_USERNAME}`);
+                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
                 await loginPage.page.goto(ROUTES.PRODUCTS);
                 await expect(loginPage.page.getByText('All Products')).toBeVisible();
                 await expect(cartPage.blueTopProduct.blueTop).toBeVisible();

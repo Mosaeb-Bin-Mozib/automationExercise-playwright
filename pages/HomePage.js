@@ -7,7 +7,7 @@ export class HomePage {
         this.page = page;
         this.homeHeading = page.getByRole('heading', {name: 'Full-Fledged practice website for Automation Engineers'}).first();
 
-        this.homeLink = page.getByRole('link', { name: /Home/ }).first();
+        this.homeLink =  page.getByRole('link', { name: 'Home' }),
         this.productsLink = page.getByRole('link', { name: /Products/ }).first();
         this.cartLink = page.getByRole('link', { name: /Cart/ }).first();
         this.signupLoginLink = page.getByRole('link', { name: /Signup \/ Login/ }).first();
@@ -16,7 +16,6 @@ export class HomePage {
         this.loginInfo = page.locator("//h2[normalize-space()='Login to your account']");
         this.productInfo = page.locator("(//h2[normalize-space()='All Products'])[1]");
         this.contactInfo = page.locator("//h2[normalize-space()='Get In Touch']");
-        this.featuredItemsInfo = page.locator("//div[contains(@class,'features_items')]");
         this.addToCart = page.locator("//a[normalize-space()='Cart']");
         this.blueTopDetails = page.getByText('Add to cart', { exact: true });
         this.homebutton = page.locator("//a[normalize-space()='Home']");
@@ -41,35 +40,21 @@ export class HomePage {
             ),
 
             women: {
-                category: page.locator(
-                    "//a[contains(., 'Women')]"
-                ).first(),
+                category: page.getByRole('link', { name: 'Women' }).first(),
 
-                dress: page.locator(
-                    "//div[@id='Women']//a[contains(text(),'Dress')]"
-                ).first(),
+                dress:  page.getByRole('link', { name: 'Dress' }).first(),
 
-                tops: page.locator(
-                    "//a[normalize-space()='Tops']"
-                ).first(),
+                tops:  page.getByRole('link', { name: 'Tops' }).first(),
 
-                saree: page.locator(
-                    "//a[normalize-space()='Saree']"
-                ).first(),
+                saree:  page.getByRole('link', { name: 'Saree' }).first(),
             },
 
             men: {
-                category: page.locator(
-                    "//a[contains(., 'Men')]"
-                ).first(),
+                category: page.locator("//a[contains(., 'Men')]").first(),
 
-                tshirts: page.locator(
-                    "//a[normalize-space()='Tshirts']"
-                ).first(),
+                tshirts: page.locator("//a[normalize-space()='Tshirts']").first(),
 
-                jeans: page.locator(
-                    "//a[normalize-space()='Jeans']"
-                ).first(),
+                jeans: page.locator("//a[normalize-space()='Jeans']").first(),
             },
 
             kids: {
@@ -194,6 +179,11 @@ export class HomePage {
             menTshirtCartRow: page.locator(
                 `//tr[.//td[contains(@class,'cart_description')]//a[normalize-space()='${productData.nameOne}']]`
             ).first(),
+
+            blueTopDelete: page.locator("//tr[@id='product-1']//a[@class='cart_quantity_delete']"),
+
+            manTshirtDelete: page.locator(`#product-${productData.productId2} .cart_quantity_delete`),
+
         };
 
         this.footerSections = {
@@ -211,7 +201,7 @@ export class HomePage {
         };
     }
     async open() {
-        await this.page.goto(ROUTES.HOME, {waitUntil: 'domcontentloaded', timeout: 60000});
+        await this.page.goto(ROUTES.HOME, {waitUntil: 'domcontentloaded'});
     }
 
 }

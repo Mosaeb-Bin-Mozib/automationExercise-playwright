@@ -1,6 +1,7 @@
 export function getLoginData() {
     return {
         incorrectEmail: 'user_12345@gmail.com',
+        name: 'Mosaeb Bin Mozib',
         incorrectPassword: 'Password@123',
         unregisteredEmail: 'mosaeb@gmail.com',
         invalidEmailFormat: 'testExample.com',

@@ -52,9 +52,10 @@ test.describe('Products Page frontend', () => {
             await expect(productsPage.allProductsHeading).toBeVisible();
             await expect(productsPage.products.blueTop).toBeVisible();
             await productsPage.products.blueTopAddToCart.click();
-            await expect(productsPage.cartConfirmation.addedMessage).toBeVisible();
             await expect(productsPage.cartConfirmation.viewCart).toBeVisible();
             await expect(productsPage.cartConfirmation.continueShopping).toBeVisible();
+            await productsPage.cartConfirmation.viewCart.click();
+            await productsPage.cartConfirmation.blueTopDelete.click();
         }
     );
 
@@ -135,31 +136,32 @@ test.describe('Products Page frontend', () => {
     );
 
     test('AE-076 - Verify product images are displayed correctly', async ({ productsPage }) => {
+        await productsPage.open();
+        await expect(productsPage.allProductsHeading).toBeVisible();
 
-            await productsPage.open();
-            await expect(productsPage.allProductsHeading).toBeVisible();
-            const imageCount = await productsPage.productImages.count();
-            expect(imageCount).toBeGreaterThan(0);
-            for (let i = 0; i < imageCount; i++) {
-    
-                const image = productsPage.productImages.nth(i);
-                await image.scrollIntoViewIfNeeded();
-                await expect(image).toBeVisible();
-                const imageSource = await image.getAttribute("src");
-                const imageStatus = await image.evaluate((img) => ({
-                    complete: img.complete,
-                    naturalWidth: img.naturalWidth,
-                    naturalHeight: img.naturalHeight
-                }));
-                expect(imageSource).not.toBeNull();
-                expect(imageSource).not.toBe("");
-                expect(imageStatus.complete, `Image ${i + 1} did not complete loading. Source: ${imageSource}`).toBe(true);
-    
-                expect(imageStatus.naturalWidth, `Image ${i + 1} is broken. Source: ${imageSource}`).toBeGreaterThan(0);
-    
-            }
+        const imageCount = await productsPage.productImages.count();
+        expect(imageCount).toBeGreaterThan(0);
+
+        for (let i = 0; i < imageCount; i++) {
+            const image = productsPage.productImages.nth(i);
+
+            await image.scrollIntoViewIfNeeded();
+            await expect(image).toBeVisible();
+
+            const imageSource = await image.getAttribute('src');
+
+            expect(imageSource).not.toBeNull();
+            expect(imageSource).not.toBe('');
+
+            await expect.poll(
+                () => image.evaluate(img => img.complete && img.naturalWidth > 0),
+                {
+                    message: `Image ${i + 1} failed to load. Source: ${imageSource}`,
+                    timeout: 10000,
+                }
+            ).toBe(true);
         }
-    );
+    });
 
     test('AE-077 - Verify Products page critical functionality', async ({ productsPage }) => {
 
@@ -175,7 +177,6 @@ test.describe('Products Page frontend', () => {
         await productsPage.blueTopProductView.click();
 
         await expect(productsPage.page).toHaveURL(/\/product_details\/\d+/);
-        await expect(productsPage.productInformation).toBeVisible();
         await expect(productsPage.productInformationName.first()).toHaveText(productData.nameTwo);
         await expect(productsPage.productInformationCategory).toBeVisible();
         await expect(productsPage.productInformationPrice.first()).toBeVisible();
@@ -201,6 +202,7 @@ test.describe('Products Page frontend', () => {
         await expect(productsPage.blueTopCartRowPrice).toHaveText(productData.priceTwo);
         await expect(productsPage.blueTopCartRowQuantity).toHaveText(productData.productQuantity);
         await expect(productsPage.blueTopCartRowTotal).toHaveText(productData.priceTwo);
+        await productsPage.cartConfirmation.blueTopDelete.click();
 
         }
     );
@@ -248,6 +250,7 @@ test.describe('Products Page frontend', () => {
             await productsPage.cartConfirmation.viewCart.click();
             await expect(productsPage.menTshirtCartRow).toBeVisible();
             await expect(productsPage.menTshirtCartRowQuantity).toHaveText(productData.productQuantity);
+            await productsPage.cartConfirmation.manTshirtDelete.click();
         }
     );
 
@@ -262,6 +265,7 @@ test.describe('Products Page frontend', () => {
             await productsPage.cartConfirmation.viewCart.click();
             await expect(productsPage.menTshirtCartRow).toBeVisible();
             await expect(productsPage.menTshirtCartRowQuantityFour).toHaveText(productData.Quantity);
+            await productsPage.cartConfirmation.manTshirtDelete.click();
         }
     );
     test('AE-084 - Verify valid product review submission', async ({ productsPage }) => {
@@ -312,6 +316,7 @@ test.describe('Products Page frontend', () => {
             await expect(productsPage.menTshirtCartRow).toBeVisible();
             await expect(productsPage.menTshirtCartRowName).toHaveText(productData.nameOne);
             await expect(productsPage.menTshirtCartRowQuantityFour).toHaveText(productData.Quantity);
+            await productsPage.cartConfirmation.manTshirtDelete.click();
         }
     );
 

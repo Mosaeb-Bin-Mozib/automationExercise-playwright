@@ -14,11 +14,12 @@ export function getCartData() {
         quantityInput2: '6',
         checkoutConfirmation: 'Register / Login account to proceed on checkout.',
 
-        checkoutAddressName: 'MOSAEB BIN MOZIB',
-        checkoutCompanyName: 'Syntax',
-        checkoutAddressOne: 'Nathullabad barishal',
-        checkoutState: 'Dhaka Dhaka',
-        checkoutCountry: 'Australia',
+        checkoutAddressName: 'Mr. Mosaeb Bin Mozib',
+        checkoutCompanyName: 'Automation Exercise',
+        checkoutAddressOne: '123 Test Street',
+        checkoutAddressTwo: 'Test Street',
+        checkoutState: 'Test State',
+        checkoutCountry: 'Canada',
         checkoutPhone: '01302692330',
         comment: 'Please deliver the order carefully.',
 

@@ -69,6 +69,8 @@ export class ProductsPage {
             addedMessage: page.locator("//h4[normalize-space()='Added!']"),
             viewCart: page.locator("//u[normalize-space()='View Cart']"),
             continueShopping: page.locator("//button[normalize-space()='Continue Shopping']"),
+            blueTopDelete: page.locator("//tr[@id='product-1']//a[@class='cart_quantity_delete']"),
+            manTshirtDelete: page.locator(`#product-${productData.productId2} .cart_quantity_delete`),
         };
 
         this.productSearch = {

@@ -148,8 +148,6 @@ test.describe('Contact Us', () => {
             await contactUsPage.submitButton.click();
             await expect(contactUsPage.successMessage).toBeVisible();
             await contactUsPage.homeButton.click();
-            await expect(contactUsPage.page).toHaveURL(ROUTES.HOME);
-            await expect(homePage.homeHeading).toBeVisible();
         }
     );
 

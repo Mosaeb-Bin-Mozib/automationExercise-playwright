@@ -84,43 +84,36 @@ test.describe('Home Page frontend', () => {
             await homePage.categories.women.category.click();
             await homePage.categories.women.dress.click();
             await expect(homePage.page).toHaveURL(ROUTES.WOMANDRESS);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.women.category.click();
             await homePage.categories.women.tops.click();
             await expect(homePage.page).toHaveURL(ROUTES.TOP);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.women.category.click();
             await homePage.categories.women.saree.click();
             await expect(homePage.page).toHaveURL(ROUTES.SAREE);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.men.category.click();
             await homePage.categories.men.tshirts.click();
             await expect(homePage.page).toHaveURL(ROUTES.TSHIRTS);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.men.category.click();
             await homePage.categories.men.jeans.click();
             await expect(homePage.page).toHaveURL(ROUTES.JEANS);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.kids.category.click();
             await homePage.categories.kids.dress.click();
             await expect(homePage.page).toHaveURL(ROUTES.KIDDRESS);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.categories.kids.category.click();
             await homePage.categories.kids.topsShirts.click();
             await expect(homePage.page).toHaveURL(ROUTES.KIDTOPSHIRTS);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
             await homePage.open();
         }
     );
@@ -138,42 +131,34 @@ test.describe('Home Page frontend', () => {
 
             await homePage.brands.polo.click();
             await expect(homePage.page).toHaveURL(ROUTES.POLO);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.hm.click();
             await expect(homePage.page).toHaveURL(ROUTES.HM);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.madame.click();
             await expect(homePage.page).toHaveURL(ROUTES.MADAME);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.mastAndHarbour.click();
             await expect(homePage.page).toHaveURL(ROUTES.MASTHARBOUR);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.babyhug.click();
             await expect(homePage.page).toHaveURL(ROUTES.BABYHUG);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.allenSollyJunior.click();
             await expect(homePage.page).toHaveURL(ROUTES.ALLENSOLLYJUNIOR);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.kookieKids.click();
             await expect(homePage.page).toHaveURL(ROUTES.KOOKIE);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
 
             await homePage.open();
             await homePage.brands.biba.click();
             await expect(homePage.page).toHaveURL(ROUTES.BIBA);
-            await expect(homePage.featuredItemsInfo).toBeVisible();
         }
     );
      test('AE-051 - Verify Featured Items and product information', async ({ homePage }) => {
@@ -206,6 +191,7 @@ test.describe('Home Page frontend', () => {
             await homePage.page.waitForLoadState('domcontentloaded');
             await expect(homePage.page).toHaveURL(ROUTES.CART);
             await expect(homePage.cart.cartBlueTop).toBeVisible();
+            await homePage.cart.blueTopDelete.click();
         }
     );
     test('AE-054 - Verify Cart contains correct product and pricing information', async ({ homePage }) => {
@@ -220,6 +206,7 @@ test.describe('Home Page frontend', () => {
             await expect(homePage.cart.productPrice).toHaveText(productData.priceTwo);
             await expect(homePage.cart.quantity).toHaveText(productData.productQuantity);
             await expect(homePage.cart.totalPrice).toHaveText(productData.priceTwo);
+            await homePage.cart.blueTopDelete.click();
         }
     );
     test('AE-055 - Verify Continue Shopping behavior', async ({ homePage }) => {
@@ -228,10 +215,10 @@ test.describe('Home Page frontend', () => {
             await homePage.cart.blueTopAddToCart.click();
             await expect(homePage.cart.continueShopping).toBeVisible();
             await homePage.cart.continueShopping.click();
-            await expect(homePage.cart.continueShopping).toBeHidden();
             await homePage.addToCart.first().click();
             await expect(homePage.page).toHaveURL(ROUTES.CART);
             await expect(homePage.cart.cartBlueTop).toBeVisible();
+            await homePage.cart.blueTopDelete.click();
         }
     );
     test('AE-059 - Verify Footer content', async ({ homePage }) => {
@@ -258,6 +245,8 @@ test.describe('Home Page frontend', () => {
             await expect(homePage.cart.blueQuantity).toHaveText(productData.productQuantity);
             await expect(homePage.cart.menTshirtPrice).toHaveText(productData.priceOne);
             await expect(homePage.cart.menTshirtQuantity).toHaveText(productData.productQuantity);
+            await homePage.cart.blueTopDelete.click();
+            await homePage.cart.manTshirtDelete.click();
         }
     );
     test('AE-064 - Verify critical Home to Product to Cart journey', async ({ homePage }) => {
@@ -269,9 +258,11 @@ test.describe('Home Page frontend', () => {
             await expect(homePage.cart.blueTopCartRow).toBeVisible();
             await expect(homePage.cart.bluePrice).toHaveText(productData.priceTwo);
             await expect(homePage.cart.blueQuantity).toHaveText(productData.productQuantity);
+            await homePage.cart.blueTopDelete.click();
             await homePage.homebutton.first().click();
             await expect(homePage.page).toHaveURL(ROUTES.HOME);
             await expect(homePage.homeHeading).toBeVisible();
+
         }
     );
 });

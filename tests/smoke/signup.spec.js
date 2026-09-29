@@ -103,12 +103,7 @@ test.describe('New User Signup frontend', () => {
         await accountInformationPage.cityField.fill(signupData.city);
         await accountInformationPage.zipcodeField.fill(signupData.zip);
         await accountInformationPage.mobileNumberField.fill(signupData.phone);
-    });
+        await accountInformationPage.createAccountButton.click();
 
-    test('AE-008 - Verify that valid Address Information can be entered successfully.', async ({ signupPage }) => {
-        await signupPage.nameField.fill(signupData.name);
-        await signupPage.emailField.fill(signupData.email);
-        await signupPage.signupButton.click();
     });
-
 });

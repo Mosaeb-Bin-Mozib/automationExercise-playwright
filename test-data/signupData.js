@@ -1,64 +1,31 @@
 export function getSignupData() {
     return {
-        name: 'Mosaeb Bin Mozib',
+        name: process.env.SIGNUP_NAME,
         email: `mosaeb_${Date.now()}@gmail.com`,
         invalidEmail: 'example.com',
-        registeredEmail: 'mosaeb598@gmail.com',
+        registeredEmail: process.env.REGISTERED_EMAIL,
 
-        title: 'Mr.',   // ✅ Add dot
-        password: 'Test@12345',
+        title: process.env.SIGNUP_TITLE,
+        password: process.env.SIGNUP_PASSWORD,
 
         dateOfBirth: {
-            day: '15',
-            month: 'May',
-            year: '1998'
+            day: process.env.SIGNUP_DAY,
+            month: process.env.SIGNUP_MONTH,
+            year: process.env.SIGNUP_YEAR
         },
 
-        newsletter: true,
-        specialOffers: true,
+        newsletter: process.env.SIGNUP_NEWSLETTER === 'true',
+        specialOffers: process.env.SIGNUP_SPECIAL_OFFERS === 'true',
 
-        firstName: 'Mosaeb',
-        lastName: 'Bin Mozib',
-        company: 'Automation Exercise',
-        address: '123 Test Street',
-        address2: 'Apt 123',
-        city: 'Test City',
-        state: 'Test State',
-        zip: '1219',
-
-        // ⚠️ AutomationExercise does NOT have "Test Country"
-        country: 'Canada',
-
-        phone: '01302692330',
-    };
-}
-
-export function invalidNumberSignupData() {
-    return {
-        name: '4144144',
-        email: `mosaeb_${Date.now()}@gmail.com`,
-        invalidEmail:'example.com',
-        registeredEmail:'mosaeb598@gmail.com',
-
-        title: 'Mr',
-        password: 'Test@12345',
-        dateOfBirth: {
-            day: '15',
-            month: 'May',
-            year: '1998'
-        },
-        newsletter: true,
-        specialOffers: true,
-
-        firstName: '21321',
-        lastName: '2321321',
-        company: '2312321',
-        address: '123321312',
-        address2: '23213213',
-        city: '2321321',
-        state: '321312',
-        zip: '1219',
-        country: '21321323',
-        phone: '42423423543652424634',
+        firstName: process.env.SIGNUP_FIRST_NAME,
+        lastName: process.env.SIGNUP_LAST_NAME,
+        company: process.env.SIGNUP_COMPANY,
+        address: process.env.SIGNUP_ADDRESS,
+        address2: process.env.SIGNUP_ADDRESS2,
+        city: process.env.SIGNUP_CITY,
+        state: process.env.SIGNUP_STATE,
+        zip: process.env.SIGNUP_ZIP,
+        country: process.env.SIGNUP_COUNTRY,
+        phone: process.env.SIGNUP_PHONE,
     };
 }
