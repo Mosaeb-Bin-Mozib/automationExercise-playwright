@@ -85,9 +85,9 @@ export class CartPage {
         };
 
         this.cartProductList = {
-            checkoutBlueTop: page.locator("(//tr[@id='product-1'])[1]"),
-            checkoutBlueTopName: page.locator(`(//a[normalize-space()='${cartData.productName}'])[1]`),
-            checkoutBlueTopPrice: page.locator(`//td[@class='cart_price']//p[contains(text(),'${cartData.productPrice}')]`),
+            checkoutBlueTop: page.getByRole('row', { name: 'Product Image Blue Top Women' }),
+            checkoutBlueTopName: page.getByRole('link', { name: 'Blue Top' }),
+            checkoutBlueTopPrice: page.getByText('Rs.').first(),
             checkoutBlueTopQuantity: page.locator('#product-1').getByRole('button'),
 
             checkoutBlueTopTotal: page

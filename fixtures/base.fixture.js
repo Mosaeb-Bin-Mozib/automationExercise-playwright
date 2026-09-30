@@ -3,6 +3,7 @@ import { LoginPage } from '../pages/LoginPage.js';
 import { CartPage } from '../pages/CartPage.js';
 import {HomePage} from "../pages/HomePage";
 import {ContactUsPage} from "../pages/ContactUsPage";
+import {PaymentPage} from "../pages/PaymentPage";
 
 export const test = base.extend({
 
@@ -10,6 +11,11 @@ export const test = base.extend({
         const loginPage = new LoginPage(page);
         await loginPage.open();
         await use(loginPage);
+    },
+    paymentPage: async ({ page }, use) => {
+
+        const paymentPage = new PaymentPage(page);
+        await use(paymentPage);
     },
 
     cartPage: async ({ page }, use) => {

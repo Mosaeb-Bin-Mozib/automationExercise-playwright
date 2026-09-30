@@ -21,8 +21,9 @@ export class PaymentPage extends BasePage {
             viewCart: page.locator("//u[normalize-space()='View Cart']"),
 
             continueShopping: page.locator("//button[normalize-space()='Continue Shopping']"),
+            blueTopDelete: page.locator("//tr[@id='product-1']//a[@class='cart_quantity_delete']"),
         };
-
+        this.downloadInvoice = page.getByRole('link', {name: 'Download Invoice'});
         this.proceedToCheckout = page.getByText('Proceed To Checkout', { exact: true });
         this.placeOrder = page.getByText('Place Order', { exact: true });
         this.paymentHeading = page.getByRole('heading', { name: 'Payment' });

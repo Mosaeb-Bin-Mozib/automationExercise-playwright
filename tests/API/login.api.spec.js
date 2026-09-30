@@ -36,7 +36,6 @@ test.describe('Login API Tests', () => {
 
     test('AE-API-010 - Verify user account creation', async ({ userAccountApi }) => {
         const userData = getUserAccountData();
-
         try {
             const response = await userAccountApi.createAccount(userData);
             const responseBody = await response.json();

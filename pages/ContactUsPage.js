@@ -15,6 +15,7 @@ export class ContactUsPage {
         this.subscriptionEmail = page.locator("(//input[@id='susbscribe_email'])[1]");
         this.subscriptionButton = page.locator("(//button[@id='subscribe'])[1]");
         this.footer = page.locator("//div[@class='footer-widget']");
+        this.subscriptionMessage = page.getByText('You have been successfully subscribed!', { exact: true })
     }
     async open() {
         await this.page.goto(ROUTES.HOME);

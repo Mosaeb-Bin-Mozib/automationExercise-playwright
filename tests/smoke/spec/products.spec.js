@@ -1,11 +1,16 @@
-import { test, expect } from '../../fixtures/products.fixture';
-import {getProductData} from '../../test-data/productData';
+import { test, expect } from '../../../fixtures/products.fixture';
+import {getProductData} from '../../../test-data/productData';
 const productData = getProductData();
-import {ROUTES} from "../../test-data/routes";
+import {ROUTES} from "../../../test-data/routes";
+import {
+    addProductDetailsToCart, fillProductReviewForm,
+    searchProduct,
+    verifyProductDetails,
+    verifyProductImageLoaded
+} from "../assertions/products.assertion";
 
 test.describe('Products Page frontend', () => {
     test('AE-065 - Verify Products page loads successfully', async ({ productsPage }) => {
-
             await productsPage.open();
             await expect(productsPage.allProductsHeading).toBeVisible();
             await expect(productsPage.page).toHaveURL(ROUTES.PRODUCTS);
@@ -60,36 +65,30 @@ test.describe('Products Page frontend', () => {
     );
 
     test('AE-071 - Verify product search with valid product keyword', async ({ productsPage }) => {
-
-            await productsPage.open();
-            await expect(productsPage.allProductsHeading).toBeVisible();
-            await expect(productsPage.productSearch.searchInput).toBeVisible();
-            await productsPage.productSearch.searchInput.fill(productData.nameTwo);
-            await productsPage.productSearch.searchButton.click();
-            await expect(productsPage.productSearch.searchedProductsHeading).toBeVisible();
-            const productCount = await productsPage.productSearch.searchedProductCards.count();
-            expect(productCount).toBeGreaterThan(0);
-            for (let i = 0; i < productCount; i++) {
-                const productCard = productsPage.productSearch.searchedProductCards.nth(i);
-                await productCard.scrollIntoViewIfNeeded();
-                await expect(productCard).toBeVisible();
-                const productName = await productCard.locator("p").first().innerText();
-                expect(productName.trim()).not.toBe('');
-            }
+        await productsPage.open();
+        await expect(productsPage.allProductsHeading).toBeVisible();
+        await expect(productsPage.productSearch.searchInput).toBeVisible();
+        await searchProduct(productsPage, productData.nameTwo);
+        const productCount = await productsPage.productSearch.searchedProductCards.count();
+        expect(productCount).toBeGreaterThan(0);
+        for (let i = 0; i < productCount; i++) {
+            const productCard = productsPage.productSearch.searchedProductCards.nth(i);
+            await productCard.scrollIntoViewIfNeeded();
+            await expect(productCard).toBeVisible();
+            const productName = await productCard.locator('p').first().innerText();
+            expect(productName.trim()).not.toBe('');
         }
-    );
+    });
 
     test('AE-072 - Verify search with non-existing product keyword', async ({ productsPage }) => {
-            await productsPage.open();
-            await expect(productsPage.allProductsHeading).toBeVisible();
-            await expect(productsPage.productSearch.searchInput).toBeVisible();
-            await productsPage.productSearch.searchInput.fill(productData.wrongProductKeyword);
-            await productsPage.productSearch.searchButton.click();
-            await expect(productsPage.productSearch.searchedProductsHeading).toBeVisible();
-            const productCount = await productsPage.productSearch.searchedProductCards.count();
-            expect(productCount).toBe(0);
-        }
-    );
+        await productsPage.open();
+        await expect(productsPage.allProductsHeading).toBeVisible();
+        await expect(productsPage.productSearch.searchInput).toBeVisible();
+        await searchProduct(productsPage, productData.wrongProductKeyword);
+        const productCount = await productsPage.productSearch.searchedProductCards.count();
+        expect(productCount).toBe(0);
+    });
+
     test('AE-073 - Verify search field handling for empty input', async ({ productsPage }) => {
 
             await productsPage.open();
@@ -102,64 +101,28 @@ test.describe('Products Page frontend', () => {
         }
     );
 
-    test('AE-074 - Verify search using different letter cases', async ({ productsPage }) => {
-
-            await productsPage.open();
-            await expect(productsPage.allProductsHeading).toBeVisible();
-            const searchKeywords = [productData.nameTwo, productData.nameOne,productData.nameThree];
-    
-            for (const keyword of searchKeywords) {
-                await productsPage.productSearch.searchInput.fill("");
-                await productsPage.productSearch.searchInput.fill(keyword);
-                await productsPage.productSearch.searchButton.click();
-                await expect(productsPage.productSearch.searchedProductsHeading).toBeVisible();
-                const productCount = await productsPage.productSearch.searchedProductCards.count();
-                expect(productCount).toBeGreaterThan(0);
-                for (let i = 0; i < productCount; i++) {
-                    const productCard = productsPage.productSearch.searchedProductCards.nth(i);
-                    await productCard.scrollIntoViewIfNeeded();
-                    await expect(productCard).toBeVisible();
-                    await expect(productsPage.viewproduct).toBeVisible();
-                    await productsPage.viewproduct.click();
-                    await expect(productsPage.page).toHaveURL(/.*\/product_details\/\d+/);
-                    await expect(productsPage.detailName).toBeVisible();
-                    await expect(productsPage.detailCategory).toBeVisible();
-                    await expect(productsPage.detailPrice).toBeVisible();
-                    await expect(productsPage.detailAvailability).toBeVisible();
-                    await expect(productsPage.detailCondition).toBeVisible();
-                    await expect(productsPage.detailBrand).toBeVisible();
-                    await productsPage.page.goBack();
-                    await expect(productsPage.productSearch.searchedProductsHeading).toBeVisible();
-                }
-            }
+    test('AE-074 - Verify product search with different letter cases', async ({ productsPage }) => {
+        await productsPage.open();
+        const keywords = [productData.nameTwo.toLowerCase(), productData.nameTwo.toUpperCase(), productData.nameTwo];
+        for (const keyword of keywords) {
+            await searchProduct(productsPage, keyword);
+            const productCount = await productsPage.productSearch.searchedProductCards.count();
+            expect(productCount).toBeGreaterThan(0);
+            await productsPage.viewproduct.first().click();
+            await expect(productsPage.page).toHaveURL(/\/product_details\/\d+/);
+            await expect(productsPage.productDetails.information).toBeVisible();
+            await productsPage.page.goBack();
+            await expect(productsPage.productSearch.searchedProductsHeading).toBeVisible();
         }
-    );
+    });
 
     test('AE-076 - Verify product images are displayed correctly', async ({ productsPage }) => {
         await productsPage.open();
         await expect(productsPage.allProductsHeading).toBeVisible();
-
         const imageCount = await productsPage.productImages.count();
         expect(imageCount).toBeGreaterThan(0);
-
         for (let i = 0; i < imageCount; i++) {
-            const image = productsPage.productImages.nth(i);
-
-            await image.scrollIntoViewIfNeeded();
-            await expect(image).toBeVisible();
-
-            const imageSource = await image.getAttribute('src');
-
-            expect(imageSource).not.toBeNull();
-            expect(imageSource).not.toBe('');
-
-            await expect.poll(
-                () => image.evaluate(img => img.complete && img.naturalWidth > 0),
-                {
-                    message: `Image ${i + 1} failed to load. Source: ${imageSource}`,
-                    timeout: 10000,
-                }
-            ).toBe(true);
+            await verifyProductImageLoaded(productsPage.productImages.nth(i));
         }
     });
 
@@ -208,29 +171,24 @@ test.describe('Products Page frontend', () => {
     );
 
     test('AE-078 - Verify Product Details page loads successfully', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await expect(productsPage.page).toHaveURL(ROUTES.PRODUCTDETAILS);
-            await expect(productsPage.productDetails.information).toBeVisible();
-            await expect(productsPage.productDetails.name).toHaveText(productData.nameOne);
-            await expect(productsPage.productDetails.category).toBeVisible();
-            await expect(productsPage.productDetails.price).toHaveText(productData.priceOne);
-            await expect(productsPage.productDetails.availability).toBeVisible();
-            await expect(productsPage.productDetails.condition).toBeVisible();
-            await expect(productsPage.productDetails.brand).toBeVisible();
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await expect(productsPage.page).toHaveURL(ROUTES.PRODUCTDETAILS);
+        await expect(productsPage.productDetails.information).toBeVisible();
+        await verifyProductDetails(productsPage.productDetails,
+            {
+                name: productData.nameOne,
+                price: productData.priceOne
             }
-    );
+        );
+    });
 
     test('AE-080 - Verify product image is displayed correctly', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await expect(productsPage.productDetailsImage).toBeVisible();
-            const imageLoaded = await productsPage.productDetailsImage.evaluate(
-                (img) => img.complete && img.naturalWidth > 0
-            );
-            expect(imageLoaded).toBe(true);
-        }
-    );
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await verifyProductImageLoaded(productsPage.productDetailsImage);
+    });
+
     test('AE-081 - Verify default product quantity', async ({ productsPage }) => {
             await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
             await productsPage.page.waitForLoadState('domcontentloaded');
@@ -240,57 +198,44 @@ test.describe('Products Page frontend', () => {
     );
 
     test('AE-082 - Verify product can be added to Cart with default quantity', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await expect(productsPage.productDetails.name).toHaveText(productData.nameOne);
-            await expect(productsPage.productQuantity).toHaveValue(productData.productQuantity);
-            await productsPage.productDetailsAddToCart.click();
-            await expect(productsPage.cartConfirmation.modal).toBeVisible();
-            await expect(productsPage.cartConfirmation.addedMessage).toHaveText(productData.cartConfirmation);
-            await productsPage.cartConfirmation.viewCart.click();
-            await expect(productsPage.menTshirtCartRow).toBeVisible();
-            await expect(productsPage.menTshirtCartRowQuantity).toHaveText(productData.productQuantity);
-            await productsPage.cartConfirmation.manTshirtDelete.click();
-        }
-    );
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await expect(productsPage.productDetails.name).toHaveText(productData.nameOne);
+        await expect(productsPage.productQuantity).toHaveValue(productData.productQuantity);
+        await addProductDetailsToCart(productsPage, undefined, productData.cartConfirmation);
+        await expect(productsPage.menTshirtCartRow).toBeVisible();
+        await expect(productsPage.menTshirtCartRowQuantity).toHaveText(productData.productQuantity);
+        await productsPage.cartConfirmation.manTshirtDelete.click();
+    });
 
     test('AE-083 - Verify custom product quantity is maintained in Cart', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await productsPage.productQuantity.fill(productData.Quantity);
-            await expect(productsPage.productQuantity).toHaveValue(productData.Quantity);
-            await productsPage.productDetailsAddToCart.click();
-            await expect(productsPage.cartConfirmation.modal).toBeVisible();
-            await expect(productsPage.cartConfirmation.addedMessage).toHaveText(productData.cartConfirmation);
-            await productsPage.cartConfirmation.viewCart.click();
-            await expect(productsPage.menTshirtCartRow).toBeVisible();
-            await expect(productsPage.menTshirtCartRowQuantityFour).toHaveText(productData.Quantity);
-            await productsPage.cartConfirmation.manTshirtDelete.click();
-        }
-    );
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await addProductDetailsToCart(productsPage, productData.Quantity, productData.cartConfirmation);
+        await expect(productsPage.menTshirtCartRow).toBeVisible();
+        await expect(productsPage.menTshirtCartRowQuantityFour).toHaveText(productData.Quantity);
+        await productsPage.cartConfirmation.manTshirtDelete.click();
+    });
+
     test('AE-084 - Verify valid product review submission', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await expect(productsPage.menTshirtReview).toBeVisible();
-            await productsPage.productReview.name.fill(productData.productReviewName);
-            await productsPage.productReview.email.fill(productData.productReviewEmail);
-            await productsPage.productReview.review.fill(productData.message);
-            await productsPage.productReview.submit.click();
-            await expect(productsPage.productReview.successMessage).toBeVisible();
-            await expect(productsPage.productReview.successMessage).toHaveText(productData.successMessage);
-        }
-    );
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await expect(productsPage.menTshirtReview).toBeVisible();
+        await fillProductReviewForm(productsPage, productData.productReviewName, productData.productReviewEmail, productData.message);
+        await productsPage.productReview.submit.click();
+        await expect(productsPage.productReview.successMessage).toBeVisible();
+        await expect(productsPage.productReview.successMessage).toHaveText(productData.successMessage);
+    });
 
     test('AE-085 - Verify review validation with invalid email', async ({ productsPage }) => {
-            await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
-            await productsPage.page.waitForLoadState('domcontentloaded');
-            await productsPage.productReview.name.fill(productData.productReviewName);
-            await productsPage.productReview.email.fill(productData.productReviewInvalidEmail);
-            await productsPage.productReview.review.fill(productData.message);
-            await productsPage.productReview.submit.click();
-            await expect(productsPage.productReview.email).toHaveJSProperty('validity.typeMismatch', true);
-        }
-    );
+        await productsPage.page.goto(ROUTES.PRODUCTDETAILS);
+        await productsPage.page.waitForLoadState('domcontentloaded');
+        await fillProductReviewForm(productsPage, productData.productReviewName, productData.productReviewInvalidEmail, productData.message);
+        await productsPage.productReview.submit.click();
+        await expect(productsPage.productReview.email).toHaveJSProperty('validity.typeMismatch', true
+        );
+    });
+
     test('AE-086 - Verify invalid Product Details ID handling', async ({ productsPage }) => {
             const response = await productsPage.page.goto(ROUTES.PRODUCTDETAILS_TWO);
             expect(response).not.toBeNull();

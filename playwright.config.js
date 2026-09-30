@@ -25,7 +25,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Retry failed tests
-  retries: process.env.CI ? 2 : 2,
+  // retries: process.env.CI ? 2 : 2,
 
   // Limit parallel workers to avoid overwhelming AutomationExercise
   workers: 4,
@@ -58,7 +58,7 @@ export default defineConfig({
 
     {
       name: 'smoke-independent',
-      testMatch: '**/smoke/{home,products,contact}.spec.js',
+      testMatch: '**/smoke/spec/{home,products,contact}.spec.js',
       fullyParallel: true,
       use: {
         ...devices['Desktop Chrome'],
@@ -67,7 +67,7 @@ export default defineConfig({
 
     {
       name: 'smoke-account-dependent',
-      testMatch: '**/smoke/{login,signup,cart,payment}.spec.js',
+      testMatch: '**/smoke/spec/{login,signup,cart,payment}.spec.js',
       fullyParallel: false,
       use: {
         ...devices['Desktop Chrome'],

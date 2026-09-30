@@ -1,18 +1,12 @@
-import { test, expect } from '../../fixtures/test.fixture.js';
-import {getSignupData, } from '../../test-data/signupData';
+import { test, expect } from '../../../fixtures/test.fixture.js';
+import {getSignupData, } from '../../../test-data/signupData';
+import {assertAddressInformation, assertSignUpUser} from "../assertions/signup.assertion";
 const signupData = getSignupData();
 
 test.describe('New User Signup frontend', () => {
     test('AE-001 - Verify New User Signup page is displayed correctly', async ({ signupPage }) => {
-            await expect(signupPage.signupHeading).toBeVisible();
-            await expect(signupPage.nameField).toBeVisible();
-            await expect(signupPage.nameField).toBeEnabled();
-            await expect(signupPage.emailField).toBeVisible();
-            await expect(signupPage.emailField).toBeEnabled();
-            await expect(signupPage.signupButton).toBeVisible();
-            await expect(signupPage.signupButton).toBeEnabled();
-        }
-    );
+        await assertSignUpUser(signupPage);
+    });
 
     test('AE-002 - Verify user can signup with valid information', async ({ signupPage }) => {
 
@@ -57,19 +51,8 @@ test.describe('New User Signup frontend', () => {
 
     test('AE-006 - Verify Account Information and Address Information sections', async ({ accountInformationPage }) => {
 
-            await expect(accountInformationPage.accountInformationHeading).toBeVisible();
-            await expect(accountInformationPage.titleMr).toBeVisible();
-            await expect(accountInformationPage.titleMrs).toBeVisible();
-            await expect(accountInformationPage.nameField).toBeVisible();
-            await expect(accountInformationPage.emailField).toBeVisible();
-            await expect(accountInformationPage.passwordField).toBeVisible();
-            await expect(accountInformationPage.dayDropdown).toBeVisible();
-            await expect(accountInformationPage.monthDropdown).toBeVisible();
-            await expect(accountInformationPage.yearDropdown).toBeVisible();
-            await expect(accountInformationPage.newsletterCheckbox).toBeVisible();
-            await expect(accountInformationPage.specialOffersCheckbox).toBeVisible();
+            await assertAddressInformation(accountInformationPage);
             await accountInformationPage.addressField.scrollIntoViewIfNeeded();
-
             await expect(accountInformationPage.addressInformationHeading).toBeVisible();
             await expect(accountInformationPage.firstNameField).toBeVisible();
             await expect(accountInformationPage.lastNameField).toBeVisible();

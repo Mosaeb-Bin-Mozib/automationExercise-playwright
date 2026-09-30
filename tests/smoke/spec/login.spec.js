@@ -1,8 +1,11 @@
-import {test, expect} from '../../fixtures/login.fixture.js';
-import { getLoginData } from '../../test-data/loginData.js';
-import {ROUTES} from "../../test-data/routes";
+import {test, expect} from '../../../fixtures/login.fixture.js';
+import { getLoginData } from '../../../test-data/loginData.js';
+import {ROUTES} from "../../../test-data/routes";
 const loginData = getLoginData();
-import {getUser} from '../../helper/user';
+import {getUser} from '../../../helper/user';
+import { assertLoginInUser } from '../assertions/login.assertion';
+
+
 
 test.describe('Login frontend test', () => {
         test('AE-011 - Verify that the Login page is displayed correctly', async ({ loginPage }) => {
@@ -18,17 +21,8 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-012 - Verify registered user can login', async ({ loginPage }) => {
-
                 const user = getUser(1);
-                await loginPage.enterEmail(user.email);
-                await loginPage.enterPassword(process.env.TEST_PASSWORD);
-
-                await expect(loginPage.emailField).toHaveValue(user.email);
-                await expect(loginPage.passwordField).toHaveValue(process.env.TEST_PASSWORD);
-
-                await loginPage.loginButton.click();
-                await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                await assertLoginInUser(loginPage,user);
                 await loginPage.logoutLink.click();
         });
 
@@ -110,12 +104,7 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-022 - Verify authenticated state is maintained when navigating to Products and Cart', async ({ loginPage }) => {
-                    const user = getUser(1);
-                    await loginPage.enterEmail(user.email);
-                    await loginPage.enterPassword(process.env.TEST_PASSWORD);
-                    await loginPage.loginButton.click();
-                    await expect(loginPage.loggedInAs).toBeVisible();
-                    await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                    await assertLoginInUser(loginPage);
                     await loginPage.page.goto(ROUTES.PRODUCTS);
                     await loginPage.page.getByText('All Products').waitFor({state: 'visible', timeout: 10000});
                     await expect(loginPage.loggedInAs).toBeVisible();
@@ -128,12 +117,7 @@ test.describe('Login frontend test', () => {
         );
         test('AE-023 - Verify that a logged-in user can log out successfully', async ({ loginPage }) => {
 
-                const user = getUser(2);
-                await loginPage.enterEmail(user.email);
-                await loginPage.enterPassword(process.env.TEST_PASSWORD);
-                await loginPage.loginButton.click();
-                await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                await assertLoginInUser(loginPage);
                 await loginPage.logoutLink.click();
                 await expect(loginPage.loginHeading).toBeVisible();
                 await expect(loginPage.loggedInAs).not.toBeVisible();
@@ -142,12 +126,7 @@ test.describe('Login frontend test', () => {
         );
 
         test('AE-025 - Verify logged-out user cannot proceed to checkout', async ({ loginPage,cartPage }) => {
-                const user = getUser(2);
-                await loginPage.enterEmail(user.email);
-                await loginPage.enterPassword(process.env.TEST_PASSWORD);
-                await loginPage.loginButton.click();
-                await expect(loginPage.loggedInAs).toBeVisible();
-                await expect(loginPage.loggedInAs).toContainText(`Logged in as ${user.name}`);
+                await assertLoginInUser(loginPage);
                 await loginPage.page.goto(ROUTES.PRODUCTS);
                 await expect(loginPage.page.getByText('All Products')).toBeVisible();
                 await expect(cartPage.blueTopProduct.blueTop).toBeVisible();
