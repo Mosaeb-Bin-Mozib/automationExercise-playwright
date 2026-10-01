@@ -1,7 +1,5 @@
-import { test as base, expect } from '@playwright/test';
-
-import { CartPage } from '../pages/CartPage';
-
+import { test as base, expect } from './base.fixture';
+import { CartPage } from '../pages/CartPage.js';
 
 export const test = base.extend({
 
@@ -13,6 +11,5 @@ export const test = base.extend({
     },
 
 });
-
 
 export { expect };

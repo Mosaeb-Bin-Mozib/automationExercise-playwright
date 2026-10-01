@@ -75,7 +75,7 @@ Example structure:
 
 ```text
 tests/
-    customer-registration.spec.js
+    customer.registration.spec.js
 
 pages/
     login.page.js
@@ -199,13 +199,13 @@ npx playwright test --headed
 Run a specific test file:
 
 ```bash
-npx playwright test tests/end-to-end/customer-registration.spec.js
+npx playwright test tests/end-to-end/customer.registration.spec.js
 ```
 
 Run a specific test in headed mode:
 
 ```bash
-npx playwright test tests/end-to-end/customer-registration.spec.js --headed
+npx playwright test tests/end-to-end/customer.registration.spec.js --headed
 ```
 
 Run tests using a specific browser project:

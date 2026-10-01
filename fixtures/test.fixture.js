@@ -1,48 +1,62 @@
 import { test as base } from '@playwright/test';
 import { SignupPage } from '../pages/SignupPage.js';
+import  {ROUTES} from '../test-data/routes';
 import { AccountInformationPage } from '../pages/AccountInformationPage.js';
+import fs from 'fs';
 
 export const test = base.extend({
 
     signupPage: async ({ page }, use) => {
-
-        // Common setup
-        await page.goto('/');
+        await page.goto(ROUTES.HOME);
 
         await page.getByRole('link', {name: 'Signup / Login'}).click();
 
         const signupPage = new SignupPage(page);
-
-        // Verify the page is ready
-        // to await signupPage.verifySignupPage();
-
-        // Make the signupPage available to the test
         await use(signupPage);
     },
 
     accountInformationPage: async ({ page }, use) => {
 
-        await page.goto('https://automationexercise.com/');
-
+        await page.goto(ROUTES.HOME);
         await page.getByRole('link', {name: 'Signup / Login'}).click();
 
         const signupPage = new SignupPage(page);
+        const filePath = './test-data/user.json';
 
-        const uniqueEmail = `mosaeb_${Date.now()}@gmail.com`;
+        let users = [];
+
+        if (fs.existsSync(filePath)) {
+            const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+            if (fileContent.trim()) {
+                users = JSON.parse(fileContent);
+            }
+        }
+
+        const unique = Date.now();
+        const uniqueId = users.length + 1;
+        const uniqueEmail = `mosaeb_${unique}@gmail.com`;
 
         await signupPage.enterName('Mosaeb Bin Mozib');
         await signupPage.enterEmail(uniqueEmail);
         await signupPage.clickSignup();
 
-        // await expect(page.getByText('ENTER ACCOUNT INFORMATION')).toBeVisible();
+        const accountInformationPage =
+            new AccountInformationPage(page);
 
-        const accountInformationPage = new AccountInformationPage(page);
+        users.push({
+            id: uniqueId,
+            name: `Mosaeb Bin Mozib`,
+            email: uniqueEmail,
+        });
+
+        fs.writeFileSync(
+            filePath,
+            JSON.stringify(users, null, 2)
+        );
 
         await use(accountInformationPage);
     },
-    // ==========================================
-    // TEST DATA
-    // ==========================================
 
     signupTestData: async ({}, use) => {
 
@@ -55,38 +69,21 @@ export const test = base.extend({
         await use(data);
     },
 
-    // ==========================================
-    // ACCOUNT INFORMATION PAGE
-    // ==========================================
-
     accountInformationPages: async ({ page, signupTestData }, use) => {
 
         const signupPage = new SignupPage(page);
-
-        // Open website
         await signupPage.open();
-
-        // Go to Signup / Login
         await signupPage.navigateToSignup();
-
-        // Enter Name
         await signupPage.enterName(
             signupTestData.name
         );
 
-        // Enter Email
         await signupPage.enterEmail(
             signupTestData.email
         );
-
-        // Click Signup
         await signupPage.clickSignup();
-
-        // Wait for Account Information
         await page.getByText('ENTER ACCOUNT INFORMATION').waitFor({state: 'visible', timeout: 10000});
-
         const accountInformationPage = new AccountInformationPage(page);
-
         await use(accountInformationPage);
     }
 

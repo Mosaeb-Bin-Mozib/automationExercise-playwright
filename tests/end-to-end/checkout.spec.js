@@ -1,87 +1,40 @@
-import {test, expect} from '../../fixtures/login.fixture';
+import fs from 'fs';
+import { test, expect } from '../../fixtures/base.fixture';
+import { getCartData } from '../../test-data/cartData';
+import { getUser } from '../../helper/user';
+import ROUTES from '../../test-data/routes';
+import { assertLoginInUser } from '../smoke/assertions/login.assertion';
+import { enterValidPaymentDetails } from '../smoke/assertions/payment.assertion';
+import {addProductToCart, verifyBlueTopCartItem, verifyBlueTopCheckout} from '../smoke/assertions/cart.assertion';
+const cartData = getCartData();
 
+test('E2E-002 - Verify an existing customer can successfully complete a purchase', async ({ paymentPage, loginPage, cartPage }) => {
 
-test('E2E-002 - Verify an existing customer can successfully complete a purchase', async ({loginPage, signupPage, accountInformationPage}) => {
-
-        // const name = 'Automation User';
-        //
-        // const email = `automation_${Date.now()}@example.com`;
-        //
-        // const password = '1234';
-
-
-        // 1. Open website
-        await signupPage.open();
-
-
-        // 2. Go to Signup/Login
-        await signupPage.navigateToSignup();
-
-
-        // 3. Verify Signup page
-        await signupPage.verifySignupPage();
-
-
-        // 4. Enter a name and unique email
-        await signupPage.enterName(name);
-
-        await signupPage.enterEmail(email);
-
-
-        // 5. Click Signup
-        await signupPage.clickSignup();
-
-
-        // 6. Verify Account Information
-        await accountInformationPage.verifyAccountInformationSection();
-
-
-        // 7. Fill Account Information
-        await accountInformationPage.fillAccountInformation(password);
-
-
-        // 8. Fill Address Information
-        await accountInformationPage.fillAddressInformation({
-
-            firstName: 'Automation',
-
-            lastName: 'Tester',
-
-            company: 'Automation Company',
-
-            address: '123 Automation Street',
-
-            address2: 'Test Area',
-
-            country: 'India',
-
-            state: 'Dhaka',
-
-            city: 'Dhaka',
-
-            zipcode: '1207',
-
-            mobile: '01700000000'
-        });
-
-
-        // 9. Create Account
-        await accountInformationPage.clickCreateAccount();
-
-
-        // 10. Verify Account Created
-        await accountInformationPage.verifyAccountCreated();
-
-
-        // 11. Continue
-        await accountInformationPage.clickContinue();
-
-
-        // 12. Verify logged-in user
-        await loginPage.verifyLoggedInUser(name);
-
-
-        // 13. Verify Logout
-        await expect(loginPage.logoutLink).toBeVisible();
-    }
+        const user = getUser(23);
+        await paymentPage.page.goto(ROUTES.LOGIN);
+        await assertLoginInUser(loginPage, user);
+        await cartPage.page.goto(ROUTES.PRODUCTS);
+        await addProductToCart(cartPage, cartPage.blueTopProduct.blueTop, cartPage.blueTopProduct.addToCart, cartData);
+        await verifyBlueTopCartItem(cartPage, cartData);
+        await verifyBlueTopCheckout(cartPage, cartData, ROUTES);
+        await expect(paymentPage.placeOrder).toBeVisible();
+        await paymentPage.placeOrder.click();
+        await enterValidPaymentDetails(paymentPage, cartData);
+        await paymentPage.paymentButton.click();
+        await expect(paymentPage.orderConfirmation).toBeVisible();
+        await expect(paymentPage.downloadInvoice).toBeVisible();
+        const downloadPromise = paymentPage.page.waitForEvent('download');
+        await paymentPage.downloadInvoice.click();
+        const download = await downloadPromise;
+        const invoiceDirectory = 'test-data/invoices';
+        await fs.promises.mkdir(invoiceDirectory, { recursive: true });
+        // Save an invoice file
+        const invoicePath = `${invoiceDirectory}/invoice-${user.id}.txt`;
+        await download.saveAs(invoicePath);
+        // Read the invoice file
+        const invoiceContent = await fs.promises.readFile(invoicePath, 'utf-8');
+        // Verify invoice content
+        expect(invoiceContent).toContain(`Hi ${user.name}, Your total purchase amount is 500. Thank you`);
+        await paymentPage.logoutLink.click();
+}
 );
